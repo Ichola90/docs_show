@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/`,
     images: [
       {
-        url: "/opengraph-image",
+        url: "/opengraph-image.png",
         width: 1200,
         height: 630,
         alt: "DOCS SHOW — La bibliothèque des livres tech",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "DOCS SHOW || La bibliothèque des livres tech",
     description:
       "Lisez des livres tech en ligne, avancez chapitre par chapitre et testez vos connaissances.",
-    images: ["/opengraph-image"],
+    images: ["/opengraph-image.png"],
   },
 };
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const SITE_URL = "https://docs-show.onrender.com";
-const SOCIAL_IMAGE = "/opengraph-image";
+const SOCIAL_IMAGE = "/opengraph-image.png";
 
 type PageMetadataInput = {
   title: string;
