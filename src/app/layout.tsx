@@ -62,6 +62,14 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/`,
     images: [
       {
+        url: LOGO_URL,
+        secureUrl: LOGO_URL,
+        width: 512,
+        height: 512,
+        type: "image/png",
+        alt: "DOCS SHOW — Logo officiel",
+      },
+      {
         url: SOCIAL_IMAGE_URL,
         secureUrl: SOCIAL_IMAGE_URL,
         width: 1200,
@@ -131,6 +139,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className="h-full antialiased">
       <head>
+        <link rel="image_src" href={LOGO_URL} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
