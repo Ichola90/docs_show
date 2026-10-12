@@ -81,9 +81,9 @@ export function Navbar() {
     <header id="top" className={`site-header${isScrolled ? " is-scrolled" : ""}`}>
       <div className="navbar-inner">
         <div className="navbar-start">
-          <Link className="brand" href="/" aria-label="Atelier, accueil">
+          <Link className="brand" href="/" aria-label="DOCS SHOW, accueil">
             <BrandMark />
-            <span>ATELIER<span className="brand-period">.</span></span>
+            <span>DOCS SHOW<span className="brand-period">.</span></span>
           </Link>
 
           <nav className="main-nav" aria-label="Navigation principale">
@@ -143,9 +143,9 @@ export function Navbar() {
         inert={!mobileMenuOpen}
       >
         <div className="mobile-panel-header">
-          <Link className="brand" href="/" onClick={closeMobileMenu} aria-label="Atelier, accueil">
+          <Link className="brand" href="/" onClick={closeMobileMenu} aria-label="DOCS SHOW, accueil">
             <BrandMark />
-            <span>ATELIER<span className="brand-period">.</span></span>
+            <span>DOCS SHOW<span className="brand-period">.</span></span>
           </Link>
           <button
             ref={closeButtonRef}

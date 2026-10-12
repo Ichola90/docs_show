@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { BookTestExperience } from "@/components/reader/book-test-experience";
 import { books, getBookSummaryById } from "@/data/books";
 import { getBookById } from "@/data/book-content";
+import { createPageMetadata } from "@/lib/seo";
 
 type BookTestPageProps = {
   params: Promise<{ id: string }>;
@@ -16,10 +17,19 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: BookTestPageProps): Promise<Metadata> {
   const { id } = await params;
   const book = getBookSummaryById(id);
+  const title = book ? `Test — ${book.title}` : "Test introuvable";
+  const description = book
+    ? `Testez vos connaissances après la lecture de ${book.title}.`
+    : "Ce test n’est pas disponible dans DOCS SHOW.";
 
-  return book
-    ? { title: `Test — ${book.title} — Atelier`, description: `Testez vos connaissances après la lecture de ${book.title}.` }
-    : { title: "Test introuvable — Atelier" };
+  return {
+    ...createPageMetadata({
+      title,
+      description,
+      path: `/livres/${id}/test/`,
+      noIndex: true,
+    }),
+  };
 }
 
 async function BookTestPageContent({ params }: BookTestPageProps) {

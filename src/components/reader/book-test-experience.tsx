@@ -53,7 +53,7 @@ export function BookTestExperience({ book }: { book: Book }) {
           <Link className="reader-back" href={readingHref}>
             <ArrowIcon direction="left" /> Retour à la lecture
           </Link>
-          <span className="reader-brand">ATELIER</span>
+          <span className="reader-brand">DOCS SHOW</span>
           <span className="reader-topbar-end">TEST VERROUILLÉ</span>
         </div>
         <section className="reading-content quiz-access-message" role="status">
@@ -78,7 +78,7 @@ export function BookTestExperience({ book }: { book: Book }) {
           <Link className="reader-back" href="/bibliotheque">
             <ArrowIcon direction="left" /> Retour à la bibliothèque
           </Link>
-          <span className="reader-brand">ATELIER</span>
+          <span className="reader-brand">DOCS SHOW</span>
           <span className="reader-topbar-end">ESPACE DE TEST</span>
         </div>
       </Reveal>

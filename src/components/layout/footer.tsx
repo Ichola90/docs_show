@@ -9,14 +9,14 @@ export function Footer() {
         <div className="footer-inner">
           <div className="footer-columns">
             <div className="footer-about">
-              <Link className="brand footer-brand" href="/" aria-label="Atelier, accueil">
+              <Link className="brand footer-brand" href="/" aria-label="DOCS SHOW, accueil">
                 <BrandMark />
-                <span>ATELIER<span className="brand-period">.</span></span>
+                <span>DOCS SHOW<span className="brand-period">.</span></span>
               </Link>
               <p>La bibliothèque en ligne pour apprendre les technologies, une page à la fois.</p>
             </div>
 
-            <nav className="footer-column" aria-label="Découvrir Atelier">
+            <nav className="footer-column" aria-label="Découvrir DOCS SHOW">
               <h3>Découvrir</h3>
               <Link href="/">Accueil</Link>
               <Link href="/bibliotheque">Tous les livres</Link>
@@ -42,7 +42,7 @@ export function Footer() {
           </div>
 
           <div className="footer-bottom">
-            <span className="footer-copyright">© 2026 Atelier. Tous droits réservés.</span>
+            <span className="footer-copyright">© 2026 DOCS SHOW. Tous droits réservés.</span>
             <p className="footer-credit">
               Propulsé avec
               <svg viewBox="0 0 20 20" aria-label="amour" role="img">

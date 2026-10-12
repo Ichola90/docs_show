@@ -17,7 +17,7 @@ export function BookCover({ book, compact = false }: BookCoverProps) {
       aria-label={`Couverture de ${book.title}`}
     >
       <div className="cover-topline">
-        <span>ATELIER / LIVRE</span>
+        <span>DOCS SHOW / LIVRE</span>
         <span>{bookNumber}</span>
       </div>
       <div className="cover-art" aria-hidden="true">

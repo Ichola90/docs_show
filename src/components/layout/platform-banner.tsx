@@ -52,7 +52,7 @@ export function PlatformBanner() {
       <section
         className="platform-banner"
         aria-roledescription="carrousel"
-        aria-label="Découvrir la plateforme Atelier"
+        aria-label="Découvrir la plateforme DOCS SHOW"
       >
         {SLIDES.map((slide, index) => (
           <div
@@ -74,7 +74,7 @@ export function PlatformBanner() {
 
         <Reveal className="platform-banner-content-reveal" delay={90} distance={20}>
           <div className="platform-banner-content" aria-live="off">
-            <p className="platform-banner-kicker">ATELIER · APPRENDRE, UN CHAPITRE À LA FOIS</p>
+            <p className="platform-banner-kicker">DOCS SHOW · APPRENDRE, UN CHAPITRE À LA FOIS</p>
             <h1 key={`title-${activeSlide}`}>{SLIDES[activeSlide].title}</h1>
             <p className="platform-banner-description" key={`description-${activeSlide}`}>
               {SLIDES[activeSlide].description}

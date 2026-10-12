@@ -80,7 +80,7 @@ export function BookReader({ book }: BookReaderProps) {
             <ArrowIcon direction="left" /> Retour à la bibliothèque
           </Link>
           <Link className="reader-brand" href="/">
-            <BrandMark /> ATELIER
+            <BrandMark /> DOCS SHOW
           </Link>
           {isReadingComplete && (
             <Link className="reader-topbar-end" href={`/livres/${book.id}/test`}>

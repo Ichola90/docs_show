@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { BookReader } from "@/components/reader/book-reader";
 import { books, getBookSummaryById } from "@/data/books";
 import { getBookById } from "@/data/book-content";
+import { createPageMetadata } from "@/lib/seo";
 
 type BookPageProps = {
   params: Promise<{ id: string }>;
@@ -18,13 +19,18 @@ export async function generateMetadata({ params }: BookPageProps): Promise<Metad
   const book = getBookSummaryById(id);
 
   if (!book) {
-    return { title: "Livre introuvable — Atelier" };
+    return createPageMetadata({
+      title: "Livre introuvable",
+      description: "Ce livre n’est pas disponible dans la bibliothèque DOCS SHOW.",
+      path: `/livres/${id}/`,
+    });
   }
 
-  return {
-    title: `${book.title} — Atelier`,
+  return createPageMetadata({
+    title: book.title,
     description: book.description,
-  };
+    path: `/livres/${book.id}/`,
+  });
 }
 
 async function BookPageContent({ params }: BookPageProps) {
