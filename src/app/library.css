@@ -47,7 +47,7 @@
 }
 
 .brand-period { color: var(--primary); }
-.brand-mark { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; gap: 2px; border-radius: 9px; background: var(--primary); box-shadow: 0 3px 8px #2563eb33; }
+.brand-mark { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; gap: 2px; border-radius: 9px; background: linear-gradient(135deg, #1d4ed8, #0284c7); box-shadow: 0 3px 10px #2563eb33; }
 .brand-mark svg { display: block; width: 28px; height: 28px; }
 
 .main-nav { display: flex; align-items: center; gap: clamp(14px, 2vw, 28px); color: #293449; font-size: 14px; font-weight: 500; }

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
 export const SITE_URL = "https://docs-show.onrender.com";
-const SOCIAL_IMAGE = "/opengraph-image.png";
+export const SOCIAL_IMAGE_URL = `${SITE_URL}/opengraph-image.png`;
+export const LOGO_URL = `${SITE_URL}/logo.png`;
 
 type PageMetadataInput = {
   title: string;
@@ -23,7 +24,19 @@ export function createPageMetadata({
     title,
     description,
     alternates: { canonical: url },
-    robots: noIndex ? { index: false, follow: false } : undefined,
+    robots: noIndex
+      ? { index: false, follow: false }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+          },
+        },
     openGraph: {
       type: "website",
       locale: "fr_FR",
@@ -33,9 +46,11 @@ export function createPageMetadata({
       url,
       images: [
         {
-          url: SOCIAL_IMAGE,
+          url: SOCIAL_IMAGE_URL,
+          secureUrl: SOCIAL_IMAGE_URL,
           width: 1200,
           height: 630,
+          type: "image/png",
           alt: "DOCS SHOW — La bibliothèque des livres tech",
         },
       ],
@@ -44,7 +59,7 @@ export function createPageMetadata({
       card: "summary_large_image",
       title: brandedTitle,
       description,
-      images: [SOCIAL_IMAGE],
+      images: [SOCIAL_IMAGE_URL],
     },
   };
 }
