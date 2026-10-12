@@ -83,7 +83,7 @@ export function Navbar() {
         <div className="navbar-start">
           <Link className="brand" href="/" aria-label="DOCS SHOW, accueil">
             <BrandMark />
-            <span>DOCS SHOW<span className="brand-period">.</span></span>
+            <span className="brand-text-3d">DOCS SHOW</span>
           </Link>
 
           <nav className="main-nav" aria-label="Navigation principale">
@@ -145,7 +145,7 @@ export function Navbar() {
         <div className="mobile-panel-header">
           <Link className="brand" href="/" onClick={closeMobileMenu} aria-label="DOCS SHOW, accueil">
             <BrandMark />
-            <span>DOCS SHOW<span className="brand-period">.</span></span>
+            <span className="brand-text-3d">DOCS SHOW</span>
           </Link>
           <button
             ref={closeButtonRef}

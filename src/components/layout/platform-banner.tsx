@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ActionButton } from "@/components/ui/action-button";
@@ -8,29 +7,41 @@ import { Reveal } from "@/components/ui/reveal";
 
 const SLIDES = [
   {
-    image: "/images/tech-learning.jpg",
-    alt: "Personne qui apprend et travaille sur un ordinateur portable",
+    id: "web-dev",
+    kicker: "MANUELS TECHNIQUES · 100% LIBRE ACCÈS",
     title: "Le savoir tech, à votre rythme.",
     description:
-      "Explorez des livres pratiques, avancez chapitre par chapitre et mettez vos acquis à l’épreuve.",
+      "Explorez des manuels complets, progressez chapitre après chapitre et maîtrisez le développement web et logiciel.",
+    ctaLabel: "Explorer les livres",
+    ctaHref: "/bibliotheque",
+    themeClass: "slide-theme-blue",
+    visualType: "books" as const,
   },
   {
-    image: "/images/data-insights.jpg",
-    alt: "Visualisation de données et graphiques sur un écran",
-    title: "Comprendre les idées derrière la technologie.",
+    id: "systems",
+    kicker: "FONDATIONS & ALGORITHMIQUE · BAS NIVEAU",
+    title: "Comprendre les fondations du code.",
     description:
-      "Développement, data, intelligence artificielle et design produit : apprenez avec des ressources ciblées.",
+      "Langage C, gestion mémoire, Clean Code et architectures éprouvées : bâtissez un socle d'ingénieur solide.",
+    ctaLabel: "Découvrir le manuel C",
+    ctaHref: "/livres/apprenez-programmer-c",
+    themeClass: "slide-theme-cyan",
+    visualType: "code" as const,
   },
   {
-    image: "/images/team-collaboration.jpg",
-    alt: "Équipe qui collabore autour d’un projet numérique",
-    title: "Apprendre aujourd’hui, construire demain.",
+    id: "tests",
+    kicker: "VALIDATION ACTIVE · TEST DE MAÎTRISE",
+    title: "Lire, comprendre, valider.",
     description:
-      "Des lectures accessibles pour transformer la curiosité en compétences concrètes.",
+      "Chaque livre se conclut par un quiz interactif : mettez directement vos connaissances à l'épreuve et mesurez vos progrès.",
+    ctaLabel: "Tester vos compétences",
+    ctaHref: "/bibliotheque",
+    themeClass: "slide-theme-amber",
+    visualType: "quiz" as const,
   },
 ];
 
-const SLIDE_DURATION_MS = 1000;
+const SLIDE_DURATION_MS = 5000;
 
 export function PlatformBanner() {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -47,60 +58,129 @@ export function PlatformBanner() {
     setActiveSlide((index + SLIDES.length) % SLIDES.length);
   };
 
+  const currentSlide = SLIDES[activeSlide];
+
   return (
     <Reveal>
       <section
-        className="platform-banner"
+        className={`platform-banner ${currentSlide.themeClass}`}
         aria-roledescription="carrousel"
-        aria-label="Découvrir la plateforme DOCS SHOW"
+        aria-label="Présentation de la plateforme DOCS SHOW"
       >
-        {SLIDES.map((slide, index) => (
-          <div
-            className={`platform-banner-slide${index === activeSlide ? " is-active" : ""}`}
-            key={slide.image}
-            aria-hidden={index !== activeSlide}
-          >
-            <Image
-              className="platform-banner-image"
-              src={slide.image}
-              alt={slide.alt}
-              fill
-              priority={index === 0}
-              sizes="100vw"
-            />
-            <div className="platform-banner-shade" />
-          </div>
-        ))}
+        <div className="platform-banner-ambient" aria-hidden="true" />
+        <div className="platform-banner-grid-overlay" aria-hidden="true" />
 
-        <Reveal className="platform-banner-content-reveal" delay={90} distance={20}>
-          <div className="platform-banner-content" aria-live="off">
-            <p className="platform-banner-kicker">DOCS SHOW · APPRENDRE, UN CHAPITRE À LA FOIS</p>
-            <h1 key={`title-${activeSlide}`}>{SLIDES[activeSlide].title}</h1>
-            <p className="platform-banner-description" key={`description-${activeSlide}`}>
-              {SLIDES[activeSlide].description}
+        <div className="platform-banner-inner">
+          <div className="platform-banner-content" key={`content-${activeSlide}`}>
+            <p className="platform-banner-kicker">{currentSlide.kicker}</p>
+            <h1 className="platform-banner-title">{currentSlide.title}</h1>
+            <p className="platform-banner-description">
+              {currentSlide.description}
             </p>
-            <ActionButton href="/bibliotheque" variant="secondary" className="platform-banner-cta">
-              Explorer les livres
+            <ActionButton href={currentSlide.ctaHref} variant="secondary" className="platform-banner-cta">
+              {currentSlide.ctaLabel}
             </ActionButton>
           </div>
-        </Reveal>
 
-        <Reveal className="platform-banner-controls-reveal" delay={180} distance={16}>
-          <div className="platform-banner-controls" aria-label="Navigation des diapositives">
-          <button
-            className="platform-banner-arrow"
-            type="button"
-            aria-label="Diapositive précédente"
-            onClick={() => showSlide(activeSlide - 1)}
-          >
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="m12.5 4.5-5.5 5.5 5.5 5.5" />
-            </svg>
-          </button>
+          <div className="platform-banner-visual-wrapper" key={`visual-${activeSlide}`}>
+            {currentSlide.visualType === "books" && (
+              <div className="banner-visual-books">
+                <div className="banner-book-mockup banner-book-primary">
+                  <div className="banner-book-spine" />
+                  <div className="banner-book-cover">
+                    <span className="banner-book-tag">WEB & BASE DE DONNÉES</span>
+                    <h4>PHP & MySQL</h4>
+                    <p>Développement de sites dynamiques</p>
+                    <div className="banner-book-meta">
+                      <span>350 pages</span>
+                      <span className="banner-book-pill">12 chapitres</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="banner-book-mockup banner-book-secondary">
+                  <div className="banner-book-spine" />
+                  <div className="banner-book-cover">
+                    <span className="banner-book-tag">BONNES PRATIQUES</span>
+                    <h4>Clean Code</h4>
+                    <p>Qualité & maintenabilité</p>
+                    <div className="banner-book-meta">
+                      <span>280 pages</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="banner-floating-badge">
+                  <span className="pulse-dot" />
+                  <span>10 manuels complets & gratuits</span>
+                </div>
+              </div>
+            )}
+
+            {currentSlide.visualType === "code" && (
+              <div className="banner-visual-terminal">
+                <div className="banner-terminal-header">
+                  <div className="banner-terminal-dots">
+                    <span className="dot-red" />
+                    <span className="dot-yellow" />
+                    <span className="dot-green" />
+                  </div>
+                  <span className="banner-terminal-title">main.c — DOCS SHOW IDE</span>
+                  <span className="banner-terminal-lang">C99</span>
+                </div>
+                <pre className="banner-terminal-code">
+                  <code>
+                    <span className="code-dim">1</span> <span className="code-keyword">#include</span> <span className="code-string">&lt;stdio.h&gt;</span>{"\n"}
+                    <span className="code-dim">2</span> <span className="code-keyword">#include</span> <span className="code-string">&lt;stdlib.h&gt;</span>{"\n"}
+                    <span className="code-dim">3</span> {"\n"}
+                    <span className="code-dim">4</span> <span className="code-type">int</span> <span className="code-func">main</span>(<span className="code-type">void</span>) {"{"}{"\n"}
+                    <span className="code-dim">5</span>     <span className="code-type">char</span>* <span className="code-var">skill</span> = <span className="code-string">&quot;DOCS SHOW&quot;</span>;{"\n"}
+                    <span className="code-dim">6</span>     <span className="code-func">printf</span>(<span className="code-string">&quot;Maîtrise : %s\n&quot;</span>, <span className="code-var">skill</span>);{"\n"}
+                    <span className="code-dim">7</span>     <span className="code-keyword">return</span> <span className="code-num">0</span>;{"\n"}
+                    <span className="code-dim">8</span> {"}"}
+                  </code>
+                </pre>
+                <div className="banner-terminal-status">
+                  <span className="status-success">● Build réussi (0 erreur)</span>
+                  <span className="status-meta">GCC Compiler · Clean Code</span>
+                </div>
+              </div>
+            )}
+
+            {currentSlide.visualType === "quiz" && (
+              <div className="banner-visual-quiz">
+                <div className="banner-quiz-header">
+                  <span className="banner-quiz-badge">TEST DE CONNAISSANCES</span>
+                  <span className="banner-quiz-score">Score 10/10 ✓</span>
+                </div>
+                <p className="banner-quiz-q">Quelle fonction alloue dynamiquement de la mémoire en C ?</p>
+                <div className="banner-quiz-options">
+                  <div className="banner-quiz-opt is-correct">
+                    <span className="quiz-opt-marker">A</span>
+                    <span className="quiz-opt-text">malloc()</span>
+                    <span className="quiz-opt-check">✓ Validé</span>
+                  </div>
+                  <div className="banner-quiz-opt">
+                    <span className="quiz-opt-marker">B</span>
+                    <span className="quiz-opt-text">alloc()</span>
+                  </div>
+                </div>
+                <div className="banner-quiz-progress">
+                  <div className="banner-quiz-bar">
+                    <div className="banner-quiz-fill" style={{ width: "100%" }} />
+                  </div>
+                  <span className="banner-quiz-status">Validation des acquis enregistrée localement</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="platform-banner-controls" aria-label="Indicateurs des diapositives">
           <div className="platform-banner-dots">
             {SLIDES.map((slide, index) => (
               <button
-                key={slide.image}
+                key={slide.id}
                 className={`platform-banner-dot${index === activeSlide ? " is-active" : ""}`}
                 type="button"
                 aria-label={`Afficher la diapositive ${index + 1}`}
@@ -109,18 +189,8 @@ export function PlatformBanner() {
               />
             ))}
           </div>
-          <button
-            className="platform-banner-arrow"
-            type="button"
-            aria-label="Diapositive suivante"
-            onClick={() => showSlide(activeSlide + 1)}
-          >
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="m7.5 4.5 5.5 5.5-5.5 5.5" />
-            </svg>
-          </button>
         </div>
-        </Reveal>
+
         <Link className="platform-banner-skip" href="#contenu-principal">
           Passer la bannière
         </Link>

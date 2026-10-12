@@ -8,6 +8,7 @@ import { BookCover } from "@/components/books/book-cover";
 import { BookQuiz } from "@/components/reader/book-quiz";
 import { ActionButton } from "@/components/ui/action-button";
 import { ArrowIcon } from "@/components/ui/arrow-icon";
+import { BrandMark } from "@/components/ui/brand-mark";
 import { Reveal } from "@/components/ui/reveal";
 
 export function BookTestExperience({ book }: { book: Book }) {
@@ -53,7 +54,10 @@ export function BookTestExperience({ book }: { book: Book }) {
           <Link className="reader-back" href={readingHref}>
             <ArrowIcon direction="left" /> Retour à la lecture
           </Link>
-          <span className="reader-brand">DOCS SHOW</span>
+          <Link className="reader-brand" href="/" aria-label="DOCS SHOW, accueil">
+            <BrandMark />
+            <span className="brand-text-3d">DOCS SHOW</span>
+          </Link>
           <span className="reader-topbar-end">TEST VERROUILLÉ</span>
         </div>
         <section className="reading-content quiz-access-message" role="status">
@@ -78,7 +82,10 @@ export function BookTestExperience({ book }: { book: Book }) {
           <Link className="reader-back" href="/bibliotheque">
             <ArrowIcon direction="left" /> Retour à la bibliothèque
           </Link>
-          <span className="reader-brand">DOCS SHOW</span>
+          <Link className="reader-brand" href="/" aria-label="DOCS SHOW, accueil">
+            <BrandMark />
+            <span className="brand-text-3d">DOCS SHOW</span>
+          </Link>
           <span className="reader-topbar-end">ESPACE DE TEST</span>
         </div>
       </Reveal>
