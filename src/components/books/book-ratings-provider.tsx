@@ -8,106 +8,122 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { BookRatingSummary } from "@/data/book-ratings";
+
+const RATINGS_STORAGE_KEY = "atelier:ratings:v1";
+
+type BookRatingSummary = {
+  rating: string | null;
+  count: number;
+};
 
 type BookRatingsContextValue = {
-  ratings: Record<string, BookRatingSummary>;
+  ratings: Record<string, number>;
+  ready: boolean;
   error: string | null;
   submitRating: (
     bookId: string,
     rating: number,
-    clientId: string,
-  ) => Promise<BookRatingSummary>;
+  ) => Promise<void>;
 };
 
 const BookRatingsContext = createContext<BookRatingsContextValue | null>(null);
 
-function isRatingSummary(value: unknown): value is BookRatingSummary {
+function isStoredRatings(value: unknown): value is Record<string, number> {
   return (
     typeof value === "object" &&
     value !== null &&
-    "rating" in value &&
-    (typeof value.rating === "string" || value.rating === null) &&
-    "count" in value &&
-    typeof value.count === "number" &&
-    Number.isInteger(value.count) &&
-    value.count >= 0
+    Object.values(value).every(
+      (rating) =>
+        typeof rating === "number" &&
+        Number.isInteger(rating) &&
+        rating >= 1 &&
+        rating <= 5,
+    )
   );
 }
 
+function summarizeRating(
+  initialRating: string,
+  initialCount: number,
+  userRating?: number,
+): BookRatingSummary {
+  if (userRating === undefined) {
+    return {
+      rating: initialCount > 0 ? initialRating : null,
+      count: initialCount,
+    };
+  }
+
+  const parsedInitialRating = Number.parseFloat(initialRating.replace(",", "."));
+  const validInitialRating =
+    initialCount > 0 && Number.isFinite(parsedInitialRating)
+      ? parsedInitialRating
+      : 0;
+  const count = initialCount + 1;
+  const totalRating = validInitialRating * initialCount + userRating;
+
+  return {
+    rating: (totalRating / count).toFixed(1).replace(".", ","),
+    count,
+  };
+}
+
 export function BookRatingsProvider({ children }: { children: ReactNode }) {
-  const [ratings, setRatings] = useState<
-    Record<string, BookRatingSummary>
-  >({});
+  const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let active = true;
-
-    async function loadRatings() {
+    const frameId = window.requestAnimationFrame(() => {
       try {
-        const response = await fetch("/api/ratings", { cache: "no-store" });
-        const result: unknown = await response.json();
-
-        if (!response.ok || typeof result !== "object" || result === null) {
-          throw new Error("Les notes partagées sont indisponibles.");
+        const storedRatings = localStorage.getItem(RATINGS_STORAGE_KEY);
+        if (storedRatings !== null) {
+          const parsed: unknown = JSON.parse(storedRatings);
+          if (!isStoredRatings(parsed)) {
+            throw new Error("Les évaluations locales ont un format invalide.");
+          }
+          setRatings(parsed);
         }
-
-        const validRatings = Object.fromEntries(
-          Object.entries(result).filter((entry): entry is [string, BookRatingSummary] =>
-            isRatingSummary(entry[1]),
-          ),
+      } catch (loadError) {
+        console.error("Failed to load local book ratings.", loadError);
+        setError(
+          "Les évaluations locales ne sont pas accessibles dans ce navigateur.",
         );
-
-        if (active) {
-          setRatings(validRatings);
-          setError(null);
-        }
-      } catch {
-        if (active) {
-          setError("Les notes partagées n’ont pas pu être actualisées.");
-        }
+      } finally {
+        setReady(true);
       }
-    }
-
-    void loadRatings();
-    return () => {
-      active = false;
-    };
+    });
+    return () => window.cancelAnimationFrame(frameId);
   }, []);
 
   const submitRating = useCallback(
-    async (bookId: string, rating: number, clientId: string) => {
-      const response = await fetch("/api/ratings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookId, rating, clientId }),
-      });
-      const result: unknown = await response.json();
-
-      if (!response.ok || !isRatingSummary(result)) {
-        const message =
-          typeof result === "object" &&
-          result !== null &&
-          "error" in result &&
-          typeof result.error === "string"
-            ? result.error
-            : "Votre note n’a pas pu être enregistrée.";
-        throw new Error(message);
+    async (bookId: string, rating: number) => {
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+        throw new Error("Choisissez une note de 1 à 5 étoiles.");
       }
 
-      setRatings((currentRatings) => ({
-        ...currentRatings,
-        [bookId]: result,
-      }));
-      setError(null);
-      return result;
+      const updatedRatings = { ...ratings, [bookId]: rating };
+      try {
+        localStorage.setItem(
+          RATINGS_STORAGE_KEY,
+          JSON.stringify(updatedRatings),
+        );
+      } catch (saveError) {
+        console.error(`Failed to save a local rating for "${bookId}".`, saveError);
+        throw new Error(
+          "Votre note n’a pas pu être enregistrée dans ce navigateur.",
+        );
+      }
+
+      setRatings(updatedRatings);
     },
-    [],
+    [ratings],
   );
 
   return (
-    <BookRatingsContext.Provider value={{ ratings, error, submitRating }}>
+    <BookRatingsContext.Provider
+      value={{ ratings, ready, error, submitRating }}
+    >
       {error && (
         <p className="ratings-load-error" role="status">
           {error}
@@ -124,11 +140,14 @@ export function useBookRating(
   initialCount: number,
 ) {
   const context = useContext(BookRatingsContext);
-  const sharedRating = context?.ratings[bookId];
+  const userRating = context?.ratings[bookId];
+  const summary = summarizeRating(initialRating, initialCount, userRating);
 
   return {
-    rating: sharedRating?.rating ?? initialRating,
-    count: sharedRating?.count ?? initialCount,
+    rating: summary.rating ?? initialRating,
+    count: summary.count,
+    userRating,
+    ready: context?.ready ?? false,
     submitRating: context?.submitRating,
   };
 }

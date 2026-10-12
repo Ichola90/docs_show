@@ -76,14 +76,6 @@ export function getBookQuizQuestions(book: Book): BookQuizQuestion[] {
   ];
 }
 
-export const categories = [
-  "Tout",
-  "Développement",
-  "Data & IA",
-  "Design produit",
-  "Entrepreneuriat",
-];
-
 export const books: Book[] = [
   {
     id: "concevez-site-web-php-mysql",
@@ -693,6 +685,11 @@ export const books: Book[] = [
         "Une mesure prend son sens quand elle aide l’équipe à comprendre un résultat utilisateur et à choisir une action.",
     },
   },
+];
+
+export const categories = [
+  "Tout",
+  ...new Set(books.map((book) => book.category)),
 ];
 
 export function getBookSummaryById(id: string): Book | undefined {

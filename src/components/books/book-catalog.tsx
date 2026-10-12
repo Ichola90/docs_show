@@ -8,7 +8,14 @@ import { BookSidebarFilters } from "@/components/books/book-sidebar-filters";
 import { ActionButton } from "@/components/ui/action-button";
 import { Reveal } from "@/components/ui/reveal";
 
-const levels = ["Débutant", "Intermédiaire", "Avancé"];
+const levels = [...new Set(books.map((book) => book.level))];
+
+function matchesSearch(book: (typeof books)[number], query: string) {
+  const searchableContent =
+    `${book.title} ${book.subtitle} ${book.author} ${book.category}`.toLocaleLowerCase("fr");
+
+  return !query || searchableContent.includes(query);
+}
 
 export function BookCatalog() {
   const [searchInput, setSearchInput] = useState("");
@@ -44,22 +51,60 @@ export function BookCatalog() {
     };
   }, [mobileFiltersOpen]);
 
-  const filteredBooks = useMemo(() => {
-    const query = searchQuery.trim().toLocaleLowerCase("fr");
-
-    return books.filter((book) => {
-      const matchesCategory =
-        selectedCategories.length === 0 || selectedCategories.includes(book.category);
-      const matchesLevel = selectedLevels.length === 0 || selectedLevels.includes(book.level);
-      const searchableContent = `${book.title} ${book.subtitle} ${book.author} ${book.category}`
-        .toLocaleLowerCase("fr");
-      return (
-        matchesCategory &&
-        matchesLevel &&
-        (!query || searchableContent.includes(query))
-      );
-    });
-  }, [searchQuery, selectedCategories, selectedLevels]);
+  const query = searchQuery.trim().toLocaleLowerCase("fr");
+  const booksMatchingSearch = useMemo(
+    () => books.filter((book) => matchesSearch(book, query)),
+    [query],
+  );
+  const booksMatchingCategoryFilters = useMemo(
+    () =>
+      booksMatchingSearch.filter(
+        (book) =>
+          selectedCategories.length === 0 ||
+          selectedCategories.includes(book.category),
+      ),
+    [booksMatchingSearch, selectedCategories],
+  );
+  const booksMatchingLevelFilters = useMemo(
+    () =>
+      booksMatchingSearch.filter(
+        (book) =>
+          selectedLevels.length === 0 || selectedLevels.includes(book.level),
+      ),
+    [booksMatchingSearch, selectedLevels],
+  );
+  const filteredBooks = useMemo(
+    () =>
+      booksMatchingCategoryFilters.filter(
+        (book) =>
+          selectedLevels.length === 0 || selectedLevels.includes(book.level),
+      ),
+    [booksMatchingCategoryFilters, selectedLevels],
+  );
+  const categoryCounts = useMemo(
+    () =>
+      Object.fromEntries(
+        categories
+          .filter((category) => category !== "Tout")
+          .map((category) => [
+            category,
+            booksMatchingLevelFilters.filter((book) => book.category === category)
+              .length,
+          ]),
+      ),
+    [booksMatchingLevelFilters],
+  );
+  const levelCounts = useMemo(
+    () =>
+      Object.fromEntries(
+        levels.map((level) => [
+          level,
+          booksMatchingCategoryFilters.filter((book) => book.level === level)
+            .length,
+        ]),
+      ),
+    [booksMatchingCategoryFilters],
+  );
 
   const toggleValue = (
     value: string,
@@ -83,12 +128,18 @@ export function BookCatalog() {
   const filterProps = {
     categories: categories.filter((category) => category !== "Tout"),
     levels,
+    categoryCounts,
+    levelCounts,
+    totalCategoriesCount: booksMatchingLevelFilters.length,
+    totalLevelsCount: booksMatchingCategoryFilters.length,
     selectedCategories,
     selectedLevels,
     onCategoryToggle: (category: string) =>
       toggleValue(category, selectedCategories, setSelectedCategories),
     onLevelToggle: (level: string) =>
       toggleValue(level, selectedLevels, setSelectedLevels),
+    onCategoryClear: () => setSelectedCategories([]),
+    onLevelClear: () => setSelectedLevels([]),
     onReset: resetFilters,
   };
 

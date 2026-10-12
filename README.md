@@ -29,14 +29,13 @@ src/
 │   ├── globals.css                    # Tokens et base visuelle AlloMonRep
 │   └── library.css                    # Styles des composants de la bibliothèque
 ├── components/
-│   ├── books/                         # Cartes, couvertures, catalogue et notes partagées
+│   ├── books/                         # Cartes, couvertures, catalogue et notes locales
 │   ├── home/                          # Sections de la page d’accueil
 │   ├── layout/                        # Navbar, footer et bannière partagés
 │   ├── reader/                        # Lecteur, chapitres, progression et quiz
 │   └── ui/                            # Bouton partagé, icônes et éléments réutilisables
 └── data/
     ├── books.ts                       # Types, catalogue et accès aux livres
-    ├── book-ratings.ts                # Calcul et stockage JSON des notes
     ├── php-mysql-chapters.json        # Pages et blocs du livre PHP/MySQL
     ├── c-programming-chapters.json    # Pages et blocs du livre de programmation C
     ├── book-content.ts                # Chargement des contenus sur le serveur
@@ -65,15 +64,18 @@ Les appels à l’action utilisent le composant partagé `ActionButton` (`src/co
 
 ## Notes des lecteurs
 
-Après avoir terminé la lecture, un lecteur peut attribuer une note de 1 à 5 étoiles. Les avis sont ajoutés aux notes et aux nombres d’avis initiaux du catalogue ; ils ne les remplacent pas. Un identifiant anonyme conservé dans le navigateur permet de mettre à jour une note sans incrémenter plusieurs fois le compteur depuis ce navigateur.
+Après avoir terminé la lecture, un lecteur peut attribuer une note de 1 à 5 étoiles. Les notes initiales du catalogue restent présentes. La note choisie est enregistrée dans le stockage local du navigateur et s’ajoute à la moyenne affichée sur cet appareil uniquement. Elle ne peut pas être partagée entre visiteurs, appareils ou navigateurs et sera perdue si les données de navigation sont effacées.
 
-Les notes sont enregistrées dans un fichier JSON, sans base de données. En local, le fichier est créé sous `.data/book-ratings.json`. Pour conserver les notes sur Render :
+## Déploiement statique sur Render
 
-1. Ajoutez un disque persistant au service web Render, monté sur `/var/data`.
-2. Définissez la variable d’environnement `BOOK_RATINGS_FILE` à `/var/data/book-ratings.json`.
-3. Gardez une seule instance du service : le fichier JSON n’est pas un stockage partagé entre plusieurs instances.
+Le projet est configuré pour un export statique Next.js (`output: "export"`). Le fichier [`render.yaml`](./render.yaml) déclare le **Static Site** Render avec :
 
-Le système est volontairement simple et anonyme ; sans compte ni authentification, il ne peut pas garantir qu’une personne ne vote qu’une seule fois depuis plusieurs navigateurs ou appareils.
+- **Build Command** : `npm ci && npm run build`
+- **Publish Directory** : `./out`
+
+Dans Render, créez un Blueprint à partir du dépôt pour appliquer cette configuration automatiquement, ou créez manuellement un Static Site avec les mêmes paramètres.
+
+Les pages du catalogue, les lecteurs et les tests sont générés lors du build. Il n’y a pas d’API ni de serveur à exécuter en production. Les notes sont locales au navigateur ; un déploiement statique ne peut pas agréger les votes de tous les visiteurs.
 
 ## Vérifications
 
