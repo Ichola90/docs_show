@@ -18,7 +18,7 @@ export function Footer() {
               </p>
             </div>
 
-            <nav className="footer-column" aria-label="Navigation principale">
+            <nav className="footer-column footer-platform-column" aria-label="Navigation principale">
               <h3 className="footer-heading">
                 <span className="footer-heading-3d">Plateforme</span>
               </h3>
@@ -30,7 +30,7 @@ export function Footer() {
               </ul>
             </nav>
 
-            <nav className="footer-column" aria-label="Lectures à la une">
+            <nav className="footer-column footer-featured-column" aria-label="Lectures à la une">
               <h3 className="footer-heading">
                 <span className="footer-heading-3d">À la une</span>
               </h3>
