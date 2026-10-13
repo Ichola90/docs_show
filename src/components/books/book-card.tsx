@@ -56,19 +56,22 @@ export function BookCard({ book }: { book: Book }) {
           </div>
           {hasFullReader ? (
             <ActionButton
-              className="text-link"
+              className="book-card-cta text-link"
               href={`/livres/${book.id}`}
-              variant="primary"
+              variant="secondary"
               size="small"
+              aria-label={`Découvrir le livre ${book.title}`}
             >
               Découvrir le livre
             </ActionButton>
           ) : (
             <ActionButton
-              className="text-link"
+              className="book-card-cta is-upcoming text-link"
               variant="secondary"
               size="small"
               disabled
+              title="Ce livre sera bientôt disponible dans la bibliothèque"
+              aria-label={`${book.title} — Bientôt disponible`}
             >
               Bientôt disponible
             </ActionButton>

@@ -9,6 +9,8 @@ type SharedProps = {
   className?: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
+  title?: string;
+  "aria-label"?: string;
 };
 
 type LinkProps = SharedProps & {
@@ -31,7 +33,13 @@ export function ActionButton(props: ActionButtonProps) {
 
   if (props.href !== undefined) {
     return (
-      <Link className={classes} href={props.href} onClick={props.onClick}>
+      <Link
+        className={classes}
+        href={props.href}
+        onClick={props.onClick}
+        title={props.title}
+        aria-label={props["aria-label"]}
+      >
         {props.children}
       </Link>
     );
@@ -43,6 +51,8 @@ export function ActionButton(props: ActionButtonProps) {
       type={props.type ?? "button"}
       onClick={props.onClick}
       disabled={props.disabled}
+      title={props.title}
+      aria-label={props["aria-label"]}
       aria-pressed={props["aria-pressed"]}
     >
       {props.children}
