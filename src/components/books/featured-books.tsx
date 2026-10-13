@@ -19,7 +19,7 @@ export async function FeaturedBooks() {
       </div>
       <BookGrid books={allBooks.slice(0, 8)} />
       <Reveal delay={120}>
-        <ActionButton href="/bibliotheque" variant="secondary" className="load-more">
+        <ActionButton href="/bibliotheque" variant="secondary" size="small" className="load-more">
           Explorer toute la bibliothèque
         </ActionButton>
       </Reveal>

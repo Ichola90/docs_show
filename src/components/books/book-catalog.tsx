@@ -231,7 +231,7 @@ export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } 
               {filteredBooks.length === 1 ? "livre disponible" : "livres disponibles"}
             </p>
             {(searchQuery || selectedCategories.length > 0 || selectedLevels.length > 0) && (
-              <ActionButton variant="quiet" size="small" onClick={resetFilters}>
+              <ActionButton variant="secondary" size="small" onClick={resetFilters}>
                 Tout effacer
               </ActionButton>
             )}
@@ -257,7 +257,7 @@ export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } 
                     Essayez un autre titre, un auteur ou une thématique, ou
                     réinitialisez les filtres.
                   </p>
-                  <ActionButton variant="quiet" size="small" onClick={resetFilters}>
+                  <ActionButton variant="primary" size="small" onClick={resetFilters}>
                     Réinitialiser la recherche
                   </ActionButton>
                 </div>

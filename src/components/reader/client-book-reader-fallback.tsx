@@ -91,7 +91,7 @@ export function ClientBookReaderFallback({ bookId }: { bookId: string }) {
         <p style={{ color: "#64748b", fontSize: "15px", lineHeight: "1.6", marginBottom: "28px" }}>
           Ce livre n’est pas disponible sur ce serveur ou sa publication vient tout juste d’avoir lieu.
         </p>
-        <ActionButton href="/bibliotheque">
+        <ActionButton href="/bibliotheque" size="small">
           Explorer la bibliothèque
         </ActionButton>
       </div>

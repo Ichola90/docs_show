@@ -1,5 +1,647 @@
 [
   {
+    "id": "ato-23-kh3jf",
+    "title": "ATO 23",
+    "subtitle": "Guide complet pour apprendre ATO 23",
+    "author": "Anonyme",
+    "category": "Systèmes & Bas niveau",
+    "level": "Débutant",
+    "duration": "~62 min",
+    "pages": "41 pages",
+    "rating": "Nouveau",
+    "reviewCount": 0,
+    "cover": "system",
+    "coverAccent": "#fef3c7",
+    "coverText": "ATO\n23",
+    "description": "Ce travail comporte deux volets : une étude conceptuelle des architectures génériques et des familles de processeurs, notamment les CPU, puis une étude applicative des technologies actuelles, axée sur Intel.",
+    "chapters": [
+      {
+        "title": "Introduction",
+        "part": "Systèmes & Bas niveau",
+        "pages": [
+          {
+            "number": 1,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE"
+              },
+              {
+                "type": "heading",
+                "text": "OBJECTIF DU COURS"
+              },
+              {
+                "type": "paragraph",
+                "text": "A l’issue de cette UE, les étudiants sont capables de ❖ Décrire l’organisation générale d'un ordinateur ❖ Expliquer le fonctionnement d'un microprocesseur ❖ Expliquer les mécanismes des échanges entre le processeur et la mémoire ❖ être en mesure de conseiller votre employeur ou vos clients sur le matériel informatique le plus approprié ❖ Décrire les principes de gestion des périphériques ❖ créer des processus dans un système"
+              },
+              {
+                "type": "heading",
+                "text": "PRESENTATION"
+              },
+              {
+                "type": "paragraph",
+                "text": "Cet enseignement, intitulé \"Architecture et technologie des ordinateurs\" est, comme son nom l'indique, découpé et pensé avec une double approche :"
+              },
+              {
+                "type": "heading",
+                "text": "1. Une première conceptuelle dans laquelle nous nous intéresserons aux"
+              },
+              {
+                "type": "paragraph",
+                "text": "architectures génériques des ordinateurs, ou plutôt aux grandes familles de processeurs numériques, notamment celles s’articulant autour de CPU"
+              },
+              {
+                "type": "heading",
+                "text": "2. Une seconde applicative sur des technologies existantes et actuelles. Pour"
+              },
+              {
+                "type": "paragraph",
+                "text": "les aspects matériels, notre choix s'est naturellement tourné vers les architectures Intel, leader incontesté des architectures compatibles"
+              }
+            ]
+          },
+          {
+            "number": 2,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE"
+              },
+              {
+                "type": "heading",
+                "text": "L’ARCHITECTURE MATERIELLE DE BASE D'UN ORDINATEUR"
+              },
+              {
+                "type": "paragraph",
+                "text": "Dans cette partie, nous décrivons rapidement l’architecture de base d’un ordinateur et les principes de son fonctionnement. Un ordinateur est une machine de traitement de l’information. Il est capable d’acquérir de l’information, de la stocker, de la transformer en effectuant des traitements quelconques, puis de la restituer sous une autre forme. Le mot “ informatique ” vient de la contraction des mots “ information ” et “ automatique ”. Nous appelons information tout ensemble de données. On distingue généralement différents types d’informations : textes, nombres, sons, images, etc., mais aussi les instructions composant un programme. Comme on l’a vu dans le cours de RIO, toute information est manipulée sous forme binaire (ou numérique) par l’ordinateur."
+              },
+              {
+                "type": "heading",
+                "text": "INTRODUCTION A L’ARCHITECTURE"
+              },
+              {
+                "type": "paragraph",
+                "text": "Le cours d’Architecture des Ordinateurs expose les principes de fonctionnement des ordinateurs. Il ne s’agit pas ici d’apprendre à programmer, mais de comprendre, à bas niveau, l’organisation de ces machines. Nous nous appuierons sur l’étude détaillée de l’architecture du PC, dont nous étudierons le processeur et son langage machine les fonctions de base de son système d’exploitation (BIOS), et ses mécanismes de communication avec l’extérieur (entrées/sorties). Nous aborderons aussi le fonctionnement de différents périphériques de l’ordinateur (écran, clavier, disques durs, CD-ROMs...), afin d’apprendre à les mettre en œuvre à bon escient, puis nous conclurons ce cours par un panorama des différentes architectures actuelles (processeurs CISC et RISC, stations de travail etc.). La compréhension du fonctionnement interne d'un ordinateur est indispensable pour le métier d'informaticien. Ce cours vise à donner une vision d'ensemble sur les éléments principaux qui composent les systèmes informatiques : le matériel (hardware), le logiciel système (système d'exploitation), la représentation des données, et les réseaux de communications."
+              }
+            ]
+          },
+          {
+            "number": 3,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Le but du cours est donc de familiariser les étudiants avec les notions de bases sur lesquelles repose la technologie des systèmes informatiques, et qui sont indispensables à la compréhension des cours plus avancés. Composants de base Les trois principaux constituants d’un ordinateur sont le processeur ou CPU (Central Processing Unit), la mémoire principale et les périphéries d’entrée sorties. La mémoire principale permet de stocker temporairement de l’information (programmes et données), tandis que le processeur exécute pas à pas les instructions composant les programmes. Quant aux périphéries d’entrée sorties, ils permettent les échanges entre l’intérieur et l’extérieur Architecture de von Neumann L’architecture, dite architecture de von Neumann décompose l’ordinateur en quatre parties distinctes : 1 Le processeur est composé d’une unité arithmétique et logique (UAL ou ALU en anglais) ou unité de traitement : son rôle est d’effectuer les opérations de base et d’une unité de contrôle, chargée du séquençage des opérations ; 2 La mémoire qui contient à la fois les données et le programme exécuté par l’unité de contrôle. La mémoire se divise entre mémoire volatile ou RAM (Random Access Memory) qui contient programmes et données en cours de traitement, et mémoire permanente ou ROM (Read Only Memory) qui stocke programmes et données de base de la machine ; 3 Les dispositifs d’entrée-sortie, qui permettent de communiquer avec le monde extérieur. Les différents composants sont reliés par des bus."
+              }
+            ]
+          },
+          {
+            "number": 4,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE L’architecture, dite architecture de von Neumann décompose l’ordinateur en quatre parties distinctes :"
+              },
+              {
+                "type": "heading",
+                "text": "LE BOITIER ET SES CONSTITUANTS"
+              },
+              {
+                "type": "paragraph",
+                "text": "1-Le bloc d’alimentation Bien sûr, on aura beau détenir tous les composants ci-dessous, rien ne fonctionnera sans le courant électrique délivré par l'alimentation. Elle transforme et fournit l'énergie nécessaire à la précieuse carte mère, sur laquelle est connectée un bon nombre d'éléments, mais l'alimentation est aussi directement reliée à certains composants tel que le lecteur/graveur"
+              }
+            ]
+          },
+          {
+            "number": 5,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE de DVD par exemple. La transformation du courant cause une déperdition d'énergie sous forme de chaleur, un système de ventilation est donc installé dans le coffret de l'alimentation et expulse l'air via l'arrière du boîtier de l'ordinateur. On peut acquérir une alimentation seule bien qu'elle soit très souvent fournie avec le boîtier du PC. Une capacité de 400 watts est généralement suffisante pour les ordinateurs en \"configuration bureautique\" même si certaines alimentations peuvent atteindre les 1000 watts pour des configurations exceptionnelles C'est un composant qui peut paraître assez peu excitant, et pourtant les amateurs de hardware savent bien à quel point l'alimentation est importante dans une configuration. Il faut s'assurer de bien la choisir pour qu'elle réponde à nos besoins, et privilégier la qualité gage d'une bonne durée de vie et d'économie d'énergie. NB : Elles sont parfois vendues intégrées avec le boîtier, attention cependant aux alimentations bas de gamme qui sont parfois proposées. Les caractéristiques essentielles : La puissance Exprimée en Watts, c'est la quantité d'énergie maximale que peut fournir l'alimentation aux composants. Il faut donc s'assurer qu'elle est capable de nourrir tout le monde selon les besoins de ces derniers, en lui laissant"
+              }
+            ]
+          },
+          {
+            "number": 6,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE un peu de marge pour qu'elle soit le plus efficace possible. Mais il n'est pas non plus utile de la sur-dimensionner, l'idéal se trouvant lorsqu'elle fonctionne entre 50-70% de sa capacité maximale (soit une alimentation de 400W pour des composants nécessitant 200 à 280W de puissance. Bien garder en tête que la puissance nécessaire est fortement dépendante de l'utilisation, rien à voir entre du surf pépère sur Internet et un jeu gourmand en ressources) Les connecteurs Bien entendu il faut s'assurer que l'alimentation dispose de tous les câbles nécessaires pour relier ses différents composants : généralement la carte mère qui distribuera le courant aux différents composants connectés dessus, les disques durs et SSD, les éventuels lecteurs optiques, et la carte graphique s'il s'agit d'un modèle gourmand ne se satisfaisant pas de l'alimentation via la carte mère. A noter qu'il existe des alimentations dites \"modulaires\", c'est à dire avec des câbles amovibles ce qui permet de ne brancher que ceux vraiment nécessaire, et ainsi éviter d'avoir un tas de câbles qui pendent dans le boîtier. Ce n'est pas qu'une question d'esthétique, car les flux d'air sont plus simples à gérer si tout est bien rangé dans la tour, le refroidissement est donc plus efficace. Les connecteurs permettent d'acheminer le courant électrique du bloc d'alimentation vers la carte mère. Le connecteur ATX 24 pins : C'est l'alimentation principale de la carte. Comme son nom l'indique, cette prise compte 24 broches qui permettent d'acheminer les différentes tensions d'alimentation vers la carte. En effet, tous les composants d'une carte mère ne fonctionnent pas à la même tension. C'est pourquoi l'alimentation délivre trois tensions différentes : +12V, +5V et +3,3V. Le connecteur CPU 4 pins : Ce connecteur de forme carrée compte seulement quatre broches. Il permet d'assurer l'alimentation électrique du processeur. Il délivre une tension de +12V 2- Le Disque Dur Le Disque Dur et le stockage des données Dans un PC, il faut stocker des données : Le système d'exploitation, les programmes, les textes, graphiques, images, photos, vidéos etc...Pour une utilisation classique, un seul disque suffit 120 à 250 Go. Le Disque dur est un matériel fragile et le système d'exploitation manque de fiabilité à"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Section 2",
+        "part": "Étape 02",
+        "pages": [
+          {
+            "number": 7,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE l'usage. Pour ces deux raisons, il est souhaitable par sécurité de stocker à part le système d'exploitation(Windows) et les programmes. Avec un seul disque dur, il faut partitionner en deux Zônes (disk C: et disk D:), le disque D: étant réservé aux données texte, image, graphique, photo, vidéo, etc... En cas de blocage du PC ou de crash de Windows, ou de virus, on peut reformater le disque C: et réinstaller Windows et les programmes sans toucher aux autres données sur D: Pour le montage vidéo, il est préférable d'avoir deux disques durs. Pour installer un deuxième disque, on a le choix entre le mettre en Esclave sur la nappe 1 du Disque C: ou le mettre en Maître sur la nappe 2, si le 2° connecteur de la nappe 1 est occupé. Le disque dur est : • Non volatil • Il est adressable • Il est de grande capacité • Réinscriptible • Inamovible. La capacité du disque dur se calcule selon la formule C = CS.NPF.NSP.NF, avec: • CS: capacité du secteur (512 octets). • NPF: nombre de piste par face. • NSP: nombre de secteur par secteur par piste. • NF: nombre de face 3- La disquette Une disquette est organisée en piste, chaque piste est divisée en secteur et les secteurs contiennent la même quantité d'information (512 octets). Une disquette est : • De faible capacité (1,44 Mo)"
+              }
+            ]
+          },
+          {
+            "number": 8,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE • Les disquettes sont amovibles. • Les disquettes sont adressables. • Les disquettes sont réinscriptibles. De façon générale les disquettes sont sensibles à l'humidité, au champ magnétique et à la chaleur. La capacité d'une disquette se calcule par la formule suivante : C=CS.NPF.NSP.NF, avec NF= 2faces et CS= 512 octets. Exemple de calcul : Nous pouvons calculer la capacité d'une disquette donc les caractéristiques sont les suivantes : 80 pistes par face, 18 secteurs par piste C = 80 x 18 x 2 x 512 C = 1474560 Octets = 1440 Ko = 1,4062 Mo 4- Le(s) lecteur(s) optique(s) - graveur(s) De moins en moins utile à l'heure des clés USB et autres cartes de stockage, mais ils restent cependant très courants sur les machines, surtout que leur faible coût incite à s'en équiper au moins \"au cas où\". Aujourd'hui, le lecteur de CD est Inutile, il vaut mieux installer un lecteur de DVD qui lit tout. 5-La carte mère Elle supporte le Microprocesseur et les composants qui l'assistent ainsi que les éléments de base du PC et la communication avec tous les périphériques. Une carte mère est prévue pour plusieurs modèles de"
+              }
+            ]
+          },
+          {
+            "number": 9,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Microprocesseur du même constructeur. Elle doit toujours être accompagnée de sa documentation (si possible en français) afin d'assurer et de vérifier la compatibilité des extensions futures. Véritable système nerveux d'un ordinateur, la carte mère est le point central sur lequel seront montés où branchés tous les autres composants. Fixée solidement au fond du boîtier, elle est visible de l'extérieur par son panneau d'entrées/sorties sur laquelle on viendra brancher écrans, appareils USB et autres périphériques. C’est aussi sur une petite partie de la carte mère que se trouve la ROM sur laquelle est enregistrée le BIOS, petit programme gérant la configuration \"de base\" du matériel et se chargeant de faire le lien avec votre système d'exploitation (Windows, Linux...). Ces réglages sont conservés en mémoire même en l'absence de courant grâce au CMOS, alimenté par la pile de carte mère Carte mère Les composants de la carte mère La partie matérielle d’une carte mère"
+              }
+            ]
+          },
+          {
+            "number": 10,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Le processeur Le processeur aussi a plusieurs noms, on parle de microprocesseur ou de CPU, de l'anglais Central Processing Unit. Son rôle est le traitement de l'information numérique et il ne communique qu'en chiffres binaires ou Bits, un langage composé d'une suite de 0 et de 1.Il fait ainsi les calculs nécessaires à l'exécution des programmes et instructions à une vitesse en"
+              },
+              {
+                "type": "heading",
+                "text": "partie déterminée par sa fréquence exprimée en Hertz ou plutôt, dans le"
+              },
+              {
+                "type": "paragraph",
+                "text": "cas des processeurs actuels, en Gigahertz (GHz). Toute cette agitation provoque une élévation de la température du processeur, en particulier lors du traitement d'une grosse masse d'informations. C'est pourquoi il est surmonté d'un ventilateur chargé de dissiper la chaleur et de le maintenir à la température la plus basse possible. Son rôle est fondamental : muni d'une unité entrée-sortie, il assure l'accès aux périphériques en gérant et en traitant les instructions qu'il reçoit. C'est en quelque sorte le « cerveau » de l'ordinateur. Pour effectuer ces opérations, le processeur sʼappuie sur une architecture en quatre éléments :  lʼunité de commande (control unit) ;  lʼunité arithmétique et logique ou ALU (arithmetic and logic unit) ;  les registres (register file) ;  une ou plusieurs antémémoires ou caches. La performance d'un processeur est définie par : • la fréquence (en MHz ou en GHz) : une grande fréquence traduit une meilleure performance. • la quantité de mémoire cache (1, 2 ou 3 niveaux) : il confère au PC sa rapidité et stocke les données demandées fréquemment au processeur. La différence entre ces trois types est moindre, le premier étant le meilleur. • le nombre de noyaux de calcul ou core : le Dual Core (2 processeurs en 1) double la performance sans augmenter la fréquence. Le modèle récent Core 2 Duo est meilleur en performance que le Dual Core à cause de l'efficacité du cycle observée à basse fréquence. Le modèle à 4 cœurs sont également disponibles avec « core 2 quad » chez Intel et « Phenom » chez"
+              },
+              {
+                "type": "heading",
+                "text": "AMD."
+              },
+              {
+                "type": "paragraph",
+                "text": "• la finesse de gravure (entre 90nm et 65nm) : plus elle est faible, plus élevée sera la fréquence. Un processeur Intel Core 2 Duo à 2,12 GHz est plus performant qu'un Intel Pentium EE à 3,73 GHz en raison du parallélisme observé chez le premier. Pour des tâches spécifiques telles que le traitement audiovisuel ou une utilisation 3D, le processeur Intel SSE 3 ou Intel SSE 4 ou AMD SSE 2, SSE3 ou 3D accélère l'encodage vidéo."
+              }
+            ]
+          },
+          {
+            "number": 11,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Les caractéristiques essentielles : Les marques Dans le monde des processeurs la concurrence fait rage, mais entre deux acteurs uniquement, Intel et AMD. Je ne ferais pas la promotion de l'un ou de l'autre, ce n'est pas le but de cet article, le mieux est de regarder objectivement ce que tu peux t'offrir de mieux selon ton budget et tes besoins. Le type de socket Je t'en ai parlé au niveau de la carte mère, c'est simplement le format du processeur qui doit correspondre à celui de la carte mère. Il diffère selon la marque, et selon la génération du processeur. Le nombre de cœur et la fréquence Ce sont les paramètres que vont mettre en avant les constructeurs, te vantant les mérites de leur Quad-Core à 3.2 GHz.Un \"cœur\" est un quelques sortes une unité de calcul, le fait d'en avoir plusieurs permettant d'effectuer plusieurs actions en même temps. Les processeurs étaient autrefois équipés d'un cœur unique, mais aujourd'hui les plus courants en comportent 2 ou 4 (les fameux Dual-Core et Quad-Core), mais on trouve des processeurs en possédant davantage. Processeurs multi-cores Les processeurs multi-cores représentent la nouvelle génération de microprocesseurs. Ils sont des dotés d'au moins deux cœurs disposés sur un même die. Cette nouvelle technologie permet de concevoir des ordinateurs plus puissants et plus rapides. Un processeur multi-cores ou multi-cœur est un processeur ayant deux ou plusieurs noyaux indépendants. Ces noyaux ou cœurs sont les unités de calculs situés au cœur de tout processeur. C'est en 2005 que sont arrivés les premiers processeurs bi-cœurs conçus par AMD et Intel. Ces premiers exemplaires comprenaient deux cœurs identiques. Les contraintes physiques (principalement la finesse de gravure) ont mis un terme à la course au mégahertz que se disputent depuis des années les fabricants de processeurs. Ces derniers ont donc dû trouver de nouvelles"
+              }
+            ]
+          },
+          {
+            "number": 12,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE astuces pour offrir à leurs clients des processeurs toujours plus performants : le Multicore est né.Il s'agit en fait de regrouper 2, 4 ou 6 cœurs au sein d'un seul processeur ; ainsi, les performances sont améliorées car votre système d'exploitation a à sa disposition plusieurs processeurs pour travailler.Exécuter plusieurs tâches n'implique pas de ralentissement. Les logiciels fonctionnant en tâches de fond (antivirus, messagerie instantanée, ...) ne gênent pas l'utilisation de logiciels de retouche photo ou navigateur web. Les derniers processeurs Intel et AMD sont les suivants : • Intel Core i3 (2 cœurs) • Intel Core i5 (2 et 4 cœurs) • Intel Core i7 (4 cœurs) • AMD Phenom II X2 (2 cœurs) • AMD Phenom II X4 (4 cœurs) Principe du multi-cores Un microprocesseur encore appelé CPU comprend différentes entités parmi lesquelles le core. Ce dernier se trouve à un endroit du processeur qu'on appelle, en terme technique, die. Le core ou cœur est l'élément le plus important du processeur. Il comprend entre autres les blocs de mémoire cache, les unités de calculs, les schedulers. Le principe des processeurs multi-cores consiste à réunir sur un même die deux à plusieurs processeurs. Bien avant l'arrivée des premiers processeurs double-cœurs, certains ordinateurs étaient déjà équipés de plusieurs CPU. Seulement, ces CPU ne se trouvaient pas sur le même die. Les processeurs multi-cores sont donc une innovation de taille. La technologie qui a permis d'y arriver présente plus d'avantages. Pour commencer, les cartes mères équipées de tels processeurs reviennent moins cher aux fabricants. En outre, les cores peuvent communiquer plus vite parce qu'ils sont sur le même die, ce qui permet d'accroitre la vitesse du microprocesseur. Avantages de la technologie La course à la puissance a d'abord emmené les constructeurs à concevoir des ordinateurs équipés de plusieurs processeurs. De tels ordinateurs utilisaient le multitraitement asymétrique (SMP) pour effectuer plus rapidement les différentes tâches. Cependant, cette technologie obligeait les fabricants à trouver des solutions pour mieux refroidir les PC. En outre, la demande en ordinateur de petite taille se faisait de plus en plus pressante. Les processeurs multi-cores permettent aujourd'hui de résoudre ces problèmes et de concevoir des ordinateurs plus petits à la"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "LA MEMOIRE RAM",
+        "part": "Étape 03",
+        "pages": [
+          {
+            "number": 13,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE grande satisfaction des professionnels. Par ailleurs, la nouvelle technologie a permis d'augmenter la puissance des ordinateurs ainsi que leurs performances. On peut ainsi effectuer les tâches plus rapidement et exécuter simultanément plusieurs programmes complexes. La technologie multi-core permet de mieux faire face aux nouvelles demandes du monde numérique. Ces demandes concernent entre autres les simulations 3D complexes et la gestion de base de données volumineuses et de fichiers multimédias en continu. Les processeurs multi-core permettent aussi d'offrir des interfaces utilisateurs plus sophistiquées et plus sécurisées. Par ailleurs, ils permettent aux ordinateurs de fonctionner pleinement en multitâches. Les limites de la technologie Les processeurs multi-cores peuvent causer quelques désagréments. En effet, beaucoup d'anciens programmes n'ont pas été élaborés pour fonctionner avec des processeurs à plusieurs cœurs. Ces programmes, qui ne peuvent pas exploiter toute la puissance du processeur, utilisent seulement l'un des cœurs. Ce fonctionnement induit une baisse de performance des applications en question. Pour que les utilisateurs puissent vraiment profiter des processeurs multi-cores, il faut qu'il y ait plus de logiciels conçus pour fonctionner avec l'architecture de ces processeurs. Pour le moment, les applications du GNU/Linux, conçus pour fonctionner sous plusieurs architectures, sont celles qui peuvent tirer le meilleur profit de cette technologie."
+              },
+              {
+                "type": "heading",
+                "text": "LA MEMOIRE RAM"
+              },
+              {
+                "type": "paragraph",
+                "text": "RAM (Random Access Memory) : mémoire à accès aléatoire, c'est une mémoire vive, c'est-à-dire une mémoire à lecture et écriture. La mémoire RAM est caractérisée par une faible capacité (par rapport au disque dur), c'est une mémoire volatile (mémoire qui perd l'information à l'absence du courant). On distingue deux types de RAM : les RAM statiques (SRAM) et les RAM dynamiques (DRAM) Le plus petite quantité d'information qu'on peut lire ou écrire en mémoire centrale est un octet."
+              }
+            ]
+          },
+          {
+            "number": 14,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Barrette mémoire Pourquoi alors utiliser de la mémoire vive alors que les disques durs reviennent moins chers à capacité égale ? · La réponse est que la mémoire vive est extrêmement rapide par comparaison aux périphériques de stockage de masse tels que le disque dur. · Elle possède un temps de réponse de l'ordre de quelques dizaines de nanosecondes (environ, 10 pour la SDRAM voire 6 ns sur les SDRam DDR) contre quelques millisecondes pour le disque dur. La mémoire vive se présente sous la forme de barrettes qui se branchent sur les connecteurs de la carte mère En résumé, elle - permet de stocker des informations pendant tout le temps de fonctionnement de l’ordinateur. Elle contient le système d’exploitation, les logiciels et les documents en cours de traitement. - est détruite dès que l’ordinateur est éteint, à l’opposé des mémoires de stockage comme le disque dur - Sa taille est de plus en plus importante (dépasse le Gb) - La mémoire vive est présente sous formes de barrettes implantées sur la carte mère de l’ordinateur. Les connecteurs d’extension Les connecteurs d'extension (en anglais slots) sont des réceptacles dans lesquels il est possible d'insérer des cartes d'extension, c'est-à-dire des cartes offrant de nouvelles fonctionnalités ou de meilleures performances à l'ordinateur"
+              }
+            ]
+          },
+          {
+            "number": 15,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE L’horloge et la pile du CMOS L'horloge temps réel (notée RTC, pour Real Time Clock) est un circuit chargé de la synchronisation des signaux du système. Elle est constituée d'un cristal qui, en vibrant, donne des impulsions (appelés tops d'horloge) afin de cadencer le système. On appelle fréquence de l'horloge (exprimée en MHz) le nombre de vibrations du cristal par seconde, c'est-à-dire le nombre de tops d'horloge émis par seconde. Plus la fréquence est élevée, plus le système peut traiter d'informations. Lorsque l'ordinateur est mis hors tension, l'alimentation cesse de fournir du courant à la carte mère. Or, lorsque l'ordinateur est rebranché, le système est toujours à l'heure. Un circuit électronique, appelé CMOS (Complementary Metal-Oxyde Semiconductor), conserve en effet certaines informations sur le système, telles que l'heure, la date système et quelques paramètres essentiels du système. Lorsque l'heure du système est régulièrement réinitialisée, ou que l'horloge prend du retard, il suffit généralement d'en changer la pile ! Les connecteurs d’entrée-sortie La carte mère possède un certain nombre de connecteurs d'entrées-sorties regroupés sur le « panneau arrière>> Chipset Le chipset est la puce principale intégrée dans une carte mère. Cela ressemble à un processeur mais contrairement à ce dernier, il est intégré et non connecté, c’est pourquoi on ne peut enlever le Chipset de la carte mère. Le chipset gère les échanges de données par exemple entre le processeur et la mémoire centrale ou encore c'est lui qui gère les ports. Plusieurs constructeurs se partageant ce marché. C'est le chipset qui dicte les caractéristiques principales de la carte mère, comme le type de processeur ou de mémoire insérables ou bien encore les ports d'extensions intégrables. Le chipset est composé généralement de deux puces distinctes : le NorthBridge et le SouthBridge. Ce circuit a pour rôle principal de contrôler les composants que le processeur ne peut pas contrôler lui-même. Toutefois, il a tendance à disparaître (fin des années 2010) car il est directement intégré aux processeurs modernes."
+              }
+            ]
+          },
+          {
+            "number": 16,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Les connecteurs électriques Ces connecteurs permettent d'acheminer le courant électrique du bloc d'alimentation vers la carte mère. Chaque carte en compte deux : Le connecteur 24 pins de type ATX : c'est l'alimentation principale de la carte. Comme son nom l'indique, cette prise compte 24 broches qui permettent d'acheminer les différentes tensions d'alimentation vers la carte. En effet, tous les composants d'une carte mère ne fonctionnent pas à la même tension électrique. C'est pourquoi l'alimentation délivre trois tensions différentes : +12 V, +5 V et +3,3 V.Le connecteur 4 ou 8 pins pour CPU : ce connecteur de forme carrée compte seulement quatre ou huit broches. Il permet d'assurer l'alimentation électrique du processeur. Il délivre une tension de"
+              },
+              {
+                "type": "heading",
+                "text": "+12 V"
+              },
+              {
+                "type": "paragraph",
+                "text": "Les slots d'extension Situés vers le bas de la carte mère, ces gros connecteurs servent à connecter les cartes d'extension sur la carte mère, afin de lui rajouter de nouvelles fonctionnalités. On retrouve plusieurs types d'interfaces permettant de connecter des cartes d'extension : Le bus ISA (Industry Standard Architecture) : créé à la base par IBM, ce fut le tout premier bus informatique interne utilisé pour la connexion de cartes d'extension. Il a disparu des cartes mères depuis les années 1994 au profit d'un bus plus compact (d'un point de vue physique) et aussi plus rapide : le"
+              },
+              {
+                "type": "heading",
+                "text": "PCI."
+              },
+              {
+                "type": "paragraph",
+                "text": "Le bus PCI (Peripheral Component Interconnect) : apparu en 1994, c'est le descendant du bus ISA. Il est toujours présent aujourd'hui (années 2010) mais dans une version plus rapide et compacte : le bus PCI Express Le bus AGP (Accelerated Graphics Port) : lancé en 1997 par Intel, c'était un bus réservé aux cartes graphiques, créé afin de s'affranchir du bus PCI que le fondeur jugeait trop lent pour l'affichage en 3D temps réel. Il n'est aujourd'hui plus présent sur nos cartes mères car il a été remplacé par le bus PCI Express, plus rapide et plus apte à supporter les cartes graphiques (bien qu'il soit aussi capable de supporter d'autres types de cartes). Les connecteurs de stockage Les connecteurs de stockage sont des connecteurs spécifiques présents sur toutes les cartes mères, permettant de lui adjoindre des périphériques de stockage de masse (disque dur, lecteur de disque optique, disque SSD). On en trouve trois types :"
+              }
+            ]
+          },
+          {
+            "number": 17,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE • Le connecteur Floppy : le connecteur Floppy permet de connecter un lecteur de disquettes à la carte mère. C'est une interface assez ancienne que l'on ne trouve plus sur les cartes mères depuis la fin des années 2010 (les clés USB ont eu beaucoup de succès). Néanmoins, il existe des lecteurs de disquettes qui peuvent se raccorder à l'ordinateur en USB. • Les connecteurs IDE (aussi apellé PATA pour Parallel ATA): ces connecteurs, qui sont plus longs que les connecteurs floppy (même s'ils leur ressemblent au premier abord), permettent de connecter deux types de périphériques : les disques durs IDE et les lecteurs/graveurs de disques optiques à connectique IDE. Cette interface créée en 1986 a été remplacée par le SATA, plus petit et plus rapide. • Les connecteurs SATA (pour Serial ATA) : ces connecteurs permettent de connecter trois types de périphériques : les disques durs SATA, les SSD et les lecteurs-graveurs de disques optiques DVD et Blu-Ray. Cette interface créé en 2003 est actuellement en version trois. • Les connecteurs M.2: amélioration du connecteur mSATA, ces connecteurs sont destinés à accueillir des cartes filles de type : disques de stockage SSD / WIFI / Bluetooth, etc Les bus Un bus est un mécanisme qui permet le transfert de données entre éléments dans l’ordinateur Le bus système ou bus processeur : Il constitue le canal de communication entre le processeur et les autres composants. Il est appelé ainsi car les performances générales de tout système dépendent de la vélocité de ce bus Le bus mémoire : Il assure le transfert des données entre le processeur et la mémoire vive (RAM). Le taux de transfert des informations qui par le bus mémoire est inférieur à celui des informations véhiculées par le bus système, ce qui nécessite la mise en place d’un contrôleur mémoire chargé de vérifier l’interface entre le bus système le plus rapide et la RAM la plus lente."
+              }
+            ]
+          },
+          {
+            "number": 18,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Le bus d’adresses et le bus de commandes : Ils sont des sous-ensembles des bus système et bus mémoire. Ces derniers sont constitués de différentes lignes spécialisées, certaines d’entre elles chargées de véhiculer des adresses, d’autres des données ou des commandes. Les lignes d’adresses constituent le bus d’adresse, les lignes de commandes déterminent le bus de commandes. -Le bus d’adresses indique l’adresse mémoire ou l’adresse d’un autre bus utilisée lors d’un transfert de données au sein de l’ordinateur. -Le bus de commandes véhicule tous les signaux utilisés pour synchroniser les différentes activités qui se déroulent dans les unités fonctionnelles de l’ordinateur. Le bus E/S ou bus de données : Il est comme les bus d’adresses et de commandes un sous ensemble des bus système et mémoire, il assure la transmission des données à traiter entre les différents éléments de l’ordinateur. La partie logicielle d’une carte mère Le software est avant tout un ensemble de différentes couches logicielles. Un ordinateur, en effet, ne « comprend » que des 0 et des 1. Ce langage binaire correspond aux états électriques éteint ou allumé qui, combinés ensemble, permettent à terme d’utiliser des programmes sophistiqués et de stocker des données. Afin qu’un humain puisse toutefois communiquer avec l’ordinateur, il a fallu s’abstraire par degré des données simplement binaires. Pour l’essentiel et sans rentrer dans les détails de tout le travail de programmation, quelles sont ces degrés ? • Le BIOS (Basic Input/Output System), en français « Système de gestion élémentaire des entrées/sorties », est un programme exécuté au démarrage du système. Stocké dans une mémoire ROM (Read-Only Memory) qui ne s’efface pas lorsque l’ordinateur s’éteint, il permet de vérifier et d’initialiser les différents composants de ce dernier avant de lancer le système d’exploitation."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "CD-RW.",
+        "part": "Étape 04",
+        "pages": [
+          {
+            "number": 19,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE • ROM (Read Only Memory) ou mémoire morte, est une mémoire à lecture seulement. Cette mémoire contient les données enregistrées qui ne peuvent pas être modifiées par l'utilisateur, exemple de données : les systèmes d'exploitation, les logiciels d'applications, les informations concernant la machines. Parmi les mémoires ROM on distingue : o Les PROM (Program Read Only Memory), les PROM autorisent l'écriture des données mais ne peuvent pas être effacées ou reprogrammées, exemple de PROM: CR-ROM. o EPROM (Erasable Programmable Read Only Memory), ce sont des ROM qui peuvent être effacées et reprogrammées, exemple d’EPROM:"
+              },
+              {
+                "type": "heading",
+                "text": "CD-RW."
+              },
+              {
+                "type": "paragraph",
+                "text": "• Le système d’exploitation (ou OS pour « Operating System ») : c’est le programme principal de l’ordinateur. Il sert d’intermédiaire entre le matériel et les logiciels applicatifs et interagit avec les périphériques par le biais de programmes spécifiques appelés « pilotes ». Il fournit d’autre part une interface adaptée à une utilisation simple des fonctionnalités de l’ordinateur. Les OS les plus connus sont MS Windows, Apple Mac OS et Linux. • Les logiciels applicatifs, ou applications : ce sont tous les programmes, payants ou gratuits, exécutés par l’utilisateur pour l’aider à accomplir certaines tâches telles que naviguer sur internet, lire ses e-mails, dessiner, taper du courrier, écouter de la musique, etc."
+              },
+              {
+                "type": "heading",
+                "text": "LES PERIPHERIQUES D’ENTREES SORTIES"
+              },
+              {
+                "type": "paragraph",
+                "text": "Ce sont les éléments matériels du système informatique qui n'appartiennent ni à la mémoire centrale ni à l'unité de traitement. Les périphériques sont organisés en trois groupes : périphérique d'entrée, de sortie et d'entrée-sortie. Chaque périphérique possède des caractéristiques essentielles dédiées à un travail spécifique. Parmi les composants d'un ordinateur, on distingue les périphériques de sortie (moniteur, imprimante, haut-parleurs, graveur de CD), des périphériques d'entrée (clavier, souris, lecteur de CD/DVD Rom, scanner, micro, webcam, manette de jeu, appareil photo et caméscope numériques). Il"
+              }
+            ]
+          },
+          {
+            "number": 20,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE existe un cas particulier : le modem qui est un périphérique de sortie si l'on envoie des informations vers Internet et un périphérique d'entrée si l'on reçoit des informations d'Internet. Chaque composant joue un rôle bien précis : le microprocesseur reçoit et transmet des informations ; le disque dur stocke les informations ; les périphériques d'entrée analysent les informations fournies et les transmettent au microprocesseur ; les périphériques de sortie (imprimante, haut-parleurs, graveur) traduisent les informations reçues par les périphériques d'entrée, puis transmises au microprocesseur. Cycle de travail d'un ordinateur Le cycle de travail d'un ordinateur est le suivant :"
+              },
+              {
+                "type": "heading",
+                "text": "1. La collecte de l'information"
+              }
+            ]
+          },
+          {
+            "number": 21,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE"
+              },
+              {
+                "type": "heading",
+                "text": "2. Stockage des informations"
+              },
+              {
+                "type": "heading",
+                "text": "3. Traitement des informations e restitution des informations."
+              },
+              {
+                "type": "paragraph",
+                "text": "• Les éléments qui permettent d'effectuer le stockage sont appelés unité de stockage ou mémoire. • L'élément qui permet d'effectuer le traitement est appelé unité central de traitement (CPU : Central Processing Unit) • Les éléments qui permettent de restituer les informations sont appelés unités de sortie. • Le cycle de travail d'un ordinateur nous permet de ressortir l'architecture simplifiée suivante : Resumé Les ordinateurs de bureau les plus répandus sont constitués d’une carte mère qui constitue l’élément central sur lequel on vient brancher les éléments périphériques. La carte mère comporte toujours les éléments suivants : • Un support pour placer le processeur • Un ou plusieurs circuits électroniques appelés Chipset • Une mémoire non volatile contenant un programme important appelé BIOS • Des supports pour placer la mémoire centrale (RAM) • Des connecteurs pour placer les cartes d’extension (PCI) • Un bus permettant d’interconnecter le processeur avec le reste des éléments • Un (ou +) connecteur pour brancher les disques durs et les lecteurs de"
+              },
+              {
+                "type": "heading",
+                "text": "CD /DVD (IDE/SATA)"
+              },
+              {
+                "type": "paragraph",
+                "text": "• Une horloge temps réel et sa pile"
+              }
+            ]
+          },
+          {
+            "number": 22,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE • Plusieurs connecteurs pour brancher les éléments externes comme l’écran, le clavier, la souris, l’imprimante, les hauts parleurs . . . Mémoire Morte ou ROM L'utilisateur ne peut que lire le contenu de cette mémoire. Elle est inscrite par le constructeur au moment de la fabrication selon les spécifications du client. On utilise ce genre de mémoire quand l'information qu'on y enregistre est une information figée qui n'est pas susceptible de subir un changement, comme par exemple les valeurs de la fonction sinus pour les angles compris entre 0 et 90°. Le gros avantage des mémoires ROM est de conserver leur contenu après une coupure d'alimentation, elle fait partie des mémoires non volatiles. En résumé C’est une mémoire où l’on peut lire uniquement. Elle est non volatile qui sont utilisées pour y implanter des programmes de bases très courtes (ex : le BIOS de l’ordinateur : celui-ci s’active lors de la mise en marche de l’ordinateur et permet au processeur de découvrir son environnement) Cette mémoire vive, au temps d'accès rapide, sert de tampon entre le processeur et la mémoire vive dynamique. Le processeur (et seulement lui) y stocke les informations qu'il utilise le plus souvent, ce qui réduit les temps d'attente. Notons que plus le processeur est rapide, plus la mémoire cache est indispensable, sans quoi le processeur est sous-exploité. Le port USB : le port universel des ordinateurs. Il permet de brancher aussi bien des claviers, imprimantes, caméras, remplaçant les ports parallèles, séries mais aussi les ports clavier et souris. Il a une facilité d’utilisation puisqu’il supporte le « Hot Plug and Play » : un périphérique peut être relié au PC à tout moment et surtout pendant le fonctionnement avec une configuration automatique, sans demander le redémarrage de la machine. USB 1.1: permet de connecter à un micro-ordinateur jusqu’à 127 périphérique pour un haut débit"
+              }
+            ]
+          },
+          {
+            "number": 23,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE USB 2.0: permet de relier des disques durs externes, imprimantes, scanners et autres lecteurs à des vitesses frôlant les 480Mbits/s. Cette vitesse est possible grâce à la réduction du voltage des signaux transmis dans les câbles USB 3.0 5gb/s 10 fois plus rapide qu’USB 2.0 -le FireWire : destiné aux applications les plus lourdes comme l’audio ou le montage vidéo car il possède un bande passante bien supérieure. Proche de l’USB. -le port MIDI : Son utilisation est faite pour connecter des instruments de musiques numériques. On a étendu la norme aux ordinateurs personnels et plusieurs cartes son sont conformes à cette norme. Les périphériques de stockage : élément essentiel dans la configuration d’un ordinateur. Un support de stockage stocke l’information. Le périphérique de stockage : le composant matériel qui peut écrire ou lire l’information sur le support de stockage. On a deux technologies de stockage : Le stockage magnétique : disquette, disque dur, bande magnétique Le stockage optique : CD-ROM, DVD-ROM, CD inscriptible, CD réinscriptible, le CD photo Le stockage magnétique"
+              },
+              {
+                "type": "heading",
+                "text": "LE DISQUE DUR"
+              },
+              {
+                "type": "paragraph",
+                "text": "Généralités Le disque dur est la partie vitale de l’ordinateur où sont enregistrées les informations. Une part minime est réservée au fonctionnement interne de l’ordinateur, le reste est laissé à la disposition des utilisateurs. La destruction du disque entraîne la perte irrémédiable des données si elles n’ont pas été sauvegardées ailleurs. Le disque dur, appelé aussi DD ou HD est la principale unité de stockage de votre ordinateur. C'est là que sont sauvegardées vos données, vos programmes et le système Windows qui font fonctionner votre ordinateur (tout comme un cerveau humain).La capacité des disques durs est exprimée en Giga Octet (Go)."
+              }
+            ]
+          },
+          {
+            "number": 24,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Un disque dur est organisé en plusieurs milliers de blocs qui stockent les informations. Pour avoir accès rapidement aux blocs contenants les informations désirées, Windows se réfère à une table des matières(FAT) située à la périphérie du disque. Il est possible de diviser virtuellement un disque dur en plusieurs parties afin de stocker dans chacune de ces parties des informations que l'on ne désire pas mélanger. On parle de partitions, et chacune des partitions se voit attribuer une lettre. La partition principale d'un disque est toujours appelée C. La norme de connexion des disques durs est l'IDE, mais est en train de passer au SATA. L'IDE permet de connecter jusqu'à 4 lecteurs différents sur une carte mère (par exemple 2 disques dur, 1 DVD et 1 Graveur). Plus si votre carte mère est équipée d'une carte contrôleur RAID, ce qui vous permet de rajouter de deux à quatre périphériques IDE. Le débit de l'IDE est de 133 Moctets par seconde alors que celui du S-ATA est de 150 Moctets par seconde. Il existe d'autres normes de disques durs comme le SCSI, plus rapides mais également plus chers qui nécessitent une carte SCSI supplémentaire ou une carte mère équipée SCSI. Un changement ou un ajout de disque dur n'est pas une opération complexe. Il peut y avoir quelques incompatibilités entre les anciens PC et les disques durs vendus actuellement. Afin de proposer une capacité nettement accrue, un certain nombre de points ont étés revus. En premier lieu, le disque est hermétiquement fermé dans le but d'empêcher toutes saletés de gêner la lecture. Ensuite, les plateaux sont rigides. Un cache est souvent intégré afin d'augmenter les performances générales du disque. L'offre actuelle diffère sur différents points : ▪ la capacité totale du disque, ▪ l'interface (IDE, SCSI, ...), ▪ le format,"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Section 5",
+        "part": "Étape 05",
+        "pages": [
+          {
+            "number": 25,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE ▪ les performances. Le disque dur est l'organe servant à conserver les données de manière permanente, contrairement à la mémoire vive, qui s'efface à chaque redémarrage de l'ordinateur. Les points importants à vérifier lors de l’achat d’un disque dur sont : Capacité : volume de données pouvant être stockées sur le disque. Vitesse de rotation : vitesse à laquelle les plateaux tournent, exprimée en tours par minutes (notés rpm pour rotations par minute). La vitesse des disques durs est de l'ordre de 7200 à 15000 rpm. Plus la vitesse de rotation d'un disque est élevée meilleur est le débit du disque. En revanche, un disque possédant une vitesse de rotation élevée est généralement plus bruyante et chauffe plus facilement. Interface : il s'agit de la connectique du disque dur. Les principales interfaces pour disques durs sont les suivantes : IDE/ATA l'interface IDE (Integrated Device Equipement) est devenue le standard en vigueur (1997) dans la gestion des disques durs sur les PCs. Cette interface utilise un câble de 40 fils pour gérer deux disques, il faut toutefois veiller à configurer un disque en maître et le deuxième en esclave pour ne pas avoir de conflit d'adresse. Les disques IDE sont munis de jumpers prévus à cet effet. Les disques durs sont caractérisés par leur capacité et par leur temps d'accès. De nos jours, le temps d'accès varie entre 8 ms et 13 ms. La capacité des disques couramment livrés sur les machines grand public comme les PCs varie entre 1 Go et 20 Go. La capacité d'un disque dur se calcule de la même façon qu'une disquette sauf qu'ici on parle de cylindre au lieu de piste, (NC = nombre de cylindres) Capacité = NC x NS x CS x NT Un disque qui a 10 plateaux (20 surfaces = 20 têtes) subdivisés en 2000 cylindres de 100 secteurs (de 512 octets) chacun a une capacité de 2000 x 100 x 0.5k x 20 = 2 Go."
+              }
+            ]
+          },
+          {
+            "number": 26,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE En fin le disque dur conserve les données de manière permanente, contrairement au RAM qui s’efface à chaque redémarrage de l’ordinateur. Il est constitué de plusieurs disques empilés qui tournent autour d’un axe. La lecture et l’écriture se font grâce à des têtes situées de part et d’autre de chacun des plateaux. Les têtes inscrivent les données à la périphérie du disque puis avancent vers le centre. Les données sont organisées en cercles concentriques appelés pistes. Un Cluster est la zone minimale que peut occuper un fichier sur le disque. L’entretien du disque se fait par un défragmenteur de disque. Les disquettes Pour les disquettes, on utilise un disque souple comme support pour la couche magnétique. Lors du formatage, la surface du disque est partagée en plusieurs pistes concentriques. Chaque piste est subdivisée en plusieurs secteurs. Les formats de disquettes utilisés de nos jours (1997) sont les 5\"¼ et 3\"½ et c'est le 3\"½ qui s'impose largement avec une capacité après formatage de 1.44 Mo. Le lecteur de disquettes de se compose de 4 éléments : - Le moteur de rotation du disque - Deux tête de lecture écriture combinées, une pour chaque face. - Un moteur de translation des têtes. - L'électronique de contrôle. Le moteur de rotation ne fonctionne qu'au moment de l'accès à la disquette. La vitesse de rotation est de 300 tr/mn pour les disquettes 3\" ½. Les têtes de lectures sont posées sur la surface de la disquette. Elles peuvent effectuer un déplacement radial et atteindre ainsi toutes les pistes des disquettes. Le stockage optique Le cédérom (CD-ROM) : c’est un disque optique permettant de stocker des informations numériques d’environ 650Mo voire 700 Mo de données informatiques. Son lecteur se caractérise par sa vitesse, son temps d’accès et son type. Dans le commerce le CD sert pour les albums musicaux, que vous lisez sur votre autoradio, votre chaîne Hi-Fi, mais a aussi servi pour les logiciels informatiques et jeux vidéo. Un CD est capable de stocker une vingtaine de musique au format audio"
+              }
+            ]
+          },
+          {
+            "number": 27,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Le CD, Compact disc, une galette de 12 cm de diamètre et quelques millimètres d'épaisseur. Il y a différents types de CD-ROM"
+              },
+              {
+                "type": "heading",
+                "text": "- CD-DA"
+              },
+              {
+                "type": "paragraph",
+                "text": "- CD-ROM : disque non modifiable qui permet de stocker 700Mo - CD-R : version inscriptible du CD-ROM - CD-RW : version réinscriptible du CD-R - Le DVD-ROM : c’est une variante du CD-ROM dont la capacité est beaucoup plus grande que celle du CD-ROM. Il y a différents types de DVD : - DVD : DVD classique avec un format commun à tous les systèmes d’exploitation : l’UDF (Universal disk format). Il n’est pas modifiable. - DVD-RAM : C’est le premier DVD réinscriptible. On peut y inscrire des informations mais aussi les modifier. Mais il est incompatible avec les lecteurs DVD classique. - DVD-R: DVD inscriptibles. Les lecteurs DVD de salon les tolère - DVD-RW: c’est la version réinscriptible du DVD-R. Ils ont la même capacité que le DVD-R et tolérés par les lecteurs de salon. Mais leur réflectivité est moins importante que les versions inscriptibles une seule fois - DVD+R et DVD+RW: ils ont la meilleure qualité et le positionnement plus précis de la tête de lecture. Il est important de mettre en avant les caractéristiques propres au CD-DVD : Chaque famille existe sous trois types différents : - Non inscriptible (-ROM) - Gravure unique (-R) - Gravures multiples (-RW et –RAM) L’avenir des CD et DVD passe par le Blue ray (CD qui emploie une lumière bleue et augmente la précision pour stocker une plus grande information) et par le HD-DVD. Les périphériques d’affichage"
+              }
+            ]
+          },
+          {
+            "number": 28,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE La carte graphique : A la base, elle affichait des lignes de textes sur l’écran. Aujourd’hui, la carte graphique possède un processeur puissant et des mémoires. La quantité de mémoire est directement proportionnelle au nombre de pixels et de couleurs qu’elle peut afficher simultanément. La carte graphique est destinée à convertir les données numériques traitées par l’ordinateur en un signal analogique interprétable par l’écran. L’image que la carte doit afficher est traitée par un processeur graphique et stockée dans la mémoire de la carte. Un composant appelé RAMDAC lit l’information présente dans la mémoire et la convertit en tension électrique variable envoyée à l’écran. La carte graphique est un composant qui se branche sur la carte mère à l’aide d’un connecteur qui permet de relier la carte graphique au processeur et à la mémoire centrale de l’ordinateur. Elle a les composants suivants : - le processeur graphique (GPU) : processeur central de la carte graphique dont dépendent les performances de la carte - le RAMDAC : il convertit les signaux délivrés par la carte en signaux analogiques compatibles avec les prises VGA pour l’affichage de l’écran. Plus le RAMDAC d’une carte graphique est grand, plus le rafraîchissement et la résolution de l’image seront élevés. - la Mémoire : le GPU et le RAMDAC nécessitent un accès permanent à la mémoire vive. C’est la raison pour laquelle ils intègrent leur propre mémoire pour stocker l’information graphique et accélérer l’accès. - les connecteurs physiques (connecteurs entrées-sorties) : trois types de connecteurs principaux peuvent équiper une carte graphique : SVGA : relie la carte graphique à un écran à tubes cathodiques DVI : relie la carte graphique à un écran plat numérique. L’affichage numérique est de meilleure qualité. S-Vidéo : permet de visionner des DVD-vidéo sur des téléviseurs équipés de ce type de prise. Les connecteurs AGP ou PCI la compatibilité avec les API : les"
+              }
+            ]
+          },
+          {
+            "number": 29,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE API sont des bibliothèques communes qui pourront être utilisées par les programmeurs de jeux ou de logiciels d’images de synthèse. Les moniteurs Le moniteur à tube cathodique : ce sont des moniteurs avec un tube en verre dans lequel un canon à électrons émet des électrons dirigés par un champ magnétique vers un écran sur lequel il y a des petits éléments phosphorescents constituant des points émettant de la lumière lorsque les électrons viennent les heurter. Les moniteurs sont caractérisés par : - la résolution : nombre de pixels par unité de surface. - La dimension : en pouces et correspond à la mesure de la diagonale de l’écran Le moniteur à cristaux liquides : cette technologie est basée sur un écran composé de deux plaques transparentes entre lesquelles il y a une fine couche de liquide où se trouvent des molécules (cristaux) qui ont la propriété de s’orienter lorsqu’elles sont soumises à du courant électrique. L’écran Plasma : chaque sous pixel est une toute petite lampe fluorescente qui émet une couleur primaire (RVB). En faisant varier l’intensité de l’éclairage de ces trois sous pixels, on obtient une multitude de teintes. Les avantages et les inconvénients sont : - gamme de couleurs plus riches - Le contraste est équivalent à celui des meilleurs téléviseurs à tube - Les angles de vision sont très larges - La taille des pixels est problème - Le coût est élevé Classification des périphériques Entrée seul : clavier, lecteur de CD-Rom, Webcam, souris, scanner … Sortie seul : Ecran, imprimante, écouteurs … Entrée et sortie : disque dur, lecteur de disquette, clé USB, Modem"
+              }
+            ]
+          },
+          {
+            "number": 30,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Gestion des entrées/sorties : le système doit gérer l'accès aux périphériques, c'est-à-dire faire la liaison entre les appels de haut niveau des programmes utilisateurs (exemple getchar ()) et les opérations de bas niveau de l'unité d’échange responsable du périphérique (unité d’échange clavier) : c'est le pilote d'entrées/sorties (driver) qui assure cette correspondance"
+              },
+              {
+                "type": "heading",
+                "text": "COMPLEMENTS SUR L'ARCHITECTURE MATERIELLE D'UN"
+              },
+              {
+                "type": "heading",
+                "text": "ORDINATEUR"
+              },
+              {
+                "type": "paragraph",
+                "text": "C'est quoi le BIOS ? BIOS = Basic Input/Output System Le BIOS est un petit programme. Il est situé sur la carte mère de l'ordinateur dans une puce de type ROM. Le BIOS est le premier programme chargé en mémoire dès que vous demarrez votre ordinateur. Il assure plusieurs fonctions : ● le POST (Pre-Operating System Tests ou Power-On Self-Tests selon les écoles) : c'est l'ensemble des tests qu'effectue le BIOS avant de démarrer le système d'exploitation: ● vérifier que la carte mère fonctionne bien (barrettes de mémoire vive (RAM), contrôleurs de ports série, parallèle, IDE, etc.) ● vérifier que les périphériques simples (\"Basic\") connectés à la carte mère fonctionnent bien (clavier, carte graphique, disques dur, lecteur de disquette, lecteur de CD-Rom...) ● paramétrer la carte mère (à partir des informations stockées dans les CMOS (voir ci-dessous)). ● chercher un disque sur lequel il y a un système d'exploitation prêt à démarrer. Le BIOS peut également rendre des services au système d'exploitation en assurant la communication entre les logiciels et les périphériques, mais seulement pour les périphériques simples (clavier, écran, etc.). Il fournit donc à Windows une multitude de paramètres critiques pour son fonctionnement. Il est possible d'intervenir sur ces paramètres, afin de les optimiser et donc,"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Section 6",
+        "part": "Étape 06",
+        "pages": [
+          {
+            "number": 31,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE au bout du compte, d'accélérer Windows. Pour cela, il est nécessaire de savoir comment le BIOS fonctionne. Par exemple, le BIOS ne s'occupera pas de la communication entre le système d'exploitation et un scanner. Beaucoup de systèmes d'exploitation se passent des services du BIOS et s'adressent directement à certains périphériques. Le BIOS contient aussi généralement un programme qui permet de modifier les paramètres de la carte mère. Ce programme est appelé setup. (C'est le programme auquel vous pouvez accéder en pressant Echap, F2, F10 ou ESPACE au démarrage de l'ordinateur.) Le démarrage du BIOS Dès le démarrage du PC, le BIOS entame une procédure d'auto-test appelée POST, pour vérifier l’etat des differents pheripheries Power On Self Test ». C'est là que sont détectés et testés tous les composants matériels du PC. Si l'un de ces composants est défectueux, le BIOS affiche un message d'erreur à l'écran et émet une série de bips sonores qu'il est important de savoir interpréter. Vous trouverez dans les tableaux suivants toutes les indications pour bien interpréter ces séries de Bips. Parfois, il n'y a rien de grave, parfois, c'est mauvais signe Initialisation des périphériques Quand le BIOS a terminé son auto-test sans détecter aucune erreur, il passe à la seconde phase de son initialisation : s'assurer que tous les composants matériels du PC cohabitent harmonieusement. Pour cela, il attribue à chaque composant détecté lors de la première phase, un numéro d'IRQ (Interrupt ReQuest) et un canal DMA (Direct Memory Access). C'est grâce à ces deux ressources essentielles que le composant pourra communiquer avec le microprocesseur et avec la mémoire vive. Longtemps problématique et source de nombreux dysfonctionnements, cette distribution est aujourd'hui facilitée par le système Plug and Play (« Je branche et ça marche ») et ne pose dorénavant plus aucun problème. Synthèse"
+              }
+            ]
+          },
+          {
+            "number": 32,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Le BIOS intervient bien avant le démarrage de Windows, dès que vous mettrez le PC sous tension votre PC. Sa première tâche consiste à tester un à un tous les composants vitaux du PC, afin de déterminer : - le type et la vitesse du microprocesseur ; - le type et la quantité de mémoire vive (RAM) ; - le nombre, le type et la capacité des lecteurs de disques ; - le nombre et le type de toutes les cartes d'extension installées. C'est quoi une ROM ROM = Read Only Memory C'est un type de puce capable de stocker des informations et de les conserver même quand le courant est coupé. En principe une ROM n'est pas modifiable. On ne peut que lire les informations qu'elle contient. Cependant il existe certaines ROM qu'on peut exceptionnellement modifier (par exposition aux UVs, ou bien électroniquement). Ces ROM sont dites \"flashables\". (Mais elles ne supportent pas d'être trop modifiées : il faut donc l'éviter). Dans un PC, on trouve des ROMs sur la carte mère (elle contient le BIOS), dans les cartes graphiques, dans les cartes réseau, etc. C'est quoi les CMOS CMOS = Complementary Metal Oxide Semiconductor C'est un type de puce capable de stocker des informations et de les conserver même quand l'ordinateur est arrêté. Leur contenu est maintenu par un faible courant électrique fourni par une pile. Ces mémoires peuvent être modifiées souvent sans dommage. Le BIOS vient lire des informations dans cette mémoire quand vous allumez l'ordinateur. Il y stocke également la date et l'heure et vient régulièrement les mettre à jour. Les mémoires CMOS sont plus lentes que celles utilisées pour le fonctionnement courant de l'ordinateur (la mémoire vive (RAM) est souvent de type DDRAM, SDRAM, EDO...). Les CMOS ont l'avantage de consommer peu de courant par rapport à leurs grandes sœurs. Chipset"
+              }
+            ]
+          },
+          {
+            "number": 33,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Le chipset (traduisez jeu de composants ou jeu de circuits) est un circuit électronique chargé de coordonner les échanges de données entre les divers composants de l'ordinateur (processeur, mémoire...). Dans la mesure où le chipset est intégré à la carte mère, il est important de choisir une carte mère intégrant un chipset récent afin de maximiser les possibilités d'évolutivité de l'ordinateur. Certains chipsets intègrent parfois une puce graphique ou une puce audio, ce qui signifie qu'il n'est pas nécessaire d'installer une carte graphique ou une carte son. Il est toutefois parfois conseillé de les désactiver (lorsque cela est possible) dans le setup du BIOS et d'installer des cartes d'extension de qualité dans les emplacements prévus à cet effet. Mémoire cache La Mémoire Cache (mémoire tampon) : mémoire rapide permettant de réduire les délais d’attente des informations stockées en mémoire vive. Dans un ordinateur récent, le processeur est généralement le plus rapide. Il peut ainsi traiter une quantité d'information extrêmement conséquente par seconde et donc répondre dans un délai très court à toute demande. Cette situation serait idyllique s'il était approvisionné suffisamment rapidement en données, ce qui n'est malheureusement pas le cas. En effet, les mémoires de masse, tel qu’un disque dur, sont beaucoup trop lentes pour garantir un débit suffisant. La mémoire vive permet d'améliorer les temps d'accès mais reste bien en deçà des possibilités du processeur. La mémoire cache permet de corriger grandement ce problème. Composée de mémoire SRAM donc très rapide, elle diminue les temps d'attente du processeur. Malheureusement, son coût extrêmement élevé en empêche l'usage comme mémoire vive. En effet, la quantité requise placerait un PC à un prix inabordable. Elle est donc utilisée en petites quantités sur la carte mère de manière à apporter des gains de vitesses seulement où cela est vraiment nécessaire."
+              }
+            ]
+          },
+          {
+            "number": 34,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Cette mémoire accélère les communications entre un microprocesseur et un composant servant à stocker des données (RAM, disque dur). Elle stocke les opérations effectuées par le processeur pour qu’il ne perde pas de temps à recalculer des choses qu’il a déjà faites auparavant. Sa taille est entre 512ko et 4Mo. Lorsque le microprocesseur a besoin d’une donnée, il regarde si elle disponible dans la mémoire cache. Si ce n’est pas le cas, il va la chercher dans l’unité de stockage et la dépose dans la mémoire cache. Ainsi la prochaine fois qu’il aura besoin de cette information, il y accédera directement par la mémoire cache et donc plus rapidement. Toute unité de stockage peut servir de mémoire cache. Il suffit qu’elle soit plus rapide que l’unité de stockage principale. Ex : Microprocesseur>mémoire cache>RAM : la mémoire cache sera une mémoire RAM ultra rapide Microprocesseur>mémoire cache>Disque dur : la mémoire RAM fait l’affaire comme mémoire cache Microprocesseur>mémoire cache>Internet : le disque dur fait office de mémoire cache Trois différents niveaux de ce type de mémoire est disponible : Cache de niveau 1 Mémoire intégrée directement dans le microprocesseur qui permet d'accélérer les communications entre un microprocesseur et un composant servant à stocker les données (RAM, disque dur). Sa taille est essentiellement fonction de l´architecture du microprocesseur. AMD a toujours privilégié des caches L1 de grande taille, 64 Ko pour le K6 et 128 Ko pour l´Athlon, tandis que Intel privilégie des caches L1 de petite taille, 32 Ko"
+              }
+            ]
+          },
+          {
+            "number": 35,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE pour les Pentium II/III. Elle est scindée en deux parties de taille égale. L´une stocke les instructions des programmes, l´autre les données des programmes. Les autres caches ne font pas cette distinction. Cache de niveau 2 Mémoire cache qui sert d´intermédiaire entre la mémoire cache de niveau 1 et la mémoire RAM. Elle ne différencie pas données et programmes, elle est moins rapide que le cache L1, mais sa taille est plus importante (de 256 Ko à 2 Mo). Cache de niveau 3 Type de cache qui est aujourd'hui courant sur des machines haut de gamme, et composé de mémoire SRAM implantée directement sur la carte mère. Sa taille varie de 1 Mo à 8 Mo. Architectures CISC et RISC Traditionnellement, depuis les années 70 on dénomme processeur à architecture CISC (Complex Instruction Set Code) un processeur dont le jeu d'instructions possède les propriétés suivantes : ▪ Il contient beaucoup de classes d'instructions différentes. ▪ Il contient beaucoup de type d'instructions différentes complexes et de taille variable. ▪ Il se sert de beaucoup de registres spécialisés et de peu de registres généraux. L'architecture RISC (Reduced Instruction Set Code) est un concept mis en place par IBM dans les années 70, un processeur RISC est un processeur dont le jeu d'instructions possède les propriétés suivantes : ▪ Le nombre de classes d'instructions différentes est réduit par rapport à un CISC. ▪ Les instructions sont de taille fixe. ▪ Il se sert de beaucoup de registres généraux. ▪ Il fonctionne avec un pipe-line Depuis les décennies 90, les microprocesseurs adoptent le meilleur des fonctionnalités de chaque architecture provoquant de fait la disparition"
+              }
+            ]
+          },
+          {
+            "number": 36,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE progressive de la différence entre RISC et CISC et les inévitables polémiques sur l'efficacité supposée meilleure de l'une ou de l'autre architecture. Mémoire de masse (externe ou auxiliaire) Les données peuvent être stockées à des fins de conservation, ailleurs que dans la mémoire centrale volatile par construction avec les constituants électroniques actuels. Des périphériques spécialisés sont utilisés pour ce genre de stockage long conservation, en outre ces mêmes périphériques peuvent stocker une quantité d'information très grande par rapport à la capacité de stockage de la mémoire centrale. On dénomme dispositifs de stockage de masse, de tels périphériques. Les mémoires associées à ces dispositifs se dénomment mémoires de masse, mémoires externes ou encore mémoires auxiliaires, par abus de langage la mémoire désigne souvent le dispositif de stockage. Les principaux représentants de cette famille de mémoires sont : Les bandes magnétiques (utilisés dans de très faible cas) Les disques magnétiques : les disquettes (en voie d'abandon), les disques durs (les plus utilisés). Les CD (très utilisés mais bientôt supplantés par les DVD) Les DVD Des technologies ont vu le jour puis se sont éteintes (tambour magnétique, cartes magnétiques, mémoires à bulles magnétiques,) A part les bandes magnétiques qui sont un support ancien encore utilisé à fonctionnement séquentiel, les autres supports (disques, CD, DVD) sont des mémoires qui fonctionnent à accès direct."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Section 7",
+        "part": "Étape 07",
+        "pages": [
+          {
+            "number": 37,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Hiérarchie des mémoires Il en existe de plusieurs types de mémoires qui se distinguent par leur mode d'enregistrement (électronique, magnétique, optique), leur capacité, leur rapidité, le fait qu'elles soient volatiles ou non, leur prix, le type de support, la densité d'information, la manière d'y accéder, la fiabilité etc. Il est d'usage pour classifier les mémoires de les hiérarchiser en les situant dans une représentation appelée pyramide des mémoires. Il existe plusieurs catégories de mémoire, adaptées à des usages différents. On peut les classifier en fonction de l’éloignement par rapport au processeur. Plus la mémoire est proche du processeur, plus elle est rapide, de faible capacité et chère. Un cache est une mémoire privée du processeur. Il sert à accélérer le traitement. Son efficacité sʼexplique par plusieurs raisons :  Les données se trouvent tout près du lieu de leur traitement ;  Le processeur reste moins longtemps en attente des données ;  Le taux de disponibilité du bus de la mémoire est meilleur ;  Les caches offrent de meilleures performances que la RAM (mais ils sont plus coûteux). La mémoire cache d'un ordinateur La mémoire cache est un espace de stockage temporaire utilisé pour améliorer les performances d'un ordinateur. Il existe différents types de mémoire cache sur un ordinateur, dont celles qui sont greffées sur les processeurs ou encore celles extraites à partir de l'espace disque ou la mémoire vive. La mémoire cache est une mémoire très rapide permettant de réduire les délais d’attente des informations stockées en mémoire vive. En"
+              }
+            ]
+          },
+          {
+            "number": 38,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE effet, la mémoire centrale (RAM) de l’ordinateur possède une vitesse bien moins importante que le processeur. Les processeurs modernes utilisent plusieurs mémoires caches s’intercalant entre le processeur et la mémoire centrale. On parle alors de niveau de cache : L1, L2 et L3 (L = Level). Le cache L1 est le plus rapide et le plus proche du microprocesseur, tandis que le cache L3 est le plus lent et plus proche de la mémoire vive. Présentation et rôle de la mémoire cache La mémoire cache ou mémoire tampon est un espace mémoire rapide servant à stocker temporairement des informations ou des instructions. Sur un ordinateur, la mémoire cache est surtout associée au processeur du fait qu'elle lui permet de stocker ses instructions et ses données, en attendant de les traiter. Cette architecture procure un gain considérable au niveau de la vitesse de traitement des informations puisque le processeur accède plus rapidement aux données. À titre d'exemple, la mémoire cache possède une vitesse d'exécution d'environ 10 fois plus rapide que la mémoire Ram. Par ailleurs, un processeur peut être accompagné de plusieurs mémoires caches pour une exploitation optimale de sa puissance. Cependant, les mémoires caches se caractérisent par une taille réduite, de l'ordre d'une centaine de kilo- octets à quelques mégaoctets. Cela s'explique par la limitation technologique de l'élaboration de la mémoire cache mais aussi à cause de son coût. Outre les processeurs, la mémoire cache est également utilisée par certains périphériques de l'ordinateur, pour ne citer que les disques"
+              },
+              {
+                "type": "heading",
+                "text": "SCSI."
+              }
+            ]
+          },
+          {
+            "number": 39,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE Le principe de fonctionnement de la mémoire cache La mémoire cache sert pour le stockage temporaire des informations utilisées par le processeur. Pour ce faire, le cache fournit l'information demandée par le processeur si elle la possède, sinon, il récupère l'information depuis la mémoire principale et la stocke pour une utilisation antérieure. Concrètement, ce sont les adresses mémoires qui sont enregistrées dans la mémoire cache. Lorsque le processeur veut écrire une donnée dans la mémoire principale, il vérifie si l'adresse de la mémoire est disponible dans la mémoire cache. Si tel est le cas, le processeur peut écrire la donnée, sinon, une nouvelle entrée est créée dans la mémoire cache à partir d'une copie de l'adresse depuis la mémoire principale. Du fait de sa capacité de stockage réduite, le cache effectue une sélection des données qui seront les plus susceptibles d'être réutilisées par le processeur avant de créer une nouvelle entrée. Pour ce faire, le cache compte le nombre d'utilisation d'une entrée par le processeur et il ne garde uniquement celles qui sont les plus utilisées selon le système LFU ou Least Frequently Used. Une autre technologie consiste à considérer les entrées les plus anciennes, c'est le système LRU ou Least Recently Used. Les types de mémoires cache Les ordinateurs contemporains utilisent 3 types de mémoire cache, notamment les mémoires caches L1, L2 et L3. Le cache L1 ou cache primaire est le plus rapide parmi les 3 catégories précédentes. En effet, ce type de mémoire cache est directement localisé dans le processeur. Par ailleurs, le cache L1 renferme à la fois des données et des instructions destinées au processeur ; pour gérer cette différence de contenu, les processeurs exploitent deux technologies, notamment l'unification du cache (unified cache) ou sa subdivision en deux entités distinctes dont l'une pour les données et l'autre pour les instructions. Le cache L2 ou cache secondaire est également interne au processeur. Son rôle est de soutenir le cache L1 en stockant les informations qui ne peuvent y être emmagasinées. En effet, la cache L2 possède une taille plus importante que la cache L1, de l'ordre de 8Mo, bien qu'il soit moins rapide. Enfin, la cache L3 est une mémoire externe au processeur et on la retrouve surtout sur les processeurs haut de gamme ou encore ceux qui équipent les serveurs. Généralement, la gestion de cette mémoire est assurée par un circuit annexe au processeur."
+              }
+            ]
+          },
+          {
+            "number": 40,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE"
+              },
+              {
+                "type": "heading",
+                "text": "LA GESTION DES ENTREES/SORTIES"
+              },
+              {
+                "type": "paragraph",
+                "text": "Les ordinateurs sont utilisés pour traiter et stocker des informations. Nous avons jusqu’ici décrit le fonctionnement du processeur et la mémoire principale. Nous allons maintenant étudier comment un ordinateur peut échanger de l’information avec son environnement ; ces échanges d’informations sont nommés entrées/sorties (ou IO, Input/Output en anglais). Il peut s’agir d’un flux d’informations de l’extérieur vers l’ordinateur (acquisition via le clavier, une connexion réseau, un disque dur, etc.), ou d’un flux de l’ordinateur vers l’extérieur (écran, réseau, disque, etc.). Les techniques d’entrées/sorties sont très importantes pour les performances de l’ordinateur. Rien ne sert d’avoir un processeur calculant très rapidement s’il doit souvent perdre son temps pour lire des données ou écrire ses résultats. Durant une opération d’entrée/sortie, de l’information est échangée entre la mémoire principale et un périphérique relié à l’ordinateur. Nous étudierons plus loin dans ce cours le fonctionnement de certains périphériques (disques durs, clavier, écran). Cet échange nécessite une interface ou contrôleur, circuit électronique gérant la connexion. L’interface réalise des fonctions plus ou moins complexes suivant le type de périphérique. Son but est surtout de décharger le processeur pour améliorer les performances du système. La face arrière d’un desktop se présente généralement de la manière suivante :"
+              }
+            ]
+          },
+          {
+            "number": 41,
+            "blocks": [
+              {
+                "type": "paragraph",
+                "text": "ARCHITECTURE ET TECHNOLOGIES DES ORDINATEURS LICENCE PROFESSIONNELLE 1) Rj45 : principaux connecteurs de carte réseau pour les réseaux internet 2) LCD brightness VR control 3) COM : pour brancher un autre écran 4) Ports FIREWIRE : Pour connecter des périphériques haut débit (magnétoscopes, caméra, disques durs, imprimantes etc. 5) Rj11 : connecteur pour les lignes téléphoniques 6) Ports USB : Il sert à connecter des périphériques informatiques à un ordinateur 7) VGA : pour brancher l'écran 8) Jack : pour brancher un casque, un micro, des hauts parleurs 9) Parallèle : pour brancher une imprimante 10) Interrupteur : pour allumer et éteindre le pc 11) PS/2 : port de connexion de dimensions réduites pour souris ou clavier."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "hasReader": true,
+    "quiz": {
+      "questions": [
+        {
+          "type": "choice",
+          "question": "Quel est l'objectif central abordé dans « ATO 23 » ?",
+          "answers": [
+            "Guide complet pour apprendre ATO 23",
+            "Remplacer les concepts sans méthodologie",
+            "Mémoriser du code sans mise en application"
+          ],
+          "correctAnswer": 0,
+          "explanation": "L'ouvrage propose un parcours structuré rédigé par Anonyme pour comprendre et appliquer Systèmes & Bas niveau."
+        },
+        {
+          "type": "choice",
+          "question": "À quel public ce livre s'adresse-t-il en priorité ?",
+          "answers": [
+            "Profil Débutant",
+            "Uniquement aux experts de 10 ans d'expérience",
+            "Aucun profil ciblé"
+          ],
+          "correctAnswer": 0,
+          "explanation": "Le contenu et les exercices ont été adaptés pour un niveau Débutant."
+        },
+        {
+          "type": "text",
+          "question": "Quel est le nom de l'auteur de ce livre ?",
+          "acceptedAnswers": [
+            "anonyme",
+            "Anonyme"
+          ],
+          "placeholder": "Nom de l'auteur",
+          "explanation": "Ce livre est écrit par Anonyme."
+        }
+      ]
+    }
+  },
+  {
     "id": "lean-startup-xxqd",
     "title": "Lean Startup",
     "subtitle": ". Adoptez L'Innovation Continue",

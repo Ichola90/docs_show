@@ -24,7 +24,7 @@ export function LearningMethod() {
           <p className="eyebrow">UNE AUTRE FAÇON DE LIRE</p>
           <h2>Lire, c’est bien.<br /><em>Comprendre, c’est mieux.</em></h2>
           <p>Un bon livre ouvre une porte. Notre parcours vous aide à la franchir, une page après l’autre.</p>
-          <ActionButton href="/bibliotheque" variant="secondary">
+          <ActionButton href="/bibliotheque" variant="secondary" size="small">
             À vous de découvrir
           </ActionButton>
         </div>

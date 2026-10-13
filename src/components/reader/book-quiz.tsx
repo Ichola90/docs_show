@@ -189,7 +189,7 @@ export function BookQuiz({ book }: { book: Book }) {
             placeholder="Ex. Amadou Diallo"
           />
           {error && <p className="quiz-error" role="alert">{error}</p>}
-          <ActionButton type="submit">Commencer le test</ActionButton>
+          <ActionButton type="submit" size="small">Commencer le test</ActionButton>
         </form>
       </div>
     );
@@ -273,7 +273,7 @@ export function BookQuiz({ book }: { book: Book }) {
         {error && <p className="quiz-error" role="alert">{error}</p>}
         <div className="quiz-actions">
           <span className="quiz-no-back">Réponse définitive après validation</span>
-          <ActionButton type="submit">
+          <ActionButton type="submit" size="small">
             {currentIndex === questions.length - 1
               ? "Terminer le test"
               : "Valider et continuer"}

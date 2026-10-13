@@ -88,6 +88,7 @@ export function PlatformBanner() {
                     <ActionButton
                       href={slide.ctaHref}
                       variant="secondary"
+                      size="small"
                       className="platform-banner-cta"
                     >
                       {slide.ctaLabel} <span aria-hidden="true">→</span>

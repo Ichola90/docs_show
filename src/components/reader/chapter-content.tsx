@@ -183,12 +183,13 @@ export function ChapterContent({
           </span>
         )}
         {isLastChapter && isReadingComplete ? (
-          <ActionButton href={`/livres/${book.id}/test`}>
+          <ActionButton href={`/livres/${book.id}/test`} size="small">
             Passer le test
           </ActionButton>
         ) : (
           <ActionButton
             className="chapter-next-button"
+            size="small"
             onClick={() => onChapterSelect(chapterIndex)}
           >
             {isLastChapter

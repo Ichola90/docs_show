@@ -58,7 +58,7 @@ export function BookCard({ book }: { book: Book }) {
             <ActionButton
               className="text-link"
               href={`/livres/${book.id}`}
-              variant="quiet"
+              variant="primary"
               size="small"
             >
               Découvrir le livre
@@ -66,7 +66,7 @@ export function BookCard({ book }: { book: Book }) {
           ) : (
             <ActionButton
               className="text-link"
-              variant="quiet"
+              variant="secondary"
               size="small"
               disabled
             >

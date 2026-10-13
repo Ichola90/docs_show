@@ -106,7 +106,7 @@ export function Navbar() {
           </nav>
         </div>
 
-        <ActionButton href="/bibliotheque" className="header-cta">
+        <ActionButton href="/bibliotheque" size="small" className="header-cta">
           Explorer les livres
         </ActionButton>
 
@@ -184,6 +184,7 @@ export function Navbar() {
         <ActionButton
           className="mobile-panel-cta"
           href="/bibliotheque"
+          size="small"
           onClick={closeMobileMenu}
         >
           Trouver mon prochain livre

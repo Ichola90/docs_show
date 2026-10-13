@@ -163,7 +163,7 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
         <div className="reviews-cta-block">
           <ActionButton
             type="button"
-            variant="secondary"
+            variant={showForm ? "secondary" : "primary"}
             size="small"
             onClick={() => {
               setShowForm((prev) => !prev);
@@ -418,13 +418,14 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
               ouvrage !
             </p>
             {!showForm && (
-              <button
+              <ActionButton
                 type="button"
-                className="reviews-empty-cta"
+                variant="primary"
+                size="small"
                 onClick={() => setShowForm(true)}
               >
                 Rédiger le premier avis
-              </button>
+              </ActionButton>
             )}
           </div>
         ) : (
