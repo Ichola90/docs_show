@@ -5,7 +5,7 @@ import type { Book } from "@/data/books";
 import { useBookRating } from "@/components/books/book-ratings-provider";
 
 export function BookRating({ book }: { book: Book }) {
-  const { rating, count, userRating, ready, submitRating } = useBookRating(
+  const { rating, count, userRating, isLive, ready, submitRating } = useBookRating(
     book.id,
     book.rating,
     book.reviewCount,
@@ -42,7 +42,11 @@ export function BookRating({ book }: { book: Book }) {
             ? `Note moyenne : ${rating} / 5 · ${count} avis`
             : "Soyez le premier à noter ce livre."}
         </p>
-        <p>Votre note est enregistrée uniquement sur cet appareil.</p>
+        <p>
+          {isLive
+            ? "Votre note est synchronisée en direct avec l'ensemble des lecteurs."
+            : "Votre avis contribue à l'évaluation globale du livre."}
+        </p>
       </div>
       {userRating !== undefined ? (
         <p className="book-rating-thanks" role="status">
