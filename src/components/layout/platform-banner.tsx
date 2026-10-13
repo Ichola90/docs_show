@@ -1,40 +1,38 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ActionButton } from "@/components/ui/action-button";
 
 const SLIDES = [
   {
     id: "web-dev",
     image: "/images/slide-web-dev.jpg",
-    kicker: "MANUELS TECHNIQUES · DÉVELOPPEMENT WEB",
-    title: "Le savoir tech, à votre rythme",
-    description:
-      "Apprenez le web moderne, l'architecture logicielle et les bonnes pratiques avec du code source ouvert.",
-    ctaLabel: "Explorer les livres",
-    ctaHref: "/bibliotheque",
+    alt: "Illustration développement web et code moderne",
   },
   {
     id: "systems",
     image: "/images/slide-systems-prog.jpg",
-    kicker: "FONDATIONS & ALGORITHMIQUE · BAS NIVEAU",
-    title: "Comprendre les fondations du code",
-    description:
-      "Langage C, gestion mémoire et pointeurs : maîtrisez le bas niveau pour bâtir un socle d'ingénieur solide.",
-    ctaLabel: "Découvrir le manuel C",
-    ctaHref: "/livres/apprenez-programmer-c",
+    alt: "Illustration programmation système et architectures informatiques",
   },
   {
     id: "tests",
     image: "/images/slide-interactive-test.jpg",
-    kicker: "VALIDATION ACTIVE · TESTS INTERACTIFS",
-    title: "Lire, coder, valider en direct",
-    description:
-      "Mettez directement vos compétences à l'épreuve avec nos quiz interactifs et mesurez vos progrès.",
-    ctaLabel: "Tester vos compétences",
-    ctaHref: "/bibliotheque",
+    alt: "Illustration validation active des compétences et quiz",
+  },
+  {
+    id: "team",
+    image: "/images/team-collaboration.jpg",
+    alt: "Illustration travail d'équipe et collaboration technologique",
+  },
+  {
+    id: "data",
+    image: "/images/data-insights.jpg",
+    alt: "Illustration analyse de données et systèmes cloud",
+  },
+  {
+    id: "learning",
+    image: "/images/tech-learning.jpg",
+    alt: "Illustration apprentissage continu et manuels ouverts",
   },
 ];
 
@@ -55,69 +53,46 @@ export function PlatformBanner() {
     <section
       className="platform-banner"
       aria-roledescription="carrousel"
-      aria-label="Présentation de la plateforme DOCS SHOW"
+      aria-label="Galerie visuelle de la plateforme DOCS SHOW"
     >
-        <div className="platform-banner-slides">
-          {SLIDES.map((slide, index) => {
-            const isActive = index === activeSlide;
-            return (
-              <div
-                key={slide.id}
-                className={`platform-banner-slide${isActive ? " is-active" : ""}`}
-                aria-hidden={!isActive}
-              >
-                <div className="platform-banner-image-wrap">
-                  <Image
-                    src={slide.image}
-                    alt={slide.title}
-                    fill
-                    priority={index === 0}
-                    sizes="100vw"
-                    className="platform-banner-img"
-                  />
-                  <div className="platform-banner-scrim" />
-                </div>
-
-                <div className="platform-banner-inner">
-                  <div className="platform-banner-content">
-                    <p className="platform-banner-kicker">{slide.kicker}</p>
-                    <h2 className="platform-banner-title">{slide.title}</h2>
-                    <p className="platform-banner-description">
-                      {slide.description}
-                    </p>
-                    <ActionButton
-                      href={slide.ctaHref}
-                      variant="secondary"
-                      size="small"
-                      className="platform-banner-cta"
-                    >
-                      {slide.ctaLabel} <span aria-hidden="true">→</span>
-                    </ActionButton>
-                  </div>
-                </div>
+      <div className="platform-banner-slides">
+        {SLIDES.map((slide, index) => {
+          const isActive = index === activeSlide;
+          return (
+            <div
+              key={slide.id}
+              className={`platform-banner-slide${isActive ? " is-active" : ""}`}
+              aria-hidden={!isActive}
+            >
+              <div className="platform-banner-image-wrap">
+                <Image
+                  src={slide.image}
+                  alt={slide.alt}
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  className="platform-banner-img"
+                />
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
+      </div>
 
-        <div className="platform-banner-controls" aria-label="Indicateurs des diapositives">
-          <div className="platform-banner-dots">
-            {SLIDES.map((slide, index) => (
-              <button
-                key={slide.id}
-                className={`platform-banner-dot${index === activeSlide ? " is-active" : ""}`}
-                type="button"
-                aria-label={`Afficher la diapositive ${index + 1}`}
-                aria-current={index === activeSlide ? "true" : undefined}
-                onClick={() => setActiveSlide(index)}
-              />
-            ))}
-          </div>
+      <div className="platform-banner-controls" aria-label="Indicateurs des diapositives">
+        <div className="platform-banner-dots">
+          {SLIDES.map((slide, index) => (
+            <button
+              key={slide.id}
+              className={`platform-banner-dot${index === activeSlide ? " is-active" : ""}`}
+              type="button"
+              aria-label={`Afficher l'image ${index + 1}`}
+              aria-current={index === activeSlide ? "true" : undefined}
+              onClick={() => setActiveSlide(index)}
+            />
+          ))}
         </div>
-
-        <Link className="platform-banner-skip" href="#contenu-principal">
-          Passer la bannière
-        </Link>
-      </section>
+      </div>
+    </section>
   );
 }

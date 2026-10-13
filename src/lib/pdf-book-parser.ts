@@ -48,15 +48,57 @@ export async function parsePdfToBook(
     throw new Error("Le document PDF dépasse la limite de 500 pages autorisées.");
   }
 
+const BULLET_CHARS_CLASS = "[❖•●■◆◈➢✔✓►▸▹○▪▫★☆]";
+
+function isBulletLine(str: string): boolean {
+  const trimmed = str.trim();
+  return (
+    new RegExp(`^${BULLET_CHARS_CLASS}`).test(trimmed) ||
+    /^[-–—]\s+/.test(trimmed) ||
+    /^\b(?:\d+[\)\.]|[a-zA-Z][\)])\s+/.test(trimmed)
+  );
+}
+
+function preprocessPdfText(text: string): string[] {
+  if (!text) return [];
+
+  // 1. Détecter les puces inline apparaissant en milieu de ligne (ex: "capables de ❖ Décrire...")
+  let processed = text.replace(
+    new RegExp(`([^\\n\\r])\\s*(${BULLET_CHARS_CLASS})`, "gu"),
+    "$1\n$2"
+  );
+
+  // 2. Détecter les tirets inline précédés d'espace
+  processed = processed.replace(
+    /([^\n\r])\s+([-–—]\s+[A-ZÀ-ÖØ-öø-ÿ0-9])/gu,
+    "$1\n$2"
+  );
+
+  // 3. Détecter les listes numérotées ou alphabétiques inline (ex: " 1) ", " 2. ", " a) ")
+  processed = processed.replace(
+    /([^\n\r])\s+(\b(?:\d+[\)\.]|[a-zA-Z][\)])\s+[A-ZÀ-ÖØ-öø-ÿ])/gu,
+    "$1\n$2"
+  );
+
+  return processed
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter((l) => l.length > 0);
+}
+
   // 1. Découpage et structuration page par page
   const structuredPages: BookPage[] = rawPages.map((p) => {
-    const rawLines = (p.text || "")
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter((l) => l.length > 0);
+    const rawLines = preprocessPdfText(p.text || "");
 
     const blocks: BookPageBlock[] = [];
     let currentParagraph: string[] = [];
+
+    const flushParagraph = () => {
+      if (currentParagraph.length > 0) {
+        blocks.push({ type: "paragraph", text: currentParagraph.join(" ") });
+        currentParagraph = [];
+      }
+    };
 
     for (const line of rawLines) {
       const isHeading =
@@ -69,26 +111,34 @@ export async function parsePdfToBook(
         line.startsWith("\t") ||
         /^(const |let |var |function |class |import |export |def |public |private |int |void |#include|<\?php|SELECT |FROM |WHERE |UPDATE |INSERT )/.test(line);
 
+      const isBullet = isBulletLine(line);
+
       if (isHeading) {
-        if (currentParagraph.length > 0) {
-          blocks.push({ type: "paragraph", text: currentParagraph.join(" ") });
-          currentParagraph = [];
-        }
+        flushParagraph();
         blocks.push({ type: "heading", text: line });
       } else if (isCode) {
-        if (currentParagraph.length > 0) {
-          blocks.push({ type: "paragraph", text: currentParagraph.join(" ") });
-          currentParagraph = [];
-        }
+        flushParagraph();
         blocks.push({ type: "code", text: line });
+      } else if (isBullet) {
+        flushParagraph();
+        blocks.push({ type: "paragraph", text: line });
       } else {
-        currentParagraph.push(line);
+        const lastBlock = blocks[blocks.length - 1];
+        if (
+          blocks.length > 0 &&
+          lastBlock?.type === "paragraph" &&
+          isBulletLine(lastBlock.text) &&
+          currentParagraph.length === 0 &&
+          /^[a-zà-öø-ÿ]/.test(line)
+        ) {
+          lastBlock.text += ` ${line}`;
+        } else {
+          currentParagraph.push(line);
+        }
       }
     }
 
-    if (currentParagraph.length > 0) {
-      blocks.push({ type: "paragraph", text: currentParagraph.join(" ") });
-    }
+    flushParagraph();
 
     return {
       number: p.num,

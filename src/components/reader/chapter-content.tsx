@@ -152,8 +152,15 @@ export function ChapterContent({
                     );
                   }
 
+                  const isBullet = /^(?:[❖•●■◆◈➢✔✓►▸▹○▪▫★☆]|[-–—]\s+|\b(?:\d+[\)\.]|[a-zA-Z][\)])\s+)/.test(
+                    block.text.trim()
+                  );
+
                   return (
-                    <p key={`${chapterIndex}-${page.number}-${index}`}>
+                    <p
+                      key={`${chapterIndex}-${page.number}-${index}`}
+                      className={isBullet ? "book-page-bullet" : undefined}
+                    >
                       {block.text}
                     </p>
                   );

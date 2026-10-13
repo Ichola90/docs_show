@@ -143,6 +143,56 @@ export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } 
       ),
     [booksMatchingCategoryFilters, selectedLevels],
   );
+
+  const ITEMS_PER_PAGE = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategories, selectedLevels]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredBooks.length / ITEMS_PER_PAGE));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const startIndex = (effectivePage - 1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredBooks.length);
+  const paginatedBooks = useMemo(
+    () => filteredBooks.slice(startIndex, startIndex + ITEMS_PER_PAGE),
+    [filteredBooks, startIndex]
+  );
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    if (typeof window !== "undefined") {
+      const catalogEl = document.querySelector(".catalog-content");
+      if (catalogEl) {
+        catalogEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 350, behavior: "smooth" });
+      }
+    }
+  };
+
+  const getPageNumbers = () => {
+    const pages: (number | "ellipsis")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (effectivePage > 3) {
+        pages.push("ellipsis");
+      }
+      const start = Math.max(2, effectivePage - 1);
+      const end = Math.min(totalPages - 1, effectivePage + 1);
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+      if (effectivePage < totalPages - 2) {
+        pages.push("ellipsis");
+      }
+      pages.push(totalPages);
+    }
+    return pages;
+  };
   const categoryCounts = useMemo(
     () =>
       Object.fromEntries(
@@ -240,7 +290,67 @@ export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } 
             {filtersVisible && <BookSidebarFilters {...filterProps} />}
             <div className="catalog-book-results">
               {filteredBooks.length > 0 ? (
-                <BookGrid books={filteredBooks} />
+                <>
+                  <BookGrid books={paginatedBooks} />
+                  {totalPages > 1 && (
+                    <nav className="catalog-pagination" aria-label="Pagination de la bibliothèque">
+                      <div className="catalog-pagination-info">
+                        Page <strong>{effectivePage}</strong> sur <strong>{totalPages}</strong>
+                        <span className="catalog-pagination-count">
+                          ({startIndex + 1}–{endIndex} sur {filteredBooks.length} livres)
+                        </span>
+                      </div>
+                      <div className="catalog-pagination-controls">
+                        <button
+                          type="button"
+                          className="pagination-btn pagination-nav-btn"
+                          disabled={effectivePage <= 1}
+                          onClick={() => handlePageChange(effectivePage - 1)}
+                          aria-label="Page précédente"
+                        >
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="15 18 9 12 15 6" />
+                          </svg>
+                          <span>Précédent</span>
+                        </button>
+
+                        <div className="pagination-pages">
+                          {getPageNumbers().map((p, idx) =>
+                            p === "ellipsis" ? (
+                              <span key={`ellipsis-${idx}`} className="pagination-ellipsis" aria-hidden="true">
+                                …
+                              </span>
+                            ) : (
+                              <button
+                                key={`page-${p}`}
+                                type="button"
+                                className={`pagination-btn pagination-num-btn${p === effectivePage ? " is-active" : ""}`}
+                                onClick={() => handlePageChange(p)}
+                                aria-label={`Aller à la page ${p}`}
+                                aria-current={p === effectivePage ? "page" : undefined}
+                              >
+                                {p}
+                              </button>
+                            )
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          className="pagination-btn pagination-nav-btn"
+                          disabled={effectivePage >= totalPages}
+                          onClick={() => handlePageChange(effectivePage + 1)}
+                          aria-label="Page suivante"
+                        >
+                          <span>Suivant</span>
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                        </button>
+                      </div>
+                    </nav>
+                  )}
+                </>
               ) : (
                 <div className="empty-state" role="status">
                   <svg
