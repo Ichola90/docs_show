@@ -5,34 +5,19 @@ import { useEffect, useState } from "react";
 
 const SLIDES = [
   {
-    id: "web-dev",
-    image: "/images/slide-web-dev.jpg",
-    alt: "Illustration développement web et code moderne",
+    id: "web-architecture",
+    image: "/images/banner-3d-web-architecture.jpg",
+    alt: "Architecture web moderne et ingénierie logicielle 3D",
   },
   {
-    id: "systems",
-    image: "/images/slide-systems-prog.jpg",
-    alt: "Illustration programmation système et architectures informatiques",
+    id: "computer-systems",
+    image: "/images/banner-3d-computer-systems.jpg",
+    alt: "Architecture des ordinateurs, microprocesseurs et systèmes 3D",
   },
   {
-    id: "tests",
-    image: "/images/slide-interactive-test.jpg",
-    alt: "Illustration validation active des compétences et quiz",
-  },
-  {
-    id: "team",
-    image: "/images/team-collaboration.jpg",
-    alt: "Illustration travail d'équipe et collaboration technologique",
-  },
-  {
-    id: "data",
-    image: "/images/data-insights.jpg",
-    alt: "Illustration analyse de données et systèmes cloud",
-  },
-  {
-    id: "learning",
-    image: "/images/tech-learning.jpg",
-    alt: "Illustration apprentissage continu et manuels ouverts",
+    id: "interactive-testing",
+    image: "/images/banner-3d-interactive-testing.jpg",
+    alt: "Validation active des compétences et quiz interactifs 3D",
   },
 ];
 
@@ -53,7 +38,7 @@ export function PlatformBanner() {
     <section
       className="platform-banner"
       aria-roledescription="carrousel"
-      aria-label="Galerie visuelle de la plateforme DOCS SHOW"
+      aria-label="Galerie visuelle 3D de la plateforme DOCS SHOW"
     >
       <div className="platform-banner-slides">
         {SLIDES.map((slide, index) => {
@@ -86,7 +71,7 @@ export function PlatformBanner() {
               key={slide.id}
               className={`platform-banner-dot${index === activeSlide ? " is-active" : ""}`}
               type="button"
-              aria-label={`Afficher l'image ${index + 1}`}
+              aria-label={`Afficher l'image 3D ${index + 1}`}
               aria-current={index === activeSlide ? "true" : undefined}
               onClick={() => setActiveSlide(index)}
             />

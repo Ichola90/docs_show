@@ -148,15 +148,16 @@
   isolation: isolate;
   width: 100% !important;
   max-width: 100% !important;
-  height: clamp(200px, 22vw, 260px) !important;
-  min-height: 200px !important;
-  max-height: 260px !important;
+  height: 300px !important;
+  min-height: 300px !important;
+  max-height: 300px !important;
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
   background: #060b16;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .platform-banner-slides {
@@ -305,34 +306,36 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 14px;
+  bottom: 16px;
   z-index: 3;
 }
 
 .platform-banner-dots {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
+  gap: 7px;
+  padding: 5px 12px;
   border-radius: 99px;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: none !important;
 }
 
 .platform-banner-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border: 0;
   border-radius: 99px;
   padding: 0;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.35);
   cursor: pointer;
   transition: width 240ms ease, background 240ms ease;
+  box-shadow: none !important;
 }
 
 .platform-banner-dot.is-active {
-  width: 18px;
+  width: 22px;
   background: #38bdf8;
 }
 

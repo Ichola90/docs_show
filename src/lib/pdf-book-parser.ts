@@ -62,8 +62,12 @@ function isBulletLine(str: string): boolean {
 function preprocessPdfText(text: string): string[] {
   if (!text) return [];
 
-  // 1. Détecter les puces inline apparaissant en milieu de ligne (ex: "capables de ❖ Décrire...")
-  let processed = text.replace(
+  // RÈGLE ABSOLUE : Dans tous les cas, ❖ indique une nouvelle ligne.
+  // À chaque occurrence de ❖, forcer un saut de ligne immédiat.
+  let processed = text.replace(/❖\s*/gu, "\n❖ ");
+
+  // 1. Détecter les autres puces inline apparaissant en milieu de ligne (ex: "•", "●", "■", etc.)
+  processed = processed.replace(
     new RegExp(`([^\\n\\r])\\s*(${BULLET_CHARS_CLASS})`, "gu"),
     "$1\n$2"
   );
@@ -111,7 +115,7 @@ function preprocessPdfText(text: string): string[] {
         line.startsWith("\t") ||
         /^(const |let |var |function |class |import |export |def |public |private |int |void |#include|<\?php|SELECT |FROM |WHERE |UPDATE |INSERT )/.test(line);
 
-      const isBullet = isBulletLine(line);
+      const isBullet = line.startsWith("❖") || isBulletLine(line);
 
       if (isHeading) {
         flushParagraph();
@@ -120,21 +124,12 @@ function preprocessPdfText(text: string): string[] {
         flushParagraph();
         blocks.push({ type: "code", text: line });
       } else if (isBullet) {
+        // Chaque puce ❖ ou grande ligne commence impérativement sur sa propre ligne
         flushParagraph();
         blocks.push({ type: "paragraph", text: line });
       } else {
-        const lastBlock = blocks[blocks.length - 1];
-        if (
-          blocks.length > 0 &&
-          lastBlock?.type === "paragraph" &&
-          isBulletLine(lastBlock.text) &&
-          currentParagraph.length === 0 &&
-          /^[a-zà-öø-ÿ]/.test(line)
-        ) {
-          lastBlock.text += ` ${line}`;
-        } else {
-          currentParagraph.push(line);
-        }
+        // Ligne de texte ordinaire
+        currentParagraph.push(line);
       }
     }
 

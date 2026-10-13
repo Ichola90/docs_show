@@ -152,6 +152,31 @@ export function ChapterContent({
                     );
                   }
 
+                  // RÈGLE ABSOLUE : Dans tous les cas, ❖ indique une nouvelle ligne
+                  if (block.text.includes("❖")) {
+                    const subLines = block.text
+                      .replace(/❖\s*/g, "\n❖ ")
+                      .split(/\r?\n/)
+                      .map((l) => l.trim())
+                      .filter((l) => l.length > 0);
+
+                    return subLines.map((subLine, subIndex) => {
+                      const isSubBullet =
+                        subLine.startsWith("❖") ||
+                        /^(?:[❖•●■◆◈➢✔✓►▸▹○▪▫★☆]|[-–—]\s+|\b(?:\d+[\)\.]|[a-zA-Z][\)])\s+)/.test(
+                          subLine
+                        );
+                      return (
+                        <p
+                          key={`${chapterIndex}-${page.number}-${index}-${subIndex}`}
+                          className={isSubBullet ? "book-page-bullet" : undefined}
+                        >
+                          {subLine}
+                        </p>
+                      );
+                    });
+                  }
+
                   const isBullet = /^(?:[❖•●■◆◈➢✔✓►▸▹○▪▫★☆]|[-–—]\s+|\b(?:\d+[\)\.]|[a-zA-Z][\)])\s+)/.test(
                     block.text.trim()
                   );
@@ -171,12 +196,34 @@ export function ChapterContent({
         </div>
       ) : (
         <div className="chapter-body">
-          {chapter.content?.map((paragraph, index) => (
-            <p key={paragraph}>
-              {index === 0 && <span className="drop-cap">{paragraph[0]}</span>}
-              {index === 0 ? paragraph.slice(1) : paragraph}
-            </p>
-          ))}
+          {chapter.content?.map((paragraph, index) => {
+            if (paragraph.includes("❖")) {
+              const subLines = paragraph
+                .replace(/❖\s*/g, "\n❖ ")
+                .split(/\r?\n/)
+                .map((l) => l.trim())
+                .filter((l) => l.length > 0);
+
+              return subLines.map((subLine, subIndex) => {
+                const isSubBullet = subLine.startsWith("❖");
+                return (
+                  <p
+                    key={`${paragraph}-${index}-${subIndex}`}
+                    className={isSubBullet ? "book-page-bullet" : undefined}
+                  >
+                    {subLine}
+                  </p>
+                );
+              });
+            }
+
+            return (
+              <p key={paragraph}>
+                {index === 0 && <span className="drop-cap">{paragraph[0]}</span>}
+                {index === 0 ? paragraph.slice(1) : paragraph}
+              </p>
+            );
+          })}
         </div>
       )}
       <div className="chapter-footer">
