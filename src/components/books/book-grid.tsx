@@ -8,7 +8,8 @@ export function BookGrid({ books }: { books: Book[] }) {
       {books.map((book, index) => (
         <Reveal
           className="book-card-reveal"
-          delay={(index % 4) * 70}
+          delay={(index % 4) * 80}
+          distance={32}
           key={book.id}
         >
           <BookCard book={book} />

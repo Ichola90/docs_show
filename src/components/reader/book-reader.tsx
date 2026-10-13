@@ -12,7 +12,6 @@ import { ArrowIcon } from "@/components/ui/arrow-icon";
 import { BrandMark } from "@/components/ui/brand-mark";
 import { ChapterContent } from "@/components/reader/chapter-content";
 import { ReaderSidebar } from "@/components/reader/reader-sidebar";
-import { Reveal } from "@/components/ui/reveal";
 import { useEffect } from "react";
 
 type BookReaderProps = {
@@ -74,22 +73,20 @@ export function BookReader({ book }: BookReaderProps) {
 
   return (
     <>
-      <Reveal>
-        <div className="reader-topbar">
-          <Link className="reader-back" href="/bibliotheque">
-            <ArrowIcon direction="left" /> Retour à la bibliothèque
+      <div className="reader-topbar">
+        <Link className="reader-back" href="/bibliotheque">
+          <ArrowIcon direction="left" /> Retour à la bibliothèque
+        </Link>
+        <Link className="reader-brand" href="/" aria-label="DOCS SHOW, accueil">
+          <BrandMark />
+          <span className="brand-text-3d">DOCS SHOW</span>
+        </Link>
+        {isReadingComplete && (
+          <Link className="reader-topbar-end" href={`/livres/${book.id}/test`}>
+            PASSER LE TEST
           </Link>
-          <Link className="reader-brand" href="/" aria-label="DOCS SHOW, accueil">
-            <BrandMark />
-            <span className="brand-text-3d">DOCS SHOW</span>
-          </Link>
-          {isReadingComplete && (
-            <Link className="reader-topbar-end" href={`/livres/${book.id}/test`}>
-              PASSER LE TEST
-            </Link>
-          )}
-        </div>
-      </Reveal>
+        )}
+      </div>
       {progressError && (
         <p className="reader-progress-error" role="alert">
           {progressError}
@@ -113,12 +110,10 @@ export function BookReader({ book }: BookReaderProps) {
             onChapterSelect={handleChapterSelect}
           />
           <section className="reading-content" aria-live="polite">
-            <Reveal>
-              <div className="reading-content-top">
-                <span>{book.title.toUpperCase()}</span>
-                <span>CHAPITRE {String(chapterIndex + 1).padStart(2, "0")}</span>
-              </div>
-            </Reveal>
+            <div className="reading-content-top">
+              <span>{book.title.toUpperCase()}</span>
+              <span>CHAPITRE {String(chapterIndex + 1).padStart(2, "0")}</span>
+            </div>
             <ChapterContent
               book={book}
               chapterIndex={chapterIndex}

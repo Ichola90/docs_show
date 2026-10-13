@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ActionButton } from "@/components/ui/action-button";
-import { Reveal } from "@/components/ui/reveal";
 
 const SLIDES = [
   {
@@ -50,15 +49,14 @@ export function PlatformBanner() {
     }, SLIDE_DURATION_MS);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [activeSlide]);
 
   return (
-    <Reveal>
-      <section
-        className="platform-banner"
-        aria-roledescription="carrousel"
-        aria-label="Présentation de la plateforme DOCS SHOW"
-      >
+    <section
+      className="platform-banner"
+      aria-roledescription="carrousel"
+      aria-label="Présentation de la plateforme DOCS SHOW"
+    >
         <div className="platform-banner-slides">
           {SLIDES.map((slide, index) => {
             const isActive = index === activeSlide;
@@ -120,6 +118,5 @@ export function PlatformBanner() {
           Passer la bannière
         </Link>
       </section>
-    </Reveal>
   );
 }

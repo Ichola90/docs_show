@@ -5,26 +5,22 @@ import { Reveal } from "@/components/ui/reveal";
 
 export function FeaturedBooks() {
   return (
-    <Reveal>
-      <section className="library-section" aria-labelledby="featured-books-title">
-        <Reveal>
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">VOTRE PROCHAINE BONNE IDÉE</p>
-              <h2 id="featured-books-title">À la une<span>.</span></h2>
-            </div>
-            <p className="section-intro">
-              Des livres choisis pour leur clarté, leur profondeur et leur utilité dans la vraie vie.
-            </p>
-          </div>
-        </Reveal>
-        <BookGrid books={books.slice(0, 8)} />
-        <Reveal delay={120}>
-          <ActionButton href="/bibliotheque" variant="secondary" className="load-more">
-            Explorer toute la bibliothèque
-          </ActionButton>
-        </Reveal>
-      </section>
-    </Reveal>
+    <section className="library-section" aria-labelledby="featured-books-title">
+      <div className="section-heading">
+        <div>
+          <p className="eyebrow">VOTRE PROCHAINE BONNE IDÉE</p>
+          <h2 id="featured-books-title">À la une<span>.</span></h2>
+        </div>
+        <p className="section-intro">
+          Des livres choisis pour leur clarté, leur profondeur et leur utilité dans la vraie vie.
+        </p>
+      </div>
+      <BookGrid books={books.slice(0, 8)} />
+      <Reveal delay={120}>
+        <ActionButton href="/bibliotheque" variant="secondary" className="load-more">
+          Explorer toute la bibliothèque
+        </ActionButton>
+      </Reveal>
+    </section>
   );
 }

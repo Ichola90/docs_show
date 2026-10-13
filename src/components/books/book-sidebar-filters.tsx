@@ -1,7 +1,5 @@
 "use client";
 
-import { Reveal } from "@/components/ui/reveal";
-
 type BookSidebarFiltersProps = {
   categories: string[];
   levels: string[];
@@ -90,70 +88,58 @@ export function BookSidebarFilters({
             </button>
           )}
         </div>
-        <Reveal>
-          <section className="book-filter-group" aria-labelledby={mobile ? "mobile-domain-heading" : "domain-heading"}>
-            <h3 id={mobile ? "mobile-domain-heading" : "domain-heading"}>Thématiques</h3>
-            <div className="book-filter-options" role="group" aria-label="Filtrer par thématique">
-              <Reveal>
-                <FilterOption
-                  label="Tous les domaines"
-                  count={totalCategoriesCount}
-                  selected={selectedCategories.length === 0}
-                  onSelect={onCategoryClear}
-                />
-              </Reveal>
-              {categories.map((category, index) => (
-                <Reveal key={category} delay={(index % 4) * 55}>
-                  <FilterOption
-                    label={category}
-                    count={categoryCounts[category] ?? 0}
-                    selected={selectedCategories.includes(category)}
-                    disabled={
-                      categoryCounts[category] === 0 &&
-                      !selectedCategories.includes(category)
-                    }
-                    onSelect={() => onCategoryToggle(category)}
-                  />
-                </Reveal>
-              ))}
-            </div>
-          </section>
-        </Reveal>
+        <section className="book-filter-group" aria-labelledby={mobile ? "mobile-domain-heading" : "domain-heading"}>
+          <h3 id={mobile ? "mobile-domain-heading" : "domain-heading"}>Thématiques</h3>
+          <div className="book-filter-options" role="group" aria-label="Filtrer par thématique">
+            <FilterOption
+              label="Tous les domaines"
+              count={totalCategoriesCount}
+              selected={selectedCategories.length === 0}
+              onSelect={onCategoryClear}
+            />
+            {categories.map((category) => (
+              <FilterOption
+                key={category}
+                label={category}
+                count={categoryCounts[category] ?? 0}
+                selected={selectedCategories.includes(category)}
+                disabled={
+                  categoryCounts[category] === 0 &&
+                  !selectedCategories.includes(category)
+                }
+                onSelect={() => onCategoryToggle(category)}
+              />
+            ))}
+          </div>
+        </section>
         <div className="book-filter-divider" />
-        <Reveal delay={80}>
-          <section className="book-filter-group" aria-labelledby={mobile ? "mobile-level-heading" : "level-heading"}>
-            <h3 id={mobile ? "mobile-level-heading" : "level-heading"}>Niveau</h3>
-            <div className="book-filter-options" role="group" aria-label="Filtrer par niveau">
-              <Reveal>
-                <FilterOption
-                  label="Tous les niveaux"
-                  count={totalLevelsCount}
-                  selected={selectedLevels.length === 0}
-                  onSelect={onLevelClear}
-                />
-              </Reveal>
-              {levels.map((level, index) => (
-                <Reveal key={level} delay={(index % 4) * 55}>
-                  <FilterOption
-                    label={level}
-                    count={levelCounts[level] ?? 0}
-                    selected={selectedLevels.includes(level)}
-                    disabled={
-                      levelCounts[level] === 0 &&
-                      !selectedLevels.includes(level)
-                    }
-                    onSelect={() => onLevelToggle(level)}
-                  />
-                </Reveal>
-              ))}
-            </div>
-          </section>
-        </Reveal>
-        <Reveal delay={140}>
-          <button className="book-filter-reset" type="button" onClick={onReset}>
-            Réinitialiser
-          </button>
-        </Reveal>
+        <section className="book-filter-group" aria-labelledby={mobile ? "mobile-level-heading" : "level-heading"}>
+          <h3 id={mobile ? "mobile-level-heading" : "level-heading"}>Niveau</h3>
+          <div className="book-filter-options" role="group" aria-label="Filtrer par niveau">
+            <FilterOption
+              label="Tous les niveaux"
+              count={totalLevelsCount}
+              selected={selectedLevels.length === 0}
+              onSelect={onLevelClear}
+            />
+            {levels.map((level) => (
+              <FilterOption
+                key={level}
+                label={level}
+                count={levelCounts[level] ?? 0}
+                selected={selectedLevels.includes(level)}
+                disabled={
+                  levelCounts[level] === 0 &&
+                  !selectedLevels.includes(level)
+                }
+                onSelect={() => onLevelToggle(level)}
+              />
+            ))}
+          </div>
+        </section>
+        <button className="book-filter-reset" type="button" onClick={onReset}>
+          Réinitialiser
+        </button>
       </div>
     </aside>
   );

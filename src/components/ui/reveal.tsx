@@ -56,7 +56,7 @@ export function Reveal({
       } ${className}`}
       style={{
         transform: visible ? "translateY(0)" : `translateY(${distance}px)`,
-        transitionDelay: visible ? `${delay}ms` : "0ms",
+        transitionDelay: visible && delay > 0 ? `${delay}ms` : "0ms",
       }}
     >
       {children}

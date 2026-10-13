@@ -9,7 +9,6 @@ import { BookQuiz } from "@/components/reader/book-quiz";
 import { ActionButton } from "@/components/ui/action-button";
 import { ArrowIcon } from "@/components/ui/arrow-icon";
 import { BrandMark } from "@/components/ui/brand-mark";
-import { Reveal } from "@/components/ui/reveal";
 
 export function BookTestExperience({ book }: { book: Book }) {
   const [accessState, setAccessState] = useState<
@@ -77,53 +76,43 @@ export function BookTestExperience({ book }: { book: Book }) {
 
   return (
     <>
-      <Reveal>
-        <div className="reader-topbar">
-          <Link className="reader-back" href="/bibliotheque">
-            <ArrowIcon direction="left" /> Retour à la bibliothèque
-          </Link>
-          <Link className="reader-brand" href="/" aria-label="DOCS SHOW, accueil">
-            <BrandMark />
-            <span className="brand-text-3d">DOCS SHOW</span>
-          </Link>
-          <span className="reader-topbar-end">ESPACE DE TEST</span>
-        </div>
-      </Reveal>
+      <div className="reader-topbar">
+        <Link className="reader-back" href="/bibliotheque">
+          <ArrowIcon direction="left" /> Retour à la bibliothèque
+        </Link>
+        <Link className="reader-brand" href="/" aria-label="DOCS SHOW, accueil">
+          <BrandMark />
+          <span className="brand-text-3d">DOCS SHOW</span>
+        </Link>
+        <span className="reader-topbar-end">ESPACE DE TEST</span>
+      </div>
       <div className="reader-layout">
         <aside className="reader-sidebar">
-          <Reveal>
-            <div className="reader-sidebar-intro">
-              <BookCover book={book} compact />
-              <p className="eyebrow">{book.category}</p>
-              <h1>{book.title}</h1>
-              <p className="reader-subtitle">{book.subtitle}</p>
-            </div>
-          </Reveal>
-          <Reveal delay={80}>
-            <div className="reader-test-steps">
-              <p className="chapter-list-title">ÉTAPE 02 / 02</p>
-              <ol className="chapter-list">
-                <li>
-                  <span className="reader-step-link">
-                    <span>01</span> Lecture des chapitres
-                  </span>
-                </li>
-                <li><span className="reader-current-step"><span>02</span> Testez vos acquis</span></li>
-              </ol>
-            </div>
-          </Reveal>
-          <Reveal delay={150}>
-            <div className="reader-note">Le test vous aide à faire le point sur les idées retenues.</div>
-          </Reveal>
+          <div className="reader-sidebar-intro">
+            <BookCover book={book} compact />
+            <p className="eyebrow">{book.category}</p>
+            <h1>{book.title}</h1>
+            <p className="reader-subtitle">{book.subtitle}</p>
+          </div>
+          <div className="reader-test-steps">
+            <p className="chapter-list-title">ÉTAPE 02 / 02</p>
+            <ol className="chapter-list">
+              <li>
+                <span className="reader-step-link">
+                  <span>01</span> Lecture des chapitres
+                </span>
+              </li>
+              <li><span className="reader-current-step"><span>02</span> Testez vos acquis</span></li>
+            </ol>
+          </div>
+          <div className="reader-note">Le test vous aide à faire le point sur les idées retenues.</div>
         </aside>
         <section className="reading-content">
-            <Reveal>
-              <div className="reading-content-top">
-                <span>{book.title.toUpperCase()}</span>
-                <span>ÉVALUATION</span>
-              </div>
-            </Reveal>
-            <BookQuiz book={book} />
+          <div className="reading-content-top">
+            <span>{book.title.toUpperCase()}</span>
+            <span>ÉVALUATION</span>
+          </div>
+          <BookQuiz book={book} />
         </section>
       </div>
     </>

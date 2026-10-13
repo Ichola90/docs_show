@@ -3,7 +3,6 @@ import type { Book } from "@/data/books";
 import { ActionButton } from "@/components/ui/action-button";
 import { BookCover } from "@/components/books/book-cover";
 import { BookRatingDisplay } from "@/components/books/book-rating-display";
-import { Reveal } from "@/components/ui/reveal";
 
 export function BookCard({ book }: { book: Book }) {
   const hasFullReader = [
@@ -13,7 +12,7 @@ export function BookCard({ book }: { book: Book }) {
 
   return (
     <article className="book-card">
-      <Reveal className="book-card-cover-reveal">
+      <div className="book-card-cover-reveal">
         <Link
           className="cover-button"
           href={`/livres/${book.id}`}
@@ -21,8 +20,8 @@ export function BookCard({ book }: { book: Book }) {
         >
           <BookCover book={book} />
         </Link>
-      </Reveal>
-      <Reveal className="book-card-info-reveal" delay={70}>
+      </div>
+      <div className="book-card-info-reveal">
         <div className="book-card-info">
           <div className="book-card-meta">
             <span>{book.category}</span>
@@ -63,7 +62,7 @@ export function BookCard({ book }: { book: Book }) {
             </ActionButton>
           )}
         </div>
-      </Reveal>
+      </div>
     </article>
   );
 }

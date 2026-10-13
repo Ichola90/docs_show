@@ -1,6 +1,5 @@
 import { BookCover } from "@/components/books/book-cover";
 import type { Book } from "@/data/books";
-import { Reveal } from "@/components/ui/reveal";
 
 type ReaderSidebarProps = {
   book: Book;
@@ -40,83 +39,71 @@ export function ReaderSidebar({
 
   return (
     <aside className="reader-sidebar">
-      <Reveal>
-        <div className="reader-sidebar-intro">
-          <BookCover book={book} compact />
-          <p className="eyebrow">{book.category}</p>
-          <h1>{book.title}</h1>
-          <p className="reader-subtitle">{book.subtitle}</p>
+      <div className="reader-sidebar-intro">
+        <BookCover book={book} compact />
+        <p className="eyebrow">{book.category}</p>
+        <h1>{book.title}</h1>
+        <p className="reader-subtitle">{book.subtitle}</p>
+      </div>
+      <div className="reader-progress">
+        <div className="reader-progress-label">
+          <span>VOTRE PROGRESSION</span>
+          <span>{Math.max(0, progress)}%</span>
         </div>
-      </Reveal>
-      <Reveal delay={70}>
-        <div className="reader-progress">
-          <div className="reader-progress-label">
-            <span>VOTRE PROGRESSION</span>
-            <span>{Math.max(0, progress)}%</span>
-          </div>
-          <div
-            className="progress-track"
-            role="progressbar"
-            aria-label="Progression dans le livre"
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          >
-            <span style={{ width: `${progress}%` }} />
-          </div>
+        <div
+          className="progress-track"
+          role="progressbar"
+          aria-label="Progression dans le livre"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
+          <span style={{ width: `${progress}%` }} />
         </div>
-      </Reveal>
-      <Reveal delay={120}>
-        <p className="chapter-list-title">ÉTAPE 01 / 02 · LECTURE</p>
-      </Reveal>
+      </div>
+      <p className="chapter-list-title">ÉTAPE 01 / 02 · LECTURE</p>
       {book.chapters.length > 30 ? (
-        <Reveal delay={140}>
-          <select
-            className="reader-chapter-select"
-            aria-label="Choisir une section du livre"
-            value={chapterIndex}
-            onChange={(event) => onChapterSelect(Number(event.target.value))}
-          >
-            {chapterGroups.map((group) => (
-              <optgroup key={group.title} label={group.title}>
-                {group.chapters.map((chapter) => (
-                  <option
-                    key={chapter.index}
-                    value={chapter.index}
-                    disabled={chapter.index > completedThrough + 1}
-                  >
-                    {String(chapter.index + 1).padStart(2, "0")} · {chapter.title}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
-        </Reveal>
+        <select
+          className="reader-chapter-select"
+          aria-label="Choisir une section du livre"
+          value={chapterIndex}
+          onChange={(event) => onChapterSelect(Number(event.target.value))}
+        >
+          {chapterGroups.map((group) => (
+            <optgroup key={group.title} label={group.title}>
+              {group.chapters.map((chapter) => (
+                <option
+                  key={chapter.index}
+                  value={chapter.index}
+                  disabled={chapter.index > completedThrough + 1}
+                >
+                  {String(chapter.index + 1).padStart(2, "0")} · {chapter.title}
+                </option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
       ) : (
         <ol className="chapter-list">
           {book.chapters.map((chapter, index) => (
             <li key={`${chapter.title}-${index}`}>
-              <Reveal delay={(index % 4) * 55}>
-                <button
-                  className={index === chapterIndex ? "active" : ""}
-                  type="button"
-                  disabled={index > completedThrough + 1}
-                  aria-current={index === chapterIndex ? "step" : undefined}
-                  onClick={() => onChapterSelect(index)}
-                >
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  {chapter.title}
-                </button>
-              </Reveal>
+              <button
+                className={index === chapterIndex ? "active" : ""}
+                type="button"
+                disabled={index > completedThrough + 1}
+                aria-current={index === chapterIndex ? "step" : undefined}
+                onClick={() => onChapterSelect(index)}
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                {chapter.title}
+              </button>
             </li>
           ))}
         </ol>
       )}
-      <Reveal delay={160}>
-        <div className="reader-note">
-          Lisez les sections dans l’ordre. La suivante se débloque à la fin de chacune.
-        </div>
-      </Reveal>
+      <div className="reader-note">
+        Lisez les sections dans l’ordre. La suivante se débloque à la fin de chacune.
+      </div>
     </aside>
   );
 }

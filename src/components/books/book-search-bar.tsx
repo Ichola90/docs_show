@@ -21,9 +21,9 @@ export function BookSearchBar({
   onFilterClick,
 }: BookSearchBarProps) {
   return (
-    <section className="book-search-bar" aria-label="Recherche dans la bibliothèque">
+    <Reveal className="book-search-bar" delay={60}>
       <div className="book-search-inner">
-        <Reveal className="filter-toggle-reveal">
+        <div className="filter-toggle-reveal">
           <ActionButton
             className="filter-toggle"
             variant={filtersVisible ? "primary" : "secondary"}
@@ -41,8 +41,8 @@ export function BookSearchBar({
               <span className="filter-count">{selectedFilterCount}</span>
             )}
           </ActionButton>
-        </Reveal>
-        <Reveal className="search-form-reveal" delay={70}>
+        </div>
+        <div className="search-form-reveal">
           <form
             className="book-search-form"
             onSubmit={(event) => {
@@ -69,8 +69,8 @@ export function BookSearchBar({
               </svg>
             </button>
           </form>
-        </Reveal>
+        </div>
       </div>
-    </section>
+    </Reveal>
   );
 }

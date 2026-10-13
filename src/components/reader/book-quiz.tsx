@@ -8,7 +8,6 @@ import {
 } from "@/data/book-progress";
 import { getBookQuizQuestions, type Book } from "@/data/books";
 import { ActionButton } from "@/components/ui/action-button";
-import { Reveal } from "@/components/ui/reveal";
 
 function normalizeAnswer(answer: string) {
   return answer
@@ -170,32 +169,28 @@ export function BookQuiz({ book }: { book: Book }) {
   if (phase === "name") {
     return (
       <div className="quiz-panel">
-        <Reveal>
-          <div className="quiz-intro-heading">
-            <span className="eyebrow">AVANT DE COMMENCER</span>
-            <h2>Qui passe le test&nbsp;?</h2>
-            <p className="quiz-intro">
-              Votre nom apparaîtra avec votre score et votre mention à la fin.
-              Le test se fait en une seule tentative.
-            </p>
-          </div>
-        </Reveal>
-        <Reveal delay={80}>
-          <form className="quiz-name-form" onSubmit={handleStart}>
-            <label htmlFor={`${book.id}-reader-name`}>Votre nom</label>
-            <input
-              id={`${book.id}-reader-name`}
-              autoComplete="name"
-              maxLength={80}
-              required
-              value={nameInput}
-              onChange={(event) => setNameInput(event.target.value)}
-              placeholder="Ex. Amadou Diallo"
-            />
-            {error && <p className="quiz-error" role="alert">{error}</p>}
-            <ActionButton type="submit">Commencer le test</ActionButton>
-          </form>
-        </Reveal>
+        <div className="quiz-intro-heading">
+          <span className="eyebrow">AVANT DE COMMENCER</span>
+          <h2>Qui passe le test&nbsp;?</h2>
+          <p className="quiz-intro">
+            Votre nom apparaîtra avec votre score et votre mention à la fin.
+            Le test se fait en une seule tentative.
+          </p>
+        </div>
+        <form className="quiz-name-form" onSubmit={handleStart}>
+          <label htmlFor={`${book.id}-reader-name`}>Votre nom</label>
+          <input
+            id={`${book.id}-reader-name`}
+            autoComplete="name"
+            maxLength={80}
+            required
+            value={nameInput}
+            onChange={(event) => setNameInput(event.target.value)}
+            placeholder="Ex. Amadou Diallo"
+          />
+          {error && <p className="quiz-error" role="alert">{error}</p>}
+          <ActionButton type="submit">Commencer le test</ActionButton>
+        </form>
       </div>
     );
   }
@@ -206,26 +201,20 @@ export function BookQuiz({ book }: { book: Book }) {
 
     return (
       <div className="quiz-panel quiz-result">
-        <Reveal>
-          <div className="quiz-result-mark" aria-hidden="true">✓</div>
-          <span className="eyebrow">TEST TERMINÉ</span>
-          <h2>Bravo, {attempt.name}.</h2>
-          <p className="quiz-intro">
-            Votre résultat pour « {book.title} » est enregistré sur cet appareil.
-          </p>
-        </Reveal>
-        <Reveal delay={80}>
-          <div className="quiz-score-card">
-            <span>VOTRE SCORE</span>
-            <strong>{correctCount} / {questions.length}</strong>
-            <span>{score} % de bonnes réponses</span>
-          </div>
-        </Reveal>
-        <Reveal delay={140}>
-          <p className="quiz-mention">
-            Mention : <strong>{getMention(score)}</strong>
-          </p>
-        </Reveal>
+        <div className="quiz-result-mark" aria-hidden="true">✓</div>
+        <span className="eyebrow">TEST TERMINÉ</span>
+        <h2>Bravo, {attempt.name}.</h2>
+        <p className="quiz-intro">
+          Votre résultat pour « {book.title} » est enregistré sur cet appareil.
+        </p>
+        <div className="quiz-score-card">
+          <span>VOTRE SCORE</span>
+          <strong>{correctCount} / {questions.length}</strong>
+          <span>{score} % de bonnes réponses</span>
+        </div>
+        <p className="quiz-mention">
+          Mention : <strong>{getMention(score)}</strong>
+        </p>
       </div>
     );
   }
@@ -234,67 +223,63 @@ export function BookQuiz({ book }: { book: Book }) {
 
   return (
     <div className="quiz-panel">
-      <Reveal>
-        <div className="quiz-intro-heading">
-          <span className="eyebrow">QUESTION {currentIndex + 1} / {questions.length}</span>
-          <h2>À vous de jouer, {attempt.name}.</h2>
-          <p className="quiz-intro">
-            Une fois votre réponse validée, vous ne pourrez plus la modifier ni
-            revenir à cette question.
-          </p>
-        </div>
-      </Reveal>
-      <Reveal delay={80}>
-        <form className="quiz-answer-form" onSubmit={handleContinue}>
-          {question.type === "choice" ? (
-            <fieldset className="quiz-question">
-              <legend>{question.question}</legend>
-              {question.answers.map((answer, index) => (
-                <label
-                  className={`quiz-answer${selectedChoice === String(index) ? " selected" : ""}`}
-                  key={answer}
-                >
-                  <input
-                    type="radio"
-                    name={`${book.id}-question-${currentIndex}`}
-                    value={index}
-                    checked={selectedChoice === String(index)}
-                    onChange={() => {
-                      setSelectedChoice(String(index));
-                      setError(null);
-                    }}
-                  />
-                  <span className="answer-index">{String.fromCharCode(65 + index)}</span>
-                  <span>{answer}</span>
-                </label>
-              ))}
-            </fieldset>
-          ) : (
-            <div className="quiz-question quiz-written-question">
-              <label htmlFor={`${book.id}-written-answer`}>{question.question}</label>
-              <input
-                id={`${book.id}-written-answer`}
-                autoComplete="off"
-                value={writtenAnswer}
-                onChange={(event) => {
-                  setWrittenAnswer(event.target.value);
-                  setError(null);
-                }}
-                placeholder={question.placeholder ?? "Votre réponse"}
-              />
-            </div>
-          )}
-          {error && <p className="quiz-error" role="alert">{error}</p>}
-          <div className="quiz-actions">
-            <span className="quiz-no-back">Réponse définitive après validation</span>
-            <ActionButton type="submit">
-              {currentIndex === questions.length - 1
-                ? "Terminer le test"
-                : "Valider et continuer"}
-            </ActionButton>
+      <div className="quiz-intro-heading">
+        <span className="eyebrow">QUESTION {currentIndex + 1} / {questions.length}</span>
+        <h2>À vous de jouer, {attempt.name}.</h2>
+        <p className="quiz-intro">
+          Une fois votre réponse validée, vous ne pourrez plus la modifier ni
+          revenir à cette question.
+        </p>
+      </div>
+      <form className="quiz-answer-form" onSubmit={handleContinue}>
+        {question.type === "choice" ? (
+          <fieldset className="quiz-question">
+            <legend>{question.question}</legend>
+            {question.answers.map((answer, index) => (
+              <label
+                className={`quiz-answer${selectedChoice === String(index) ? " selected" : ""}`}
+                key={answer}
+              >
+                <input
+                  type="radio"
+                  name={`${book.id}-question-${currentIndex}`}
+                  value={index}
+                  checked={selectedChoice === String(index)}
+                  onChange={() => {
+                    setSelectedChoice(String(index));
+                    setError(null);
+                  }}
+                />
+                <span className="answer-index">{String.fromCharCode(65 + index)}</span>
+                <span>{answer}</span>
+              </label>
+            ))}
+          </fieldset>
+        ) : (
+          <div className="quiz-question quiz-written-question">
+            <label htmlFor={`${book.id}-written-answer`}>{question.question}</label>
+            <input
+              id={`${book.id}-written-answer`}
+              autoComplete="off"
+              value={writtenAnswer}
+              onChange={(event) => {
+                setWrittenAnswer(event.target.value);
+                setError(null);
+              }}
+              placeholder={question.placeholder ?? "Votre réponse"}
+            />
           </div>
-        </form>
-      </Reveal>
+        )}
+        {error && <p className="quiz-error" role="alert">{error}</p>}
+        <div className="quiz-actions">
+          <span className="quiz-no-back">Réponse définitive après validation</span>
+          <ActionButton type="submit">
+            {currentIndex === questions.length - 1
+              ? "Terminer le test"
+              : "Valider et continuer"}
+          </ActionButton>
+        </div>
+      </form>
     </div>
   );
 }

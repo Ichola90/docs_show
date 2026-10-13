@@ -20,26 +20,24 @@ const audiences = [
 
 export function AudienceSection() {
   return (
-    <Reveal>
-      <section className="audience-section" id="pour-qui">
-        <Reveal>
-          <div className="audience-heading">
-            <p className="eyebrow">LE SAVOIR EST FAIT POUR CIRCULER</p>
-            <h2>Pour celles et ceux qui<br />veulent <em>aller plus loin.</em></h2>
-          </div>
-        </Reveal>
-        <div className="audience-grid">
-          {audiences.map((audience, index) => (
-            <Reveal key={audience.number} delay={index * 90}>
-              <article>
-                <span>{audience.number}</span>
-                <h3>{audience.title}</h3>
-                <p>{audience.description}</p>
-              </article>
-            </Reveal>
-          ))}
+    <section className="audience-section" id="pour-qui">
+      <Reveal>
+        <div className="audience-heading">
+          <p className="eyebrow">LE SAVOIR EST FAIT POUR CIRCULER</p>
+          <h2>Pour celles et ceux qui<br />veulent <em>aller plus loin.</em></h2>
         </div>
-      </section>
-    </Reveal>
+      </Reveal>
+      <div className="audience-grid">
+        {audiences.map((audience, index) => (
+          <Reveal key={audience.number} delay={index * 90}>
+            <article>
+              <span>{audience.number}</span>
+              <h3>{audience.title}</h3>
+              <p>{audience.description}</p>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </section>
   );
 }

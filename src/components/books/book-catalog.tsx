@@ -6,7 +6,6 @@ import { BookGrid } from "@/components/books/book-grid";
 import { BookSearchBar } from "@/components/books/book-search-bar";
 import { BookSidebarFilters } from "@/components/books/book-sidebar-filters";
 import { ActionButton } from "@/components/ui/action-button";
-import { Reveal } from "@/components/ui/reveal";
 
 const levels = [...new Set(books.map((book) => book.level))];
 
@@ -162,8 +161,7 @@ export function BookCatalog() {
           }
         }}
       />
-      <Reveal>
-        <section className="catalog-content" aria-label="Résultats de la bibliothèque">
+      <section className="catalog-content" aria-label="Résultats de la bibliothèque">
           <div className="catalog-results-header">
             <p aria-live="polite">
               <strong>{filteredBooks.length}</strong>{" "}
@@ -181,32 +179,29 @@ export function BookCatalog() {
               {filteredBooks.length > 0 ? (
                 <BookGrid books={filteredBooks} />
               ) : (
-                <Reveal>
-                  <div className="empty-state" role="status">
-                    <svg
-                      className="empty-state-icon"
-                      viewBox="0 0 48 48"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <circle cx="21" cy="21" r="12.5" />
-                      <path d="m30.5 30.5 9 9M16 21h10M21 16v10" />
-                    </svg>
-                    <h2>Aucun livre trouvé</h2>
-                    <p>
-                      Essayez un autre titre, un auteur ou une thématique, ou
-                      réinitialisez les filtres.
-                    </p>
-                    <ActionButton variant="quiet" size="small" onClick={resetFilters}>
-                      Réinitialiser la recherche
-                    </ActionButton>
-                  </div>
-                </Reveal>
+                <div className="empty-state" role="status">
+                  <svg
+                    className="empty-state-icon"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <circle cx="21" cy="21" r="12.5" />
+                    <path d="m30.5 30.5 9 9M16 21h10M21 16v10" />
+                  </svg>
+                  <h2>Aucun livre trouvé</h2>
+                  <p>
+                    Essayez un autre titre, un auteur ou une thématique, ou
+                    réinitialisez les filtres.
+                  </p>
+                  <ActionButton variant="quiet" size="small" onClick={resetFilters}>
+                    Réinitialiser la recherche
+                  </ActionButton>
+                </div>
               )}
             </div>
           </div>
         </section>
-      </Reveal>
       {mobileFiltersOpen && (
         <div
           className="mobile-filter-overlay"
