@@ -148,9 +148,9 @@
   isolation: isolate;
   width: 100% !important;
   max-width: 100% !important;
-  height: 300px !important;
-  min-height: 300px !important;
-  max-height: 300px !important;
+  height: 260px !important;
+  min-height: 260px !important;
+  max-height: 260px !important;
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -2009,9 +2009,9 @@
   .platform-banner {
     width: 100% !important;
     max-width: 100% !important;
-    height: 220px !important;
-    min-height: 220px !important;
-    max-height: 220px !important;
+    height: 260px !important;
+    min-height: 260px !important;
+    max-height: 260px !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
@@ -2066,10 +2066,10 @@
     border-radius: var(--radius-full) !important;
   }
   .platform-banner-controls {
-    right: 10px !important;
-    bottom: 10px !important;
-    left: auto !important;
-    transform: none !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: 12px !important;
+    right: auto !important;
   }
   .stats-strip { width: calc(100% - 32px); grid-template-columns: 1fr 1fr; gap: 12px 8px; margin-top: 12px; padding: 12px 14px; }
   .stats-strip > div { display: block; }
