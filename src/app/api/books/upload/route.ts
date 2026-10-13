@@ -62,13 +62,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3. Limite de taille stricte (4.5 Mo max pour compatibilité Vercel Serverless)
-    const MAX_FILE_SIZE = 4.5 * 1024 * 1024;
+    // 3. Limite de taille (20 Mo max)
+    const MAX_FILE_SIZE = 20 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         {
           success: false,
-          error: "Le fichier PDF dépasse la taille maximale autorisée (4.5 Mo pour le déploiement serverless).",
+          error: "Le fichier PDF dépasse la taille maximale autorisée (20 Mo).",
         },
         { status: 400 }
       );

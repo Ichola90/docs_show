@@ -16,8 +16,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
-    ...books.map((book) => ({
-      url: `${SITE_URL}/livres/${book.id}/`,
+    {
+      url: `${SITE_URL}/publier/`,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...["concevez-site-web-php-mysql", "apprenez-programmer-c"].map((id) => ({
+      url: `${SITE_URL}/livres/${id}/`,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),

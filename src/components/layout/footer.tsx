@@ -37,8 +37,8 @@ export function Footer() {
               <ul className="footer-links">
                 <li><Link href="/livres/concevez-site-web-php-mysql">PHP et MySQL</Link></li>
                 <li><Link href="/livres/apprenez-programmer-c">Programmation en C</Link></li>
-                <li><Link href="/livres/clean-code">Clean Code & Bonnes pratiques</Link></li>
-                <li><Link href="/livres/architecture-web">Architecture Web Moderne</Link></li>
+                <li><Link href="/bibliotheque">Catalogue complet</Link></li>
+                <li><Link href="/publier">Publier un livre (PDF)</Link></li>
               </ul>
             </nav>
 

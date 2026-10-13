@@ -1,31 +1,16 @@
-import path from "node:path";
-import fs from "node:fs";
-import { pathToFileURL } from "node:url";
 import { PDFParse } from "pdf-parse";
+import { getData } from "pdf-parse/worker";
 import type { Book, BookChapter, BookPage, BookPageBlock } from "@/data/books";
 
 let workerInitialized = false;
 
 function ensurePdfWorker() {
   if (workerInitialized) return;
-
-  const candidatePaths = [
-    path.join(process.cwd(), "node_modules", "pdfjs-dist", "legacy", "build", "pdf.worker.mjs"),
-    path.join(process.cwd(), "node_modules", "pdf-parse", "dist", "pdf-parse", "cjs", "pdf.worker.mjs"),
-    path.join(process.cwd(), "node_modules", "pdf-parse", "dist", "worker", "pdf.worker.mjs"),
-  ];
-
-  for (const candidate of candidatePaths) {
-    if (fs.existsSync(/*turbopackIgnore: true*/ candidate)) {
-      try {
-        const fileUrl = pathToFileURL(candidate).href;
-        PDFParse.setWorker(fileUrl);
-        workerInitialized = true;
-        break;
-      } catch {
-        // continue
-      }
-    }
+  try {
+    PDFParse.setWorker(getData());
+    workerInitialized = true;
+  } catch (err) {
+    console.warn("Initialisation du worker PDF :", err);
   }
 }
 

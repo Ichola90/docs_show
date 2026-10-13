@@ -111,8 +111,8 @@ export function PublishBookForm() {
       setErrors((prev) => ({ ...prev, file: "Le fichier doit être au format PDF (.pdf)." }));
       return;
     }
-    if (selectedFile.size > 25 * 1024 * 1024) {
-      setErrors((prev) => ({ ...prev, file: "Le fichier PDF dépasse la taille maximale autorisée (25 Mo)." }));
+    if (selectedFile.size > 20 * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, file: "Le fichier PDF dépasse la taille maximale autorisée (20 Mo)." }));
       return;
     }
 
@@ -186,10 +186,27 @@ export function PublishBookForm() {
         body: formData,
       });
 
-      const data = await response.json();
+      let data: {
+        success?: boolean;
+        error?: string;
+        bookId: string;
+        bookTitle: string;
+        pagesCount: string;
+        chaptersCount: number;
+      } | null = null;
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Une erreur est survenue lors de la création du livre.");
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error(
+          response.status === 413
+            ? "Le fichier est trop lourd pour le serveur."
+            : `Erreur inattendue du serveur (${response.status}).`
+        );
+      }
+
+      if (!response.ok || !data?.success) {
+        throw new Error(data?.error || "Une erreur est survenue lors de la création du livre.");
       }
 
       setUploadStep("Génération du quiz et publication terminée !");
@@ -367,7 +384,7 @@ export function PublishBookForm() {
                     <p className="publish-dropzone-main">
                       <strong>Glissez-déposez votre fichier PDF</strong> ou <span className="publish-browse-link">parcourez vos fichiers</span>
                     </p>
-                    <span className="publish-dropzone-hint">Format PDF uniquement (max 25 Mo)</span>
+                    <span className="publish-dropzone-hint">Format PDF uniquement (max 20 Mo)</span>
                   </div>
                 )}
               </div>
