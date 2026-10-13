@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BookReader } from "@/components/reader/book-reader";
+import { ClientBookReaderFallback } from "@/components/reader/client-book-reader-fallback";
 import { getBookById } from "@/data/book-content";
 import { createPageMetadata } from "@/lib/seo";
 
@@ -24,8 +24,8 @@ export async function generateMetadata({ params }: BookPageProps): Promise<Metad
 
   if (!book) {
     return createPageMetadata({
-      title: "Livre indisponible",
-      description: "Ce livre n’est pas disponible dans la bibliothèque DOCS SHOW.",
+      title: "Lecture du livre",
+      description: "Lisez ce livre en direct sur la plateforme DOCS SHOW.",
       path: `/livres/${id}/`,
     });
   }
@@ -41,7 +41,9 @@ async function BookPageContent({ params }: BookPageProps) {
   const { id } = await params;
   const book = await getBookById(id);
 
-  if (!book) notFound();
+  if (!book) {
+    return <ClientBookReaderFallback bookId={id} />;
+  }
 
   return <BookReader book={book} />;
 }

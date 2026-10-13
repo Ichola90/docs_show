@@ -45,22 +45,30 @@ export async function getAllBooksWithCustom(): Promise<Book[]> {
 }
 
 export async function getBookById(id: string): Promise<Book | undefined> {
-  const custom = await getCustomBookById(id);
-  if (custom) return custom;
-
-  const book = getBookSummaryById(id);
-  if (!book) return undefined;
-
-  if (book.id === "concevez-site-web-php-mysql") {
+  // 1. Livres officiels statiques disponibles
+  if (id === "concevez-site-web-php-mysql") {
+    const book = getBookSummaryById(id);
+    if (!book) return undefined;
     const { default: data } = await import("./php-mysql-chapters.json");
     return { ...book, chapters: hydrateChapters(data.chapters) };
   }
 
-  if (book.id === "apprenez-programmer-c") {
+  if (id === "apprenez-programmer-c") {
+    const book = getBookSummaryById(id);
+    if (!book) return undefined;
     const { default: data } = await import("./c-programming-chapters.json");
     return { ...book, chapters: hydrateChapters(data.chapters) };
   }
 
-  // Les 8 autres livres restent indisponibles
+  // 2. Si c'est un livre officiel indisponible (les 8 autres livres)
+  const officialBook = getBookSummaryById(id);
+  if (officialBook) {
+    return undefined;
+  }
+
+  // 3. Livres personnalisés créés par les auteurs
+  const custom = await getCustomBookById(id);
+  if (custom) return custom;
+
   return undefined;
 }

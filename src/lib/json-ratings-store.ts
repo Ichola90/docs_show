@@ -44,6 +44,7 @@ export async function getRatingsStore(): Promise<RatingsStore> {
         headers: {
           Authorization: `Bearer ${gistToken}`,
           Accept: "application/vnd.github+json",
+          "User-Agent": "docs-show-app",
         },
         cache: "no-store",
       });
@@ -58,8 +59,11 @@ export async function getRatingsStore(): Promise<RatingsStore> {
           return parsed;
         }
       }
-    } catch (err) {
-      console.warn("Erreur lecture GitHub Gist:", err);
+    } catch (err: unknown) {
+      const isDynamic = err && typeof err === "object" && ("digest" in err || (err as Error).message?.includes("Dynamic server usage"));
+      if (!isDynamic) {
+        console.warn("Erreur lecture GitHub Gist:", err);
+      }
     }
   }
 
@@ -114,6 +118,7 @@ export async function saveRatingsStore(store: RatingsStore): Promise<void> {
           Authorization: `Bearer ${gistToken}`,
           Accept: "application/vnd.github+json",
           "Content-Type": "application/json",
+          "User-Agent": "docs-show-app",
         },
         body: JSON.stringify({
           files: {

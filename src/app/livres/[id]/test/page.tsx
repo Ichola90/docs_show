@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { BookTestExperience } from "@/components/reader/book-test-experience";
+import { ClientBookTestFallback } from "@/components/reader/client-book-test-fallback";
 import { getBookById } from "@/data/book-content";
 import { createPageMetadata } from "@/lib/seo";
 
@@ -21,10 +21,10 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: BookTestPageProps): Promise<Metadata> {
   const { id } = await params;
   const book = await getBookById(id);
-  const title = book ? `Test — ${book.title}` : "Test indisponible";
+  const title = book ? `Test — ${book.title}` : "Test de connaissances";
   const description = book
     ? `Testez vos connaissances après la lecture de ${book.title}.`
-    : "Ce test n’est pas disponible dans DOCS SHOW.";
+    : "Testez vos connaissances sur DOCS SHOW.";
 
   return {
     ...createPageMetadata({
@@ -40,7 +40,9 @@ async function BookTestPageContent({ params }: BookTestPageProps) {
   const { id } = await params;
   const book = await getBookById(id);
 
-  if (!book) notFound();
+  if (!book) {
+    return <ClientBookTestFallback bookId={id} />;
+  }
 
   return <BookTestExperience book={book} />;
 }

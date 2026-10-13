@@ -25,14 +25,54 @@ export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } 
   const [isCompactViewport, setIsCompactViewport] = useState(false);
 
   useEffect(() => {
-    fetch("/api/books")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.books)) {
-          setAllBooks(data.books);
+    let active = true;
+
+    const frameId = window.requestAnimationFrame(() => {
+      if (!active) return;
+
+      // 1. Lire immédiatement depuis localStorage pour afficher sans aucun délai le livre que l'auteur vient d'uploader
+      try {
+        const localListRaw = localStorage.getItem("docs_show_custom_books_list");
+        if (localListRaw) {
+          const localList = JSON.parse(localListRaw);
+          if (Array.isArray(localList) && localList.length > 0) {
+            setAllBooks((prev) => {
+              const existingIds = new Set(prev.map((b) => b.id));
+              const newLocalBooks = localList.filter((b) => !existingIds.has(b.id));
+              return [...newLocalBooks, ...prev];
+            });
+          }
         }
-      })
-      .catch(() => {});
+      } catch {}
+
+      // 2. Charger les livres de l'API et fusionner avec le cache local
+      fetch("/api/books")
+        .then((res) => res.json())
+        .then((data) => {
+          if (!active) return;
+          if (data.success && Array.isArray(data.books)) {
+            try {
+              const localListRaw = localStorage.getItem("docs_show_custom_books_list");
+              if (localListRaw) {
+                const localList = JSON.parse(localListRaw);
+                if (Array.isArray(localList)) {
+                  const apiIds = new Set(data.books.map((b: { id: string }) => b.id));
+                  const localOnly = localList.filter((b: { id: string }) => !apiIds.has(b.id));
+                  setAllBooks([...localOnly, ...data.books]);
+                  return;
+                }
+              }
+            } catch {}
+            setAllBooks(data.books);
+          }
+        })
+        .catch(() => {});
+    });
+
+    return () => {
+      active = false;
+      window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   const activeCategories = useMemo(

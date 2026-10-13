@@ -193,6 +193,7 @@ export function PublishBookForm() {
         bookTitle: string;
         pagesCount: string;
         chaptersCount: number;
+        book?: Book;
       } | null = null;
 
       try {
@@ -207,6 +208,27 @@ export function PublishBookForm() {
 
       if (!response.ok || !data?.success) {
         throw new Error(data?.error || "Une erreur est survenue lors de la création du livre.");
+      }
+
+      // Sauvegarde immédiate dans localStorage pour affichage instantané et résilience Vercel serverless
+      if (data.book) {
+        try {
+          localStorage.setItem(`docs_show_custom_book_${data.bookId}`, JSON.stringify(data.book));
+          const existingListRaw = localStorage.getItem("docs_show_custom_books_list");
+          let existingList: Book[] = [];
+          if (existingListRaw) {
+            try {
+              existingList = JSON.parse(existingListRaw);
+            } catch {
+              existingList = [];
+            }
+          }
+          const filtered = existingList.filter((b) => b.id !== data.bookId);
+          filtered.unshift(data.book);
+          localStorage.setItem("docs_show_custom_books_list", JSON.stringify(filtered));
+        } catch (storageErr) {
+          console.warn("Erreur de mise en cache locale:", storageErr);
+        }
       }
 
       setUploadStep("Génération du quiz et publication terminée !");

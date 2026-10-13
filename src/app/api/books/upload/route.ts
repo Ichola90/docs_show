@@ -152,6 +152,7 @@ export async function POST(request: NextRequest) {
       bookTitle: book.title,
       pagesCount: book.pages,
       chaptersCount: book.chapters.length,
+      book,
     });
   } catch (error) {
     console.error("Erreur lors de l'analyse ou de la création du livre PDF :", error);
