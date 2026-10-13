@@ -148,9 +148,9 @@
   isolation: isolate;
   width: 100% !important;
   max-width: 100% !important;
-  height: 260px !important;
-  min-height: 260px !important;
-  max-height: 260px !important;
+  height: 210px !important;
+  min-height: 210px !important;
+  max-height: 210px !important;
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -2081,9 +2081,9 @@
   .platform-banner {
     width: 100% !important;
     max-width: 100% !important;
-    height: 260px !important;
-    min-height: 260px !important;
-    max-height: 260px !important;
+    height: 210px !important;
+    min-height: 210px !important;
+    max-height: 210px !important;
     margin: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
