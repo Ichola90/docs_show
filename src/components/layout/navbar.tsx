@@ -10,6 +10,7 @@ import { BrandMark } from "@/components/ui/brand-mark";
 const NAV_LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/bibliotheque", label: "Bibliothèque" },
+  { href: "/publier", label: "Publier un livre" },
   { href: "/#methode", label: "Notre approche" },
   { href: "/#pour-qui", label: "Pour qui ?" },
 ];
@@ -74,6 +75,7 @@ export function Navbar() {
   const isLinkActive = (href: string) => {
     if (href === "/") return pathname === "/";
     if (href === "/bibliotheque") return pathname.startsWith("/bibliotheque");
+    if (href === "/publier") return pathname.startsWith("/publier");
     return false;
   };
 

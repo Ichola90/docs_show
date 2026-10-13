@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { books, categories } from "@/data/books";
+import { books } from "@/data/books";
 import { BookGrid } from "@/components/books/book-grid";
 import { BookSearchBar } from "@/components/books/book-search-bar";
 import { BookSidebarFilters } from "@/components/books/book-sidebar-filters";
 import { ActionButton } from "@/components/ui/action-button";
-
-const levels = [...new Set(books.map((book) => book.level))];
 
 function matchesSearch(book: (typeof books)[number], query: string) {
   const searchableContent =
@@ -16,7 +14,8 @@ function matchesSearch(book: (typeof books)[number], query: string) {
   return !query || searchableContent.includes(query);
 }
 
-export function BookCatalog() {
+export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } = {}) {
+  const [allBooks, setAllBooks] = useState<typeof books>(initialBooks ?? books);
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -24,6 +23,30 @@ export function BookCatalog() {
   const [filtersVisible, setFiltersVisible] = useState(true);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [isCompactViewport, setIsCompactViewport] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/books")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.books)) {
+          setAllBooks(data.books);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const activeCategories = useMemo(
+    () => [
+      "Tout",
+      ...new Set(allBooks.map((book) => book.category)),
+    ],
+    [allBooks]
+  );
+
+  const activeLevels = useMemo(
+    () => [...new Set(allBooks.map((book) => book.level))],
+    [allBooks]
+  );
 
   useEffect(() => {
     const viewportQuery = window.matchMedia("(max-width: 1100px)");
@@ -52,8 +75,8 @@ export function BookCatalog() {
 
   const query = searchQuery.trim().toLocaleLowerCase("fr");
   const booksMatchingSearch = useMemo(
-    () => books.filter((book) => matchesSearch(book, query)),
-    [query],
+    () => allBooks.filter((book) => matchesSearch(book, query)),
+    [allBooks, query],
   );
   const booksMatchingCategoryFilters = useMemo(
     () =>
@@ -83,7 +106,7 @@ export function BookCatalog() {
   const categoryCounts = useMemo(
     () =>
       Object.fromEntries(
-        categories
+        activeCategories
           .filter((category) => category !== "Tout")
           .map((category) => [
             category,
@@ -91,18 +114,18 @@ export function BookCatalog() {
               .length,
           ]),
       ),
-    [booksMatchingLevelFilters],
+    [activeCategories, booksMatchingLevelFilters],
   );
   const levelCounts = useMemo(
     () =>
       Object.fromEntries(
-        levels.map((level) => [
+        activeLevels.map((level) => [
           level,
           booksMatchingCategoryFilters.filter((book) => book.level === level)
             .length,
         ]),
       ),
-    [booksMatchingCategoryFilters],
+    [activeLevels, booksMatchingCategoryFilters],
   );
 
   const toggleValue = (
@@ -125,8 +148,8 @@ export function BookCatalog() {
   };
 
   const filterProps = {
-    categories: categories.filter((category) => category !== "Tout"),
-    levels,
+    categories: activeCategories.filter((category) => category !== "Tout"),
+    levels: activeLevels,
     categoryCounts,
     levelCounts,
     totalCategoriesCount: booksMatchingLevelFilters.length,

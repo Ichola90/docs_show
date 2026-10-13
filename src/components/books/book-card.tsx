@@ -5,10 +5,13 @@ import { BookCover } from "@/components/books/book-cover";
 import { BookRatingDisplay } from "@/components/books/book-rating-display";
 
 export function BookCard({ book }: { book: Book }) {
-  const hasFullReader = [
-    "concevez-site-web-php-mysql",
-    "apprenez-programmer-c",
-  ].includes(book.id);
+  const hasFullReader =
+    Boolean(book.hasReader) ||
+    Boolean(book.chapters && book.chapters.length > 0) ||
+    [
+      "concevez-site-web-php-mysql",
+      "apprenez-programmer-c",
+    ].includes(book.id);
 
   return (
     <article className="book-card">

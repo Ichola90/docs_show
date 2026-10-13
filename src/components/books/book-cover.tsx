@@ -7,7 +7,8 @@ type BookCoverProps = {
 };
 
 export function BookCover({ book, compact = false }: BookCoverProps) {
-  const bookNumber = String(books.findIndex(({ id }) => id === book.id) + 1).padStart(2, "0");
+  const index = books.findIndex(({ id }) => id === book.id);
+  const bookNumber = index >= 0 ? String(index + 1).padStart(2, "0") : "DOC";
 
   return (
     <div

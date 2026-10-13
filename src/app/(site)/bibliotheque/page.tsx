@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { BookCatalog } from "@/components/books/book-catalog";
 import { PlatformBanner } from "@/components/layout/platform-banner";
+import { getAllBooksWithCustom } from "@/data/book-content";
 import { createPageMetadata } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = createPageMetadata({
   title: "Bibliothèque de livres tech",
@@ -10,11 +13,13 @@ export const metadata: Metadata = createPageMetadata({
   path: "/bibliotheque/",
 });
 
-export default function LibraryPage() {
+export default async function LibraryPage() {
+  const books = await getAllBooksWithCustom();
+
   return (
     <main className="site-shell" id="contenu-principal">
       <PlatformBanner />
-      <BookCatalog />
+      <BookCatalog initialBooks={books} />
     </main>
   );
 }

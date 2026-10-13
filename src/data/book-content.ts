@@ -1,5 +1,6 @@
 import "server-only";
-import { getBookSummaryById, type Book, type BookChapter } from "@/data/books";
+import { books, getBookSummaryById, type Book, type BookChapter } from "@/data/books";
+import { getCustomBookById, getCustomBooks } from "@/lib/custom-books-store";
 
 type SerializedChapter = {
   title: string;
@@ -38,7 +39,15 @@ function hydrateChapters(chapters: SerializedChapter[]): BookChapter[] {
   }));
 }
 
+export async function getAllBooksWithCustom(): Promise<Book[]> {
+  const customBooks = await getCustomBooks();
+  return [...customBooks, ...books];
+}
+
 export async function getBookById(id: string): Promise<Book | undefined> {
+  const custom = await getCustomBookById(id);
+  if (custom) return custom;
+
   const book = getBookSummaryById(id);
   if (!book) return undefined;
 

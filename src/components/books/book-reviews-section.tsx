@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Book } from "@/data/books";
+import { ActionButton } from "@/components/ui/action-button";
 import { useBookRating } from "@/components/books/book-ratings-provider";
 
 type BookReviewsSectionProps = {
@@ -42,28 +43,50 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{
+    name?: string;
+    rating?: string;
+    comment?: string;
+  }>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
 
   const currentDisplayRating = hoverRating || selectedRating;
 
+  // Auto-dismiss de la notification de succès sur la liste après 6s
+  useEffect(() => {
+    if (!successMessage) return;
+    const timer = setTimeout(() => {
+      setSuccessMessage(null);
+    }, 6000);
+    return () => clearTimeout(timer);
+  }, [successMessage]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ready || !submitReview || isSubmitting) return;
 
-    if (selectedRating < 1 || selectedRating > 5) {
-      setError("Veuillez sélectionner une note entre 1 et 5 étoiles.");
-      return;
-    }
+    const newErrors: { name?: string; rating?: string; comment?: string } = {};
 
     if (!name.trim()) {
-      setError("Veuillez renseigner votre nom ou pseudonyme.");
+      newErrors.name = "Veuillez renseigner votre nom ou pseudo.";
+    }
+
+    if (selectedRating < 1 || selectedRating > 5) {
+      newErrors.rating = "Veuillez choisir une note sur 5 étoiles.";
+    }
+
+    if (comment.length > 200) {
+      newErrors.comment = "La description ne doit pas dépasser 200 caractères.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
     setIsSubmitting(true);
-    setError(null);
+    setErrors({});
 
     try {
       await submitReview(book.id, {
@@ -72,19 +95,19 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
         comment: comment.trim() || undefined,
       });
 
-      setSuccessMessage(
-        "Merci pour votre contribution ! Votre avis a été enregistré dans le fichier partagé.",
-      );
+      // Affichage du message de succès directement sur la liste des avis
+      setSuccessMessage("Avis ajouté avec succès !");
       setName("");
       setSelectedRating(0);
       setComment("");
       setShowForm(false);
     } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Une erreur est survenue lors de l'enregistrement de l'avis.",
-      );
+      setErrors({
+        name:
+          submitError instanceof Error
+            ? submitError.message
+            : "Une erreur est survenue lors de l'enregistrement de l'avis.",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -98,8 +121,8 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
     >
       <div className="reviews-header-card">
         <div className="reviews-score-block">
-          <span className="reviews-eyebrow">COMMUNAUTÉ DE LECTEURS</span>
-          <h2 id="reviews-section-title">Avis et retours d’expérience</h2>
+          <span className="reviews-eyebrow">COMMUNAUTÉ DOCS SHOW</span>
+          <h2 id="reviews-section-title">Avis et retours de lecture</h2>
           <div className="reviews-score-hero">
             <span className="reviews-big-number">
               {rating !== "Nouveau" ? rating : "—"}
@@ -127,153 +150,238 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
               <span className="reviews-count-badge">
                 {count > 0
                   ? `${count} évaluation${count > 1 ? "s" : ""} au total`
-                  : "Aucune évaluation pour le moment"}
+                  : "Soyez le premier à noter cet ouvrage"}
               </span>
             </div>
           </div>
           <p className="reviews-explanation">
-            Tous les avis sont conservés dans le store JSON partagé et
-            accessibles à chaque lecteur.
+            Chaque avis contribue à guider la communauté de développeurs. Vous
+            pouvez noter et laisser un retour en toute liberté.
           </p>
         </div>
 
         <div className="reviews-cta-block">
-          <button
+          <ActionButton
             type="button"
-            className="reviews-action-btn"
+            variant="secondary"
+            size="small"
             onClick={() => {
               setShowForm((prev) => !prev);
-              setSuccessMessage(null);
-              setError(null);
+              setErrors({});
             }}
             aria-expanded={showForm}
           >
-            {showForm ? "Masquer le formulaire" : "★ Laisser un avis sur ce livre"}
-          </button>
+            {showForm ? "Masquer le formulaire" : "★ Laisser un avis"}
+          </ActionButton>
         </div>
       </div>
 
-      {successMessage && (
-        <div className="reviews-alert-success" role="status">
-          <span className="alert-icon">✓</span>
-          <div>
-            <strong>Avis publié avec succès !</strong>
-            <p>{successMessage}</p>
-          </div>
-        </div>
-      )}
-
       {showForm && (
-        <form className="reviews-form-card" onSubmit={handleSubmit}>
+        <form className="reviews-form-card" onSubmit={handleSubmit} noValidate>
+          <div className="reviews-form-accent-bar" aria-hidden="true" />
           <div className="reviews-form-header">
-            <h3>Partager mon avis sur ce livre</h3>
+            <span className="reviews-form-badge">VOTRE EXPÉRIENCE COMPTE</span>
+            <h3>Partagez votre avis sur cet ouvrage</h3>
             <p>
-              Votre avis sera visible publiquement par l&apos;ensemble des
-              développeurs et lecteurs.
+              Renseignez votre nom, attribuez une note et partagez vos remarques
+              avec les futurs lecteurs.
             </p>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="reviewer-name">
-              Votre nom ou pseudo <span className="required-star">*</span>
-            </label>
-            <input
-              id="reviewer-name"
-              type="text"
-              className="form-input"
-              placeholder="Ex: Alexandre D., Développeur React"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={isSubmitting}
-              required
-            />
-          </div>
+          <div className="reviews-form-grid">
+            {/* CHAMP NOM */}
+            <div className="form-group">
+              <label htmlFor="reviewer-name">
+                Votre nom ou pseudo <span className="required-star">*</span>
+              </label>
+              <div className="input-with-icon">
+                <svg
+                  className="input-icon"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                </svg>
+                <input
+                  id="reviewer-name"
+                  type="text"
+                  className={`form-input ${errors.name ? "has-error" : ""}`}
+                  placeholder="Ex: Thomas D., Développeur Web"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (errors.name) {
+                      setErrors((prev) => ({ ...prev, name: undefined }));
+                    }
+                  }}
+                  disabled={isSubmitting}
+                  required
+                />
+              </div>
+              {errors.name && (
+                <p className="field-error-text" role="alert">
+                  {errors.name}
+                </p>
+              )}
+            </div>
 
-          <div className="form-group">
-            <label id="rating-picker-label">
-              Votre note sur 5 étoiles <span className="required-star">*</span>
-            </label>
-            <div
-              className="reviews-stars-picker"
-              role="group"
-              aria-labelledby="rating-picker-label"
-            >
-              {[1, 2, 3, 4, 5].map((starValue) => {
-                const isLit = starValue <= currentDisplayRating;
-                return (
-                  <button
-                    key={starValue}
-                    type="button"
-                    className={`star-pick-btn ${isLit ? "is-lit" : ""}`}
-                    onClick={() => setSelectedRating(starValue)}
-                    onMouseEnter={() => setHoverRating(starValue)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    aria-label={`${starValue} étoile${starValue > 1 ? "s" : ""}`}
-                    aria-pressed={selectedRating === starValue}
-                    disabled={isSubmitting}
-                  >
-                    ★
-                  </button>
-                );
-              })}
-              <span className="rating-descriptor">
-                {currentDisplayRating > 0
-                  ? RATING_LABELS[currentDisplayRating]
-                  : "Cliquez pour noter"}
-              </span>
+            {/* SÉLECTEUR D'ÉTOILES */}
+            <div className="form-group">
+              <label id="rating-picker-label">
+                Votre note sur 5 étoiles <span className="required-star">*</span>
+              </label>
+              <div
+                className="reviews-stars-picker"
+                role="group"
+                aria-labelledby="rating-picker-label"
+              >
+                <div className="stars-cluster">
+                  {[1, 2, 3, 4, 5].map((starValue) => {
+                    const isLit = starValue <= currentDisplayRating;
+                    return (
+                      <button
+                        key={starValue}
+                        type="button"
+                        className={`star-pick-btn ${isLit ? "is-lit" : ""}`}
+                        onClick={() => {
+                          setSelectedRating(starValue);
+                          if (errors.rating) {
+                            setErrors((prev) => ({
+                              ...prev,
+                              rating: undefined,
+                            }));
+                          }
+                        }}
+                        onMouseEnter={() => setHoverRating(starValue)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        aria-label={`${starValue} étoile${starValue > 1 ? "s" : ""}`}
+                        aria-pressed={selectedRating === starValue}
+                        disabled={isSubmitting}
+                      >
+                        ★
+                      </button>
+                    );
+                  })}
+                </div>
+                <div
+                  className={`rating-descriptor-pill ${currentDisplayRating > 0 ? "is-active" : ""}`}
+                >
+                  {currentDisplayRating > 0
+                    ? RATING_LABELS[currentDisplayRating]
+                    : "Touchez une étoile pour évaluer"}
+                </div>
+              </div>
+              {errors.rating && (
+                <p className="field-error-text" role="alert">
+                  {errors.rating}
+                </p>
+              )}
             </div>
           </div>
 
+          {/* CHAMP DESCRIPTION (MAX 200 CARACTÈRES) */}
           <div className="form-group">
-            <label htmlFor="reviewer-comment">
-              Votre description ou retour de lecture{" "}
-              <span className="optional-tag">(optionnel)</span>
-            </label>
+            <div className="label-with-hint">
+              <label htmlFor="reviewer-comment">
+                Votre description ou retour de lecture{" "}
+                <span className="optional-tag">(optionnel, max 200 caractères)</span>
+              </label>
+              <span
+                className={`char-count ${comment.length >= 200 ? "char-limit-reached" : ""}`}
+              >
+                {comment.length} / 200
+              </span>
+            </div>
             <textarea
               id="reviewer-comment"
-              className="form-textarea"
+              className={`form-textarea ${errors.comment ? "has-error" : ""}`}
               rows={3}
-              placeholder="Qu’avez-vous pensé de ce livre ? Les explications étaient-elles claires et applicables ?"
+              maxLength={200}
+              placeholder="Qu’avez-vous pensé de ce livre ? Partagez vos impressions en 200 caractères max..."
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={(e) => {
+                setComment(e.target.value);
+                if (errors.comment && e.target.value.length <= 200) {
+                  setErrors((prev) => ({ ...prev, comment: undefined }));
+                }
+              }}
               disabled={isSubmitting}
             />
+            {errors.comment && (
+              <p className="field-error-text" role="alert">
+                {errors.comment}
+              </p>
+            )}
           </div>
 
-          {error && (
-            <p className="reviews-form-error" role="alert">
-              {error}
-            </p>
-          )}
-
           <div className="form-actions">
-            <button
+            <ActionButton
               type="submit"
-              className="btn-submit-review"
-              disabled={isSubmitting || selectedRating === 0 || !name.trim()}
+              variant="primary"
+              size="small"
+              disabled={isSubmitting}
             >
-              {isSubmitting ? "Publication en cours…" : "Publier mon avis"}
-            </button>
-            <button
+              {isSubmitting ? (
+                <>
+                  <span className="btn-spinner" aria-hidden="true" />
+                  Publication…
+                </>
+              ) : (
+                "Publier mon avis"
+              )}
+            </ActionButton>
+            <ActionButton
               type="button"
-              className="btn-cancel-review"
-              onClick={() => setShowForm(false)}
+              variant="secondary"
+              size="small"
+              onClick={() => {
+                setShowForm(false);
+                setErrors({});
+              }}
               disabled={isSubmitting}
             >
               Annuler
-            </button>
+            </ActionButton>
           </div>
         </form>
       )}
 
+      {/* LISTE DES COMMENTAIRES LECTEURS */}
       <div className="reviews-list-container">
+        {/* MESSAGE DE SUCCÈS SUR LA LISTE */}
+        {successMessage && (
+          <div className="reviews-success-banner" role="status">
+            <span className="success-icon-badge" aria-hidden="true">
+              ✓
+            </span>
+            <div className="success-content">
+              <span className="success-title">{successMessage}</span>
+              <span className="success-subtitle">
+                Votre retour est désormais visible pour l&apos;ensemble des
+                lecteurs.
+              </span>
+            </div>
+            <button
+              type="button"
+              className="success-close-btn"
+              onClick={() => setSuccessMessage(null)}
+              aria-label="Fermer la notification"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         <h3 className="reviews-list-title">
           Commentaires des lecteurs ({reviews.length})
         </h3>
 
         {reviews.length === 0 ? (
           <div className="reviews-empty-state">
-            <span className="empty-icon">📖</span>
+            <span className="empty-icon" aria-hidden="true">
+              📖
+            </span>
             <h4>Aucun commentaire rédigé pour le moment</h4>
             <p>
               Soyez le tout premier lecteur à partager votre retour sur cet
@@ -331,4 +439,3 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
     </section>
   );
 }
-

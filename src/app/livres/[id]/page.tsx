@@ -10,13 +10,15 @@ type BookPageProps = {
   params: Promise<{ id: string }>;
 };
 
+export const dynamicParams = true;
+
 export function generateStaticParams() {
   return books.map((book) => ({ id: book.id }));
 }
 
 export async function generateMetadata({ params }: BookPageProps): Promise<Metadata> {
   const { id } = await params;
-  const book = getBookSummaryById(id);
+  const book = getBookSummaryById(id) ?? (await getBookById(id));
 
   if (!book) {
     return createPageMetadata({

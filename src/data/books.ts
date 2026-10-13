@@ -58,6 +58,7 @@ export type Book = {
   description: string;
   chapters: BookChapter[];
   quiz: BookQuizDefinition;
+  hasReader?: boolean;
 };
 
 export function getBookQuizQuestions(book: Book): BookQuizQuestion[] {
