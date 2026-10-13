@@ -562,47 +562,55 @@
   opacity: 1 !important;
 }
 
-.book-card .text-link:hover,
-.book-card-cta:hover,
-.book-card .text-link:disabled:hover,
-.book-card-cta:disabled:hover,
-.book-card-cta.is-upcoming:hover {
+/* 1. Bouton 'Découvrir le livre' : passage en bleu au survol */
+.book-card a.text-link:hover,
+.book-card a.book-card-cta:hover,
+.book-card .book-card-cta:not(.is-upcoming):not(:disabled):hover {
   background: linear-gradient(135deg, #3478f6, #1d4ed8) !important;
   color: #ffffff !important;
   border-color: transparent !important;
   box-shadow: 0 6px 18px rgba(37, 99, 235, 0.32), inset 0 1px rgba(255, 255, 255, 0.25) !important;
   transform: translateY(-2px) !important;
+  cursor: pointer !important;
 }
 
-.book-card .text-link:active,
-.book-card-cta:active {
+.book-card a.text-link:active,
+.book-card a.book-card-cta:active {
   transform: translateY(0) scale(0.985) !important;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
 }
 
-.book-card .text-link:focus-visible,
-.book-card-cta:focus-visible {
+.book-card a.text-link:focus-visible,
+.book-card a.book-card-cta:focus-visible {
   outline: 3px solid rgba(37, 99, 235, 0.4) !important;
   outline-offset: 2px !important;
 }
 
-/* Variante Bientôt disponible (Outline neutre par défaut, bleu au survol) */
+/* 2. Bouton 'Bientôt disponible' : désactivé au repos ET au survol (curseur not-allowed, ni bleu ni surélévation) */
 .book-card-cta.is-upcoming,
+.book-card-cta:disabled,
+.book-card button:disabled,
 .book-card .text-link:disabled {
-  border: 1.5px solid #cbd5e1 !important;
-  color: #475569 !important;
-  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+  pointer-events: auto !important;
   opacity: 1 !important;
-  cursor: pointer !important;
 }
 
 .book-card-cta.is-upcoming:hover,
+.book-card-cta:disabled:hover,
+.book-card button:disabled:hover,
 .book-card .text-link:disabled:hover {
-  border-color: transparent !important;
-  color: #ffffff !important;
-  background: linear-gradient(135deg, #3478f6, #1d4ed8) !important;
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.32) !important;
-  transform: translateY(-2px) !important;
+  border-color: #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  cursor: not-allowed !important;
 }
 .load-more { display: flex; width: fit-content; margin: 29px auto 0; }
 
