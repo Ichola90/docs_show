@@ -1,4 +1,5 @@
 import { BookCover } from "@/components/books/book-cover";
+import { BookRatingDisplay } from "@/components/books/book-rating-display";
 import type { Book } from "@/data/books";
 
 type ReaderSidebarProps = {
@@ -44,6 +45,18 @@ export function ReaderSidebar({
         <p className="eyebrow">{book.category}</p>
         <h1>{book.title}</h1>
         <p className="reader-subtitle">{book.subtitle}</p>
+        <a
+          href="#avis-lecteurs"
+          className="reader-sidebar-ratings-pill"
+          title="Consulter et donner un avis"
+        >
+          <BookRatingDisplay
+            bookId={book.id}
+            initialRating={book.rating}
+            initialCount={book.reviewCount}
+          />
+          <span className="reader-sidebar-ratings-cta">· Avis</span>
+        </a>
       </div>
       <div className="reader-progress">
         <div className="reader-progress-label">

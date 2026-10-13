@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { CommunityRating, CommunityRatingsMap } from "@/lib/kv";
+import type { BookReview, BookRatingStats, RatingsStore } from "@/lib/json-ratings-store";
 
 const RATINGS_STORAGE_KEY = "atelier:ratings:v1";
 
@@ -17,12 +17,18 @@ type BookRatingSummary = {
   count: number;
 };
 
+type SubmitReviewPayload = {
+  name: string;
+  rating: number;
+  comment?: string;
+};
+
 type BookRatingsContextValue = {
   ratings: Record<string, number>;
-  communityRatings: CommunityRatingsMap;
-  isLive: boolean;
+  store: RatingsStore;
   ready: boolean;
   error: string | null;
+  submitReview: (bookId: string, payload: SubmitReviewPayload) => Promise<void>;
   submitRating: (bookId: string, rating: number) => Promise<void>;
 };
 
@@ -45,8 +51,7 @@ function isStoredRatings(value: unknown): value is Record<string, number> {
 function summarizeRating(
   initialRating: string,
   initialCount: number,
-  community?: CommunityRating,
-  userRating?: number,
+  stats?: BookRatingStats,
 ): BookRatingSummary {
   const parsedInitialRating = Number.parseFloat(
     initialRating.replace(",", "."),
@@ -56,17 +61,11 @@ function summarizeRating(
       ? parsedInitialRating
       : 0;
 
-  const communityVotes = community?.votesCount ?? 0;
-  const communityStars = community?.starsTotal ?? 0;
+  const addedVotes = stats?.votesCount ?? 0;
+  const addedStars = stats?.starsTotal ?? 0;
 
-  let totalVotes = initialCount + communityVotes;
-  let totalStars = validInitialRating * initialCount + communityStars;
-
-  // Fallback if KV is not active and no community votes recorded yet, but user voted locally
-  if (communityVotes === 0 && userRating !== undefined) {
-    totalVotes += 1;
-    totalStars += userRating;
-  }
+  const totalVotes = initialCount + addedVotes;
+  const totalStars = validInitialRating * initialCount + addedStars;
 
   if (totalVotes === 0) {
     return {
@@ -84,14 +83,11 @@ function summarizeRating(
 
 export function BookRatingsProvider({ children }: { children: ReactNode }) {
   const [ratings, setRatings] = useState<Record<string, number>>({});
-  const [communityRatings, setCommunityRatings] = useState<CommunityRatingsMap>(
-    {},
-  );
-  const [isLive, setIsLive] = useState(false);
+  const [store, setStore] = useState<RatingsStore>({});
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 1. Initialise local stored votes
+  // 1. Charger les votes locaux de la machine
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
       try {
@@ -103,10 +99,7 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
           }
         }
       } catch (loadError) {
-        console.error("Failed to load local book ratings.", loadError);
-        setError(
-          "Les évaluations locales ne sont pas accessibles dans ce navigateur.",
-        );
+        console.error("Impossible de charger les notes locales:", loadError);
       } finally {
         setReady(true);
       }
@@ -115,48 +108,72 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
     return () => window.cancelAnimationFrame(frameId);
   }, []);
 
-  // 2. Fetch live community ratings from /api/ratings (backed by Vercel KV)
+  // 2. Charger le store JSON global depuis l'API
   useEffect(() => {
     let isCancelled = false;
 
-    async function fetchCommunityRatings() {
+    async function fetchJsonStore() {
       try {
         const response = await fetch("/api/ratings");
         if (!response.ok) return;
 
         const data: {
-          configured?: boolean;
-          ratings?: CommunityRatingsMap;
+          success?: boolean;
+          store?: RatingsStore;
         } = await response.json();
 
         if (isCancelled) return;
 
-        if (data.configured) {
-          setIsLive(true);
-        }
-        if (data.ratings && typeof data.ratings === "object") {
-          setCommunityRatings(data.ratings);
+        if (data.store && typeof data.store === "object") {
+          setStore(data.store);
         }
       } catch (fetchErr) {
-        // Silently degrade to local storage without disrupting UI
-        console.info("Using local ratings mode (API sync inactive).", fetchErr);
+        console.info("Mode de secours local actif pour les avis.", fetchErr);
       }
     }
 
-    void fetchCommunityRatings();
+    void fetchJsonStore();
 
     return () => {
       isCancelled = true;
     };
   }, []);
 
-  const submitRating = useCallback(
-    async (bookId: string, rating: number) => {
+  const submitReview = useCallback(
+    async (bookId: string, payload: SubmitReviewPayload) => {
+      const { name, rating, comment } = payload;
       if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-        throw new Error("Choisissez une note de 1 à 5 étoiles.");
+        throw new Error("Choisissez une note entre 1 et 5 étoiles.");
       }
 
-      // Update local storage so user cannot vote twice in the current browser
+      const trimmedName = name.trim() || "Lecteur";
+
+      // 1. Mise à jour optimiste du store local
+      const optimisticReview: BookReview = {
+        id: `temp_${Date.now()}`,
+        name: trimmedName,
+        rating,
+        comment: comment?.trim() || undefined,
+        createdAt: new Date().toISOString(),
+      };
+
+      setStore((prev) => {
+        const current = prev[bookId] ?? {
+          votesCount: 0,
+          starsTotal: 0,
+          reviews: [],
+        };
+        return {
+          ...prev,
+          [bookId]: {
+            votesCount: current.votesCount + 1,
+            starsTotal: current.starsTotal + rating,
+            reviews: [optimisticReview, ...(current.reviews || [])],
+          },
+        };
+      });
+
+      // 2. Enregistrement du vote local dans le navigateur
       const updatedRatings = { ...ratings, [bookId]: rating };
       try {
         localStorage.setItem(
@@ -164,65 +181,59 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
           JSON.stringify(updatedRatings),
         );
       } catch (saveError) {
-        console.error(
-          `Failed to save a local rating for "${bookId}".`,
-          saveError,
-        );
+        console.warn("Erreur sauvegarde locale:", saveError);
       }
       setRatings(updatedRatings);
 
-      // Optimistic update of community ratings
-      setCommunityRatings((prev) => {
-        const current = prev[bookId] ?? { votesCount: 0, starsTotal: 0 };
-        return {
-          ...prev,
-          [bookId]: {
-            votesCount: current.votesCount + 1,
-            starsTotal: current.starsTotal + rating,
-          },
-        };
-      });
-
-      // Persist to Vercel KV via API
+      // 3. Appel de l'API pour persister dans le fichier JSON
       try {
         const response = await fetch("/api/ratings", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bookId, rating }),
+          body: JSON.stringify({
+            bookId,
+            name: trimmedName,
+            rating,
+            comment,
+          }),
         });
 
         if (response.ok) {
           const result: {
-            configured?: boolean;
-            votesCount?: number;
-            starsTotal?: number;
+            success?: boolean;
+            store?: RatingsStore;
           } = await response.json();
 
-          if (result.configured && typeof result.votesCount === "number") {
-            setCommunityRatings((prev) => ({
-              ...prev,
-              [bookId]: {
-                votesCount: result.votesCount!,
-                starsTotal: result.starsTotal ?? 0,
-              },
-            }));
+          if (result.store && typeof result.store === "object") {
+            setStore(result.store);
           }
         }
-      } catch (remoteError) {
-        console.warn("Could not synchronize vote to Vercel KV:", remoteError);
+      } catch (apiError) {
+        console.error("Erreur de synchronisation avec le fichier JSON:", apiError);
+        setError("Votre avis a été enregistré localement.");
       }
     },
     [ratings],
+  );
+
+  const submitRating = useCallback(
+    async (bookId: string, rating: number) => {
+      return submitReview(bookId, {
+        name: "Lecteur",
+        rating,
+      });
+    },
+    [submitReview],
   );
 
   return (
     <BookRatingsContext.Provider
       value={{
         ratings,
-        communityRatings,
-        isLive,
+        store,
         ready,
         error,
+        submitReview,
         submitRating,
       }}
     >
@@ -243,20 +254,20 @@ export function useBookRating(
 ) {
   const context = useContext(BookRatingsContext);
   const userRating = context?.ratings[bookId];
-  const community = context?.communityRatings[bookId];
+  const bookStats = context?.store[bookId];
   const summary = summarizeRating(
     initialRating,
     initialCount,
-    community,
-    userRating,
+    bookStats,
   );
 
   return {
     rating: summary.rating ?? initialRating,
     count: summary.count,
     userRating,
-    isLive: context?.isLive ?? false,
+    reviews: bookStats?.reviews ?? [],
     ready: context?.ready ?? false,
+    submitReview: context?.submitReview,
     submitRating: context?.submitRating,
   };
 }

@@ -1,49 +1,25 @@
 import { NextResponse } from "next/server";
 import {
-  kv,
-  isKvConfigured,
-  RATINGS_VOTES_KEY,
-  RATINGS_STARS_KEY,
-  type CommunityRatingsMap,
-} from "@/lib/kv";
+  getRatingsStore,
+  addReviewToStore,
+} from "@/lib/json-ratings-store";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  if (!isKvConfigured) {
-    return NextResponse.json({
-      configured: false,
-      ratings: {} as CommunityRatingsMap,
-    });
-  }
-
   try {
-    const [votesMap, starsMap] = await Promise.all([
-      kv.hgetall<Record<string, number>>(RATINGS_VOTES_KEY),
-      kv.hgetall<Record<string, number>>(RATINGS_STARS_KEY),
-    ]);
-
-    const ratings: CommunityRatingsMap = {};
-    if (votesMap) {
-      for (const [id, count] of Object.entries(votesMap)) {
-        ratings[id] = {
-          votesCount: Number(count) || 0,
-          starsTotal: Number(starsMap?.[id]) || 0,
-        };
-      }
-    }
-
+    const store = await getRatingsStore();
     return NextResponse.json({
-      configured: true,
-      ratings,
+      success: true,
+      store,
     });
   } catch (err) {
-    console.error("Vercel KV ratings fetch error:", err);
+    console.error("Erreur lors de la lecture du fichier JSON:", err);
     return NextResponse.json(
       {
-        configured: false,
-        ratings: {} as CommunityRatingsMap,
-        error: "Erreur lors de la récupération des notes KV",
+        success: false,
+        store: {},
+        error: "Impossible de charger le fichier JSON des avis.",
       },
       { status: 200 }
     );
@@ -73,7 +49,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const { bookId, rating } = body as { bookId: unknown; rating: unknown };
+  const { bookId, name, rating, comment } = body as {
+    bookId: unknown;
+    name?: unknown;
+    rating: unknown;
+    comment?: unknown;
+  };
 
   if (typeof bookId !== "string" || !bookId.trim()) {
     return NextResponse.json(
@@ -82,6 +63,11 @@ export async function POST(request: Request) {
     );
   }
 
+  const reviewerName =
+    typeof name === "string" && name.trim().length > 0
+      ? name.trim()
+      : "Lecteur passionné";
+
   if (
     typeof rating !== "number" ||
     !Number.isInteger(rating) ||
@@ -89,41 +75,34 @@ export async function POST(request: Request) {
     rating > 5
   ) {
     return NextResponse.json(
-      { error: "La note doit être un entier entre 1 et 5." },
+      { error: "La note doit être un nombre entier compris entre 1 et 5." },
       { status: 400 }
     );
   }
 
-  if (!isKvConfigured) {
-    return NextResponse.json({
-      configured: false,
-      bookId,
-      rating,
-      votesCount: 1,
-      starsTotal: rating,
-      message: "Vercel KV non configuré. Mode local actif.",
-    });
-  }
+  const reviewComment =
+    typeof comment === "string" && comment.trim().length > 0
+      ? comment.trim()
+      : undefined;
 
   try {
-    const [votesCount, starsTotal] = await Promise.all([
-      kv.hincrby(RATINGS_VOTES_KEY, bookId, 1),
-      kv.hincrby(RATINGS_STARS_KEY, bookId, rating),
-    ]);
+    const { stats, store } = await addReviewToStore(bookId, {
+      name: reviewerName,
+      rating,
+      comment: reviewComment,
+    });
 
     return NextResponse.json({
-      configured: true,
+      success: true,
       bookId,
-      rating,
-      votesCount,
-      starsTotal,
+      stats,
+      store,
     });
   } catch (err) {
-    console.error("Vercel KV ratings update error:", err);
+    console.error("Erreur d'enregistrement dans le JSON:", err);
     return NextResponse.json(
-      { error: "Impossible de persister la note sur Vercel KV." },
+      { error: "Erreur lors de l'enregistrement de l'avis dans le fichier JSON." },
       { status: 500 }
     );
   }
 }
-

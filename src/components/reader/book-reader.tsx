@@ -12,6 +12,7 @@ import { ArrowIcon } from "@/components/ui/arrow-icon";
 import { BrandMark } from "@/components/ui/brand-mark";
 import { ChapterContent } from "@/components/reader/chapter-content";
 import { ReaderSidebar } from "@/components/reader/reader-sidebar";
+import { BookReviewsSection } from "@/components/books/book-reviews-section";
 import { useEffect } from "react";
 
 type BookReaderProps = {
@@ -120,6 +121,7 @@ export function BookReader({ book }: BookReaderProps) {
               onChapterSelect={handleChapterComplete}
               isReadingComplete={isReadingComplete}
             />
+            <BookReviewsSection book={book} />
           </section>
         </div>
       )}

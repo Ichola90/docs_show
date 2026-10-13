@@ -1,6 +1,5 @@
 import type { Book } from "@/data/books";
 import { ActionButton } from "@/components/ui/action-button";
-import { BookRating } from "@/components/reader/book-rating";
 
 type ChapterContentProps = {
   book: Book;
@@ -173,9 +172,6 @@ export function ChapterContent({
           ))}
         </div>
       )}
-      {isLastChapter && isReadingComplete && (
-        <BookRating book={book} />
-      )}
       <div className="chapter-footer">
         <span>
           {String(chapterIndex + 1).padStart(2, "0")} / {String(book.chapters.length).padStart(2, "0")}
@@ -197,7 +193,7 @@ export function ChapterContent({
           >
             {isLastChapter
               ? "Terminer la lecture et passer au test"
-              : "Terminer cette section"}
+              : "Suivant"}
           </ActionButton>
         )}
       </div>
