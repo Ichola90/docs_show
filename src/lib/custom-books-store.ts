@@ -42,7 +42,27 @@ export async function getCustomBooks(): Promise<Book[]> {
       });
       if (res.ok) {
         const data = await res.json();
-        const fileContent = data.files?.["books.json"]?.content;
+        const bookFile = data.files?.["books.json"];
+        let fileContent = bookFile?.content;
+
+        // Si le contenu est volumineux (> 300 Ko), l'API GitHub tronque .content et fournit .raw_url
+        if (!fileContent && bookFile?.raw_url) {
+          try {
+            const rawRes = await fetch(bookFile.raw_url, {
+              headers: {
+                Authorization: `Bearer ${gistToken}`,
+                "User-Agent": "docs-show-app",
+              },
+              cache: "no-store",
+            });
+            if (rawRes.ok) {
+              fileContent = await rawRes.text();
+            }
+          } catch (rawErr) {
+            console.warn("Erreur téléchargement raw_url Gist:", rawErr);
+          }
+        }
+
         if (fileContent) {
           const parsed = JSON.parse(fileContent);
           if (Array.isArray(parsed)) {
@@ -142,7 +162,7 @@ export async function saveCustomBook(book: Book): Promise<void> {
 
   if (gistId && gistToken) {
     try {
-      await fetch(`https://api.github.com/gists/${gistId}`, {
+      const patchRes = await fetch(`https://api.github.com/gists/${gistId}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${gistToken}`,
@@ -158,6 +178,9 @@ export async function saveCustomBook(book: Book): Promise<void> {
           },
         }),
       });
+      if (!patchRes.ok) {
+        console.warn(`Erreur PATCH Gist books.json: ${patchRes.status} ${patchRes.statusText}`);
+      }
     } catch (err) {
       console.warn("Erreur écriture GitHub Gist pour les livres:", err);
     }
