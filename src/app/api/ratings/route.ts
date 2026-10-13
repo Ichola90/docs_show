@@ -3,8 +3,14 @@ import {
   getRatingsStore,
   addReviewToStore,
 } from "@/lib/json-ratings-store";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limiter";
 
 export const dynamic = "force-dynamic";
+
+// Nettoie les caractères de contrôle non imprimables
+function sanitizeText(input: string): string {
+  return input.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "").trim();
+}
 
 export async function GET() {
   try {
@@ -27,6 +33,19 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  // 1. Rate limiting : max 12 avis par minute par IP
+  const clientIp = getClientIp(request);
+  const rateLimit = checkRateLimit(`rating:${clientIp}`, 12, 60 * 1000);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: `Trop de requêtes. Veuillez patienter ${rateLimit.retryAfterSeconds} secondes.` },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -56,18 +75,34 @@ export async function POST(request: Request) {
     comment?: unknown;
   };
 
-  if (typeof bookId !== "string" || !bookId.trim()) {
+  // 2. Validation stricte du bookId (anti-pollution de prototype et injection)
+  if (
+    typeof bookId !== "string" ||
+    !/^[a-zA-Z0-9_-]{2,80}$/.test(bookId) ||
+    ["__proto__", "constructor", "prototype"].includes(bookId)
+  ) {
     return NextResponse.json(
       { error: "Identifiant de livre (bookId) invalide." },
       { status: 400 }
     );
   }
 
-  const reviewerName =
-    typeof name === "string" && name.trim().length > 0
-      ? name.trim()
-      : "Lecteur passionné";
+  // 3. Validation et limitation du nom de l'auteur
+  let reviewerName = "Lecteur passionné";
+  if (typeof name === "string") {
+    const cleaned = sanitizeText(name);
+    if (cleaned.length > 0) {
+      if (cleaned.length > 60) {
+        return NextResponse.json(
+          { error: "Le nom ne doit pas dépasser 60 caractères." },
+          { status: 400 }
+        );
+      }
+      reviewerName = cleaned;
+    }
+  }
 
+  // 4. Validation de la note
   if (
     typeof rating !== "number" ||
     !Number.isInteger(rating) ||
@@ -80,10 +115,20 @@ export async function POST(request: Request) {
     );
   }
 
-  const reviewComment =
-    typeof comment === "string" && comment.trim().length > 0
-      ? comment.trim()
-      : undefined;
+  // 5. Validation et limitation du commentaire (max 200 caractères)
+  let reviewComment: string | undefined = undefined;
+  if (typeof comment === "string") {
+    const cleaned = sanitizeText(comment);
+    if (cleaned.length > 0) {
+      if (cleaned.length > 200) {
+        return NextResponse.json(
+          { error: "La description ne doit pas dépasser 200 caractères." },
+          { status: 400 }
+        );
+      }
+      reviewComment = cleaned;
+    }
+  }
 
   try {
     const { stats, store } = await addReviewToStore(bookId, {

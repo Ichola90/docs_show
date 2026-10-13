@@ -59,6 +59,10 @@ export async function parsePdfToBook(
   const rawPages = textResult.pages || [];
   const totalPagesCount = textResult.total || rawPages.length || 1;
 
+  if (totalPagesCount > 500) {
+    throw new Error("Le document PDF dépasse la limite de 500 pages autorisées.");
+  }
+
   // 1. Découpage et structuration page par page
   const structuredPages: BookPage[] = rawPages.map((p) => {
     const rawLines = (p.text || "")
@@ -154,7 +158,8 @@ export async function parsePdfToBook(
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-  const id = `${baseSlug}-${Math.random().toString(36).substring(2, 6)}`;
+  const safeSlug = (baseSlug.length > 0 ? baseSlug : "livre").slice(0, 50);
+  const id = `${safeSlug}-${Math.random().toString(36).substring(2, 7)}`;
 
   // 4. Texte de la couverture
   const words = meta.title.toUpperCase().split(" ");

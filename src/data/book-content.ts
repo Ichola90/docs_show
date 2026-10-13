@@ -61,5 +61,6 @@ export async function getBookById(id: string): Promise<Book | undefined> {
     return { ...book, chapters: hydrateChapters(data.chapters) };
   }
 
-  return book;
+  // Les 8 autres livres restent indisponibles
+  return undefined;
 }

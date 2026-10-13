@@ -7,7 +7,6 @@ import { BookRatingDisplay } from "@/components/books/book-rating-display";
 export function BookCard({ book }: { book: Book }) {
   const hasFullReader =
     Boolean(book.hasReader) ||
-    Boolean(book.chapters && book.chapters.length > 0) ||
     [
       "concevez-site-web-php-mysql",
       "apprenez-programmer-c",
@@ -16,13 +15,23 @@ export function BookCard({ book }: { book: Book }) {
   return (
     <article className="book-card">
       <div className="book-card-cover-reveal">
-        <Link
-          className="cover-button"
-          href={`/livres/${book.id}`}
-          aria-label={`Lire ${book.title}`}
-        >
-          <BookCover book={book} />
-        </Link>
+        {hasFullReader ? (
+          <Link
+            className="cover-button"
+            href={`/livres/${book.id}`}
+            aria-label={`Lire ${book.title}`}
+          >
+            <BookCover book={book} />
+          </Link>
+        ) : (
+          <div
+            className="cover-button is-unavailable"
+            aria-label={`${book.title} — Bientôt disponible`}
+            style={{ cursor: "default" }}
+          >
+            <BookCover book={book} />
+          </div>
+        )}
       </div>
       <div className="book-card-info-reveal">
         <div className="book-card-info">

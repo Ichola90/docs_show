@@ -41,6 +41,9 @@ export async function getCustomBookById(id: string): Promise<Book | undefined> {
  * Enregistre un nouveau livre dans custom-books.json
  */
 export async function saveCustomBook(book: Book): Promise<void> {
+  if (!book.id || ["__proto__", "constructor", "prototype"].includes(book.id)) {
+    throw new Error("Identifiant de livre non valide.");
+  }
   const all = await getCustomBooks();
   const existingIndex = all.findIndex((b) => b.id === book.id);
 

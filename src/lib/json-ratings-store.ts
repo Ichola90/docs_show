@@ -168,6 +168,9 @@ export async function addReviewToStore(
     comment?: string;
   }
 ): Promise<{ stats: BookRatingStats; store: RatingsStore }> {
+  if (["__proto__", "constructor", "prototype"].includes(bookId)) {
+    throw new Error("Identifiant de livre non autorisé.");
+  }
   const store = await getRatingsStore();
   const current = store[bookId] ?? {
     votesCount: 0,
