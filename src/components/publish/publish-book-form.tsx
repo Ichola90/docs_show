@@ -60,7 +60,7 @@ export function PublishBookForm() {
   const previewBook: Book = {
     id: "preview-book",
     title: title.trim() || "Titre de votre livre",
-    subtitle: subtitle.trim() || "Sous-titre et promesse pédagogique",
+    subtitle: subtitle.trim() || "Sous-titre et promesse pédagogique de l'ouvrage",
     author: author.trim() || "Nom de l'auteur",
     category: effectiveCategory,
     level,
@@ -75,7 +75,7 @@ export function PublishBookForm() {
       : "code",
     coverAccent,
     coverText: (title.trim() || "MON LIVRE TECH").toUpperCase().split(" ").slice(0, 3).join("\n"),
-    description: description.trim() || "Le résumé de votre ouvrage s'affichera ici...",
+    description: description.trim() || "Le résumé de votre ouvrage technique apparaîtra ici avec ses principaux points d'apprentissage...",
     chapters: [],
     hasReader: true,
     quiz: { questions: [] },
@@ -123,7 +123,7 @@ export function PublishBookForm() {
       return updated;
     });
 
-    // Auto-fill title from filename if title is empty
+    // Pré-remplissage intelligent du titre à partir du nom du fichier
     if (!title) {
       const cleanName = selectedFile.name
         .replace(/\.pdf$/i, "")
@@ -137,16 +137,18 @@ export function PublishBookForm() {
   const validateForm = () => {
     const errs: Record<string, string> = {};
     if (!file) {
-      errs.file = "Veuillez importer le fichier PDF de votre livre.";
+      errs.file = "Veuillez sélectionner un fichier PDF à importer.";
     }
     if (!title.trim() || title.trim().length < 2) {
       errs.title = "Le titre doit comporter au moins 2 caractères.";
+    } else if (title.trim().length > 120) {
+      errs.title = "Le titre ne doit pas dépasser 120 caractères.";
     }
     if (!author.trim() || author.trim().length < 2) {
-      errs.author = "Le nom de l'auteur est obligatoire.";
+      errs.author = "Le nom de l'auteur est obligatoire (min 2 caractères).";
     }
     if (category === "Autre" && (!customCategory.trim() || customCategory.trim().length < 2)) {
-      errs.category = "Veuillez préciser la catégorie de votre livre.";
+      errs.category = "Veuillez préciser la thématique de votre ouvrage.";
     }
     if (!description.trim() || description.trim().length < 10) {
       errs.description = "Le résumé doit comporter au moins 10 caractères.";
@@ -179,7 +181,7 @@ export function PublishBookForm() {
       formData.append("coverAccent", coverAccent);
       formData.append("description", description.trim());
 
-      setUploadStep("Extraction automatique du texte et structuration des pages...");
+      setUploadStep("Extraction automatique du texte et structuration des chapitres...");
 
       const response = await fetch("/api/books/upload", {
         method: "POST",
@@ -201,7 +203,7 @@ export function PublishBookForm() {
       } catch {
         throw new Error(
           response.status === 413
-            ? "Le fichier est trop lourd pour le serveur."
+            ? "Le fichier est trop volumineux pour le serveur."
             : `Erreur inattendue du serveur (${response.status}).`
         );
       }
@@ -231,7 +233,7 @@ export function PublishBookForm() {
         }
       }
 
-      setUploadStep("Génération du quiz et publication terminée !");
+      setUploadStep("Génération des quiz interactifs et publication terminée !");
 
       startTransition(() => {
         setCreatedBook({
@@ -270,16 +272,16 @@ export function PublishBookForm() {
     return (
       <div className="publish-success-card">
         <div className="publish-success-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
 
-        <span className="publish-success-badge">LIVRE CRÉÉ AVEC SUCCÈS</span>
+        <span className="publish-success-badge">LIVRE PUBLIÉ AVEC SUCCÈS</span>
         <h2>« {createdBook.bookTitle} » est en ligne !</h2>
         <p className="publish-success-intro">
-          Le document PDF a été analysé et transformé en livre web interactif.
-          La carte a été ajoutée à la bibliothèque, les pages sont prêtes à être lues et le test de connaissances est configuré.
+          Le document PDF a été analysé, structuré et transformé en livre web interactif.
+          La carte est active dans la bibliothèque, les pages sont prêtes à être lues et le test d’évaluation est configuré.
         </p>
 
         <div className="publish-success-stats">
@@ -324,10 +326,49 @@ export function PublishBookForm() {
       <div className="publish-layout">
         {/* Colonne Formulaire */}
         <div className="publish-form-card">
+          {/* En-tête de carte style Allomonrep */}
+          <div className="publish-card-header">
+            <div className="publish-card-header-left">
+              <div className="publish-card-header-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+                  <path d="M6 6h10" />
+                  <path d="M6 10h10" />
+                  <path d="m9 16 2 2 4-4" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="publish-card-header-title">Fiche de publication du livre</h2>
+                <p className="publish-card-header-desc">
+                  Renseignez les détails pour générer la version web interactive et le quiz.
+                </p>
+              </div>
+            </div>
+
+            <span className="publish-card-header-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
+              </svg>
+              Génération automatique
+            </span>
+          </div>
+
+          {/* Bannière de conseil / aide */}
+          <div className="publish-card-callout">
+            <svg className="publish-card-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <div>
+              <strong>Conseil de publication :</strong> Importez un document PDF propre et structuré. Notre algorithme identifie les chapitres, isole les blocs de code avec coloration syntaxique et conçoit un questionnaire d’évaluation adapté.
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} noValidate>
             {globalError && (
               <div className="publish-global-error" role="alert">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" />
                   <line x1="12" y1="8" x2="12" y2="12" />
                   <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -339,11 +380,11 @@ export function PublishBookForm() {
             {/* Section 1: Dropzone PDF */}
             <div className="publish-section-block">
               <label className="publish-block-label">
-                Fichier PDF du livre <span className="req">*</span>
+                Fichier PDF source <span className="req">*</span>
               </label>
 
               <div
-                className={`publish-dropzone${isDragging ? " is-dragging" : ""}${file ? " has-file" : ""}`}
+                className={`publish-dropzone${isDragging ? " is-dragging" : ""}${file ? " has-file" : ""}${errors.file ? " is-error" : ""}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -366,8 +407,8 @@ export function PublishBookForm() {
 
                 {file ? (
                   <div className="publish-file-preview">
-                    <div className="publish-file-icon">
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <div className="publish-file-icon" aria-hidden="true">
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
                         <line x1="16" y1="13" x2="8" y2="13" />
@@ -378,7 +419,7 @@ export function PublishBookForm() {
                     <div className="publish-file-info">
                       <span className="publish-file-name">{file.name}</span>
                       <span className="publish-file-size">
-                        {(file.size / (1024 * 1024)).toFixed(2)} Mo · PDF prêt pour analyse
+                        ✓ {(file.size / (1024 * 1024)).toFixed(2)} Mo · PDF valide, prêt pour l’analyse
                       </span>
                     </div>
                     <button
@@ -397,7 +438,7 @@ export function PublishBookForm() {
                 ) : (
                   <div className="publish-dropzone-prompt">
                     <div className="publish-upload-icon" aria-hidden="true">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                         <polyline points="17 8 12 3 7 8" />
                         <line x1="12" y1="3" x2="12" y2="15" />
@@ -406,11 +447,20 @@ export function PublishBookForm() {
                     <p className="publish-dropzone-main">
                       <strong>Glissez-déposez votre fichier PDF</strong> ou <span className="publish-browse-link">parcourez vos fichiers</span>
                     </p>
-                    <span className="publish-dropzone-hint">Format PDF uniquement (max 20 Mo)</span>
+                    <span className="publish-dropzone-hint">Document PDF technique (taille maximale : 20 Mo)</span>
                   </div>
                 )}
               </div>
-              {errors.file && <span className="field-error-message">{errors.file}</span>}
+              {errors.file && (
+                <p className="publish-field-error" role="alert">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  {errors.file}
+                </p>
+              )}
             </div>
 
             {/* Section 2: Métadonnées */}
@@ -422,7 +472,7 @@ export function PublishBookForm() {
                 <input
                   id="book-title"
                   type="text"
-                  placeholder="ex: Concevez votre API REST moderne"
+                  placeholder="ex: Architecture Web & Cloud Moderne"
                   value={title}
                   onChange={(e) => {
                     setTitle(e.target.value);
@@ -430,7 +480,16 @@ export function PublishBookForm() {
                   }}
                   className={errors.title ? "input-has-error" : ""}
                 />
-                {errors.title && <span className="field-error-message">{errors.title}</span>}
+                {errors.title && (
+                  <p className="publish-field-error" role="alert">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    {errors.title}
+                  </p>
+                )}
               </div>
 
               <div className="publish-field">
@@ -440,7 +499,7 @@ export function PublishBookForm() {
                 <input
                   id="book-author"
                   type="text"
-                  placeholder="ex: Jean Dupont"
+                  placeholder="ex: Sarah Connor, Ingénieure Systèmes"
                   value={author}
                   onChange={(e) => {
                     setAuthor(e.target.value);
@@ -448,18 +507,27 @@ export function PublishBookForm() {
                   }}
                   className={errors.author ? "input-has-error" : ""}
                 />
-                {errors.author && <span className="field-error-message">{errors.author}</span>}
+                {errors.author && (
+                  <p className="publish-field-error" role="alert">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    {errors.author}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className="publish-field">
               <label htmlFor="book-subtitle">
-                Sous-titre ou accroche <span className="opt">(optionnel)</span>
+                Sous-titre ou accroche pédagogique <span className="opt">(optionnel)</span>
               </label>
               <input
                 id="book-subtitle"
                 type="text"
-                placeholder="ex: Les fondamentaux de la conception et du déploiement"
+                placeholder="ex: Concevoir des microservices scalables et résilients en production"
                 value={subtitle}
                 onChange={(e) => setSubtitle(e.target.value)}
               />
@@ -483,7 +551,7 @@ export function PublishBookForm() {
                       {cat}
                     </option>
                   ))}
-                  <option value="Autre">Autre (personnalisé)...</option>
+                  <option value="Autre">Autre (préciser)...</option>
                 </select>
                 {category === "Autre" && (
                   <input
@@ -495,7 +563,16 @@ export function PublishBookForm() {
                     className={errors.category ? "input-has-error" : ""}
                   />
                 )}
-                {errors.category && <span className="field-error-message">{errors.category}</span>}
+                {errors.category && (
+                  <p className="publish-field-error" role="alert">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="8" x2="12" y2="12" />
+                      <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    {errors.category}
+                  </p>
+                )}
               </div>
 
               <div className="publish-field">
@@ -551,7 +628,7 @@ export function PublishBookForm() {
               <textarea
                 id="book-description"
                 rows={3}
-                placeholder="Présentez les concepts clés et les acquis pratiques apportés par ce livre..."
+                placeholder="Présentez les acquis pratiques, les technologies abordées et les cas d’usage concrets développés dans cet ouvrage..."
                 value={description}
                 maxLength={400}
                 onChange={(e) => {
@@ -560,10 +637,19 @@ export function PublishBookForm() {
                 }}
                 className={errors.description ? "input-has-error" : ""}
               />
-              {errors.description && <span className="field-error-message">{errors.description}</span>}
+              {errors.description && (
+                <p className="publish-field-error" role="alert">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  {errors.description}
+                </p>
+              )}
             </div>
 
-            {/* Boutons d'action centrés */}
+            {/* Boutons d'action centrés (style Allomonrep & reader next) */}
             <div className="publish-actions-centered">
               <ActionButton
                 type="submit"
@@ -571,17 +657,23 @@ export function PublishBookForm() {
                 size="small"
                 className="publish-submit-btn"
               >
-                {isSubmitting ? "Traitement et génération..." : "Générer la version web"}
+                {isSubmitting ? (
+                  <>
+                    <span className="btn-spinner" aria-hidden="true" />
+                    Traitement et génération en cours…
+                  </>
+                ) : (
+                  "Générer et publier le livre"
+                )}
               </ActionButton>
               {file && !isSubmitting && (
-                <ActionButton
+                <button
                   type="button"
-                  variant="quiet"
-                  size="small"
+                  className="publish-reset-btn"
                   onClick={resetForm}
                 >
                   Effacer
-                </ActionButton>
+                </button>
               )}
             </div>
 
@@ -590,7 +682,7 @@ export function PublishBookForm() {
                 <div className="publish-progress-spinner" />
                 <p className="publish-progress-step">{uploadStep}</p>
                 <span className="publish-progress-note">
-                  Extraction page par page, détection des titres, génération des quiz et sauvegarde.
+                  Extraction page par page, identification des titres, découpage du code et création des quiz.
                 </span>
               </div>
             )}
@@ -618,8 +710,7 @@ export function PublishBookForm() {
                       <span>{previewBook.category}</span>
                       <div className="rating">
                         <span className="star star-active">★</span>
-                        <span className="rating-value">Nouveau</span>
-                        <span className="review-count">(0)</span>
+                        <span className="rating-score">Nouveau</span>
                       </div>
                     </div>
                     <div className="book-card-heading">
@@ -647,7 +738,7 @@ export function PublishBookForm() {
             </div>
 
             <p className="publish-preview-explainer">
-              Dès la validation, ce livre sera navigable page après page, avec table des matières, mode sombre, quiz interactif et avis des lecteurs.
+              Cette carte interactive sera visible immédiatement dans la bibliothèque après génération.
             </p>
           </div>
         </aside>
@@ -655,4 +746,3 @@ export function PublishBookForm() {
     </div>
   );
 }
-

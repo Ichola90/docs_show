@@ -180,7 +180,21 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
         <form className="reviews-form-card" onSubmit={handleSubmit} noValidate>
           <div className="reviews-form-accent-bar" aria-hidden="true" />
           <div className="reviews-form-header">
-            <span className="reviews-form-badge">VOTRE EXPÉRIENCE COMPTE</span>
+            <div className="reviews-form-header-badge-row">
+              <span className="reviews-form-badge">VOTRE EXPÉRIENCE COMPTE</span>
+              <button
+                type="button"
+                className="reviews-form-close-btn"
+                onClick={() => {
+                  setShowForm(false);
+                  setErrors({});
+                }}
+                title="Fermer le formulaire"
+                aria-label="Fermer"
+              >
+                ✕
+              </button>
+            </div>
             <h3>Partagez votre avis sur cet ouvrage</h3>
             <p>
               Renseignez votre nom, attribuez une note et partagez vos remarques
@@ -221,7 +235,12 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
               </div>
               {errors.name && (
                 <p className="field-error-text" role="alert">
-                  {errors.name}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>{errors.name}</span>
                 </p>
               )}
             </div>
@@ -274,7 +293,12 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
               </div>
               {errors.rating && (
                 <p className="field-error-text" role="alert">
-                  {errors.rating}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <span>{errors.rating}</span>
                 </p>
               )}
             </div>
@@ -310,7 +334,12 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
             />
             {errors.comment && (
               <p className="field-error-text" role="alert">
-                {errors.comment}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>{errors.comment}</span>
               </p>
             )}
           </div>
@@ -353,13 +382,14 @@ export function BookReviewsSection({ book }: BookReviewsSectionProps) {
         {successMessage && (
           <div className="reviews-success-banner" role="status">
             <span className="success-icon-badge" aria-hidden="true">
-              ✓
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
             </span>
             <div className="success-content">
               <span className="success-title">{successMessage}</span>
               <span className="success-subtitle">
-                Votre retour est désormais visible pour l&apos;ensemble des
-                lecteurs.
+                Votre avis a été enregistré et s’affiche désormais pour l&apos;ensemble des lecteurs.
               </span>
             </div>
             <button

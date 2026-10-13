@@ -442,9 +442,8 @@
 @keyframes filter-panel-in { from { transform: translateX(24px); } to { transform: translateX(0); } }
 .catalog-book-results { min-width: 0; grid-column: 2; grid-row: 1; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; margin-bottom: 25px; }
-.section-heading .eyebrow { margin: 0 0 7px; }
-.section-heading h2, .audience-section h2 { margin: 0; color: var(--text-main); font-size: 37px; font-weight: 700; letter-spacing: -.045em; line-height: 1.15; }
-.section-heading h2 span { color: var(--primary); }
+.section-heading h1, .section-heading h2, .audience-section h2 { margin: 0; color: var(--text-main); font-size: 37px; font-weight: 700; letter-spacing: -.045em; line-height: 1.15; }
+.section-heading h1 span, .section-heading h2 span { color: var(--primary); }
 .section-intro { max-width: 355px; margin: 0 0 3px; color: var(--text-muted); font-size: 13px; line-height: 1.7; }
 .library-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 23px; border-bottom: 1px solid var(--border-color); padding-bottom: 13px; }
 .category-tabs { display: flex; flex-wrap: wrap; gap: 7px; }
@@ -1120,6 +1119,13 @@
   background: linear-gradient(90deg, #2563eb 0%, #6366f1 50%, #38bdf8 100%);
 }
 
+.reviews-form-header-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
 .reviews-form-badge {
   display: inline-block;
   padding: 4px 12px;
@@ -1131,7 +1137,23 @@
   font-weight: 750;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 8px;
+}
+
+.reviews-form-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 15px;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 50%;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.reviews-form-close-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 @keyframes fadeInDown {
@@ -1327,12 +1349,23 @@
   font-weight: 600;
 }
 
+.reviews-form-card .form-actions,
 .form-actions {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-top: 22px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 20px;
+  margin-top: 24px;
+}
+
+.reviews-form-card .form-actions .action-button {
+  min-height: 38px;
+  padding: 0 20px;
+  font-size: 13px;
+  border-radius: 9999px;
+  font-weight: 650;
 }
 
 .btn-spinner {
@@ -1348,7 +1381,8 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .btn-cancel-review {
@@ -2171,27 +2205,117 @@
    ========================================================================== */
 
 .publish-hero-section {
-  width: min(1320px, 100%);
-  margin: 36px auto 80px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 36px auto 90px;
+  padding: 0 clamp(20px, 4vw, 48px);
+  box-sizing: border-box;
 }
 
 .publish-container {
-  margin-top: 36px;
+  margin-top: 32px;
 }
 
 .publish-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);
-  gap: 40px;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 390px);
+  gap: 36px;
   align-items: start;
+}
+
+@media (max-width: 1040px) {
+  .publish-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
 .publish-form-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 20px;
-  padding: 36px 40px;
-  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  padding: clamp(24px, 3.5vw, 40px);
+  box-shadow: 0 4px 24px -2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.02);
+}
+
+/* En-tête de la carte formulaire (Inspiration Allomonrep) */
+.publish-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+}
+
+.publish-card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.publish-card-header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid #dbeafe;
+}
+
+.publish-card-header-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 750;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.publish-card-header-desc {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.publish-card-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-size: 11.5px;
+  font-weight: 650;
+  color: #475569;
+  white-space: nowrap;
+}
+
+/* Bannière d'aide & conseil (Inspiration Allomonrep) */
+.publish-card-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f0f7ff;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-size: 12.5px;
+  color: #1e40af;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.publish-card-callout-icon {
+  color: #2563eb;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .publish-section-block {
@@ -2539,7 +2663,8 @@
 }
 
 @keyframes publishSpin {
-  to { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .publish-progress-step {
