@@ -25,10 +25,17 @@ export async function generateMetadata({ params }: BookPageProps): Promise<Metad
       });
     }
 
+    const description = book.subtitle
+      ? `${book.subtitle} — ${book.description}`
+      : book.description;
+
     return createPageMetadata({
-      title: book.title,
-      description: book.description,
+      title: `${book.title} — Livre tech`,
+      description,
       path: `/livres/${book.id}/`,
+      type: "article",
+      authors: [book.author],
+      imageAlt: `DOCS SHOW — ${book.title} par ${book.author}`,
     });
   } catch {
     return createPageMetadata({

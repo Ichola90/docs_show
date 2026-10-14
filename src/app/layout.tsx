@@ -62,20 +62,20 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/`,
     images: [
       {
-        url: LOGO_URL,
-        secureUrl: LOGO_URL,
-        width: 512,
-        height: 512,
-        type: "image/png",
-        alt: "DOCS SHOW — Logo officiel",
-      },
-      {
         url: SOCIAL_IMAGE_URL,
         secureUrl: SOCIAL_IMAGE_URL,
         width: 1200,
         height: 630,
         type: "image/png",
         alt: "DOCS SHOW — La bibliothèque des livres tech",
+      },
+      {
+        url: LOGO_URL,
+        secureUrl: LOGO_URL,
+        width: 512,
+        height: 512,
+        type: "image/png",
+        alt: "DOCS SHOW — Logo officiel",
       },
     ],
   },
@@ -85,6 +85,8 @@ export const metadata: Metadata = {
     description:
       "Lisez des livres tech en ligne, avancez chapitre par chapitre et validez vos compétences avec des quiz interactifs.",
     images: [SOCIAL_IMAGE_URL],
+    creator: "@docsshow",
+    site: "@docsshow",
   },
   robots: {
     index: true,
@@ -113,6 +115,7 @@ const jsonLd = {
       "publisher": {
         "@id": `${SITE_URL}/#organization`,
       },
+      "image": SOCIAL_IMAGE_URL,
     },
     {
       "@type": "EducationalOrganization",
@@ -139,7 +142,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className="h-full antialiased">
       <head>
-        <link rel="image_src" href={LOGO_URL} />
+        <link rel="image_src" href={SOCIAL_IMAGE_URL} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
