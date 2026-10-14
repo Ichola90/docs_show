@@ -707,7 +707,7 @@ export function PublishBookForm() {
                 <div className="book-card-info-reveal">
                   <div className="book-card-info">
                     <div className="book-card-meta">
-                      <span>{previewBook.category}</span>
+                      <span className="book-card-category">{previewBook.category}</span>
                       <div className="rating">
                         <span className="star star-active">★</span>
                         <span className="rating-score">Nouveau</span>

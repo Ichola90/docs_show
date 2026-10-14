@@ -36,7 +36,9 @@ export function BookCard({ book }: { book: Book }) {
       <div className="book-card-info-reveal">
         <div className="book-card-info">
           <div className="book-card-meta">
-            <span>{book.category}</span>
+            <span className="book-card-category" title={book.category}>
+              {book.category}
+            </span>
             <BookRatingDisplay
               bookId={book.id}
               initialRating={book.rating}
