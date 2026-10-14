@@ -30,8 +30,49 @@ const TMP_RATINGS_FILE = path.join(
   "docs_show_ratings_store.json"
 );
 
-// Fallback in-memory cache
+// Cache mémoire
 let memoryStore: RatingsStore = {};
+
+/**
+ * Déduplique strictement une liste d'avis par ID canonique et par signature sémantique
+ */
+export function deduplicateReviews(reviews: BookReview[]): BookReview[] {
+  const seenIds = new Set<string>();
+  const seenSignatures: { sig: string; time: number }[] = [];
+  const unique: BookReview[] = [];
+
+  for (const rev of reviews) {
+    if (!rev || typeof rev !== "object") continue;
+
+    // 1. Déduplication stricte par ID unique
+    if (rev.id && seenIds.has(rev.id)) continue;
+
+    // 2. Déduplication sémantique (même auteur, même note, même commentaire dans une fenêtre de 60s)
+    const normalizedName = (rev.name || "").trim().toLowerCase();
+    const normalizedComment = (rev.comment || "").trim().toLowerCase();
+    const sig = `${normalizedName}|${rev.rating}|${normalizedComment}`;
+    const time = new Date(rev.createdAt).getTime() || 0;
+
+    const isDuplicate = seenSignatures.some(
+      (s) => s.sig === sig && (Math.abs(s.time - time) < 60000 || time === 0 || s.time === 0)
+    );
+
+    if (isDuplicate) continue;
+
+    if (rev.id) seenIds.add(rev.id);
+    seenSignatures.push({ sig, time });
+    unique.push(rev);
+  }
+
+  // Trier par date décroissante (plus récent en tête)
+  unique.sort((a, b) => {
+    const timeA = new Date(a.createdAt).getTime() || 0;
+    const timeB = new Date(b.createdAt).getTime() || 0;
+    return timeB - timeA;
+  });
+
+  return unique;
+}
 
 /**
  * Fusionne intelligemment deux stores d'évaluation en dédupliquant les avis
@@ -48,35 +89,17 @@ export function mergeRatingsStores(base: RatingsStore, incoming: RatingsStore): 
       reviews: [],
     };
 
-    const seen = new Set<string>();
-    const combinedReviews: BookReview[] = [];
-
-    const allCandidateReviews = [
+    const combinedReviews = deduplicateReviews([
       ...(incomingStats.reviews || []),
       ...(baseStats.reviews || []),
-    ];
-
-    for (const rev of allCandidateReviews) {
-      if (!rev || typeof rev !== "object") continue;
-      const signature = rev.id || `${rev.name}_${rev.createdAt}_${rev.rating}`;
-      if (!seen.has(signature)) {
-        seen.add(signature);
-        combinedReviews.push(rev);
-      }
-    }
-
-    combinedReviews.sort((a, b) => {
-      const timeA = new Date(a.createdAt).getTime() || 0;
-      const timeB = new Date(b.createdAt).getTime() || 0;
-      return timeB - timeA;
-    });
+    ]);
 
     const calculatedStars = combinedReviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
     const calculatedVotes = combinedReviews.length;
 
     merged[bookId] = {
-      votesCount: Math.max(calculatedVotes, incomingStats.votesCount ?? 0, baseStats.votesCount ?? 0),
-      starsTotal: Math.max(calculatedStars, incomingStats.starsTotal ?? 0, baseStats.starsTotal ?? 0),
+      votesCount: calculatedVotes,
+      starsTotal: calculatedStars,
       reviews: combinedReviews,
     };
   }
@@ -268,10 +291,14 @@ export async function saveRatingsStore(store: RatingsStore): Promise<void> {
 
 /**
  * Ajoute un avis et recalcule les métriques pour un livre.
+ * Si un id ou un createdAt est fourni par le client, ils sont préservés pour garantir
+ * la concordance stricte entre l'état optimiste et la base de données distante.
  */
 export async function addReviewToStore(
   bookId: string,
   newReview: {
+    id?: string;
+    createdAt?: string;
     name: string;
     rating: number;
     comment?: string;
@@ -287,17 +314,28 @@ export async function addReviewToStore(
     reviews: [],
   };
 
+  const reviewId =
+    newReview.id && /^rev_[a-zA-Z0-9_-]{5,60}$/.test(newReview.id)
+      ? newReview.id
+      : `rev_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+
+  const reviewCreatedAt =
+    newReview.createdAt && !Number.isNaN(new Date(newReview.createdAt).getTime())
+      ? newReview.createdAt
+      : new Date().toISOString();
+
   const reviewEntry: BookReview = {
-    id: `rev_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    id: reviewId,
     name: newReview.name.trim(),
     rating: newReview.rating,
     comment: newReview.comment?.trim() || undefined,
-    createdAt: new Date().toISOString(),
+    createdAt: reviewCreatedAt,
   };
 
-  const updatedReviews = [reviewEntry, ...(current.reviews || [])];
-  const updatedVotesCount = (current.votesCount || 0) + 1;
-  const updatedStarsTotal = (current.starsTotal || 0) + newReview.rating;
+  // Déduplication immédiate
+  const updatedReviews = deduplicateReviews([reviewEntry, ...(current.reviews || [])]);
+  const updatedVotesCount = updatedReviews.length;
+  const updatedStarsTotal = updatedReviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
 
   const updatedStats: BookRatingStats = {
     votesCount: updatedVotesCount,

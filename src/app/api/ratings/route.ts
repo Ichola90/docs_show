@@ -83,8 +83,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const { bookId, name, rating, comment } = body as {
+  const { bookId, reviewId, createdAt, name, rating, comment } = body as {
     bookId: unknown;
+    reviewId?: unknown;
+    createdAt?: unknown;
     name?: unknown;
     rating: unknown;
     comment?: unknown;
@@ -100,6 +102,18 @@ export async function POST(request: Request) {
       { error: "Identifiant de livre (bookId) invalide." },
       { status: 400 }
     );
+  }
+
+  // Validation optionnelle du reviewId (pour synchronisation optimiste sans doublon)
+  let validReviewId: string | undefined = undefined;
+  if (typeof reviewId === "string" && /^rev_[a-zA-Z0-9_-]{5,60}$/.test(reviewId)) {
+    validReviewId = reviewId;
+  }
+
+  // Validation optionnelle de la date de création
+  let validCreatedAt: string | undefined = undefined;
+  if (typeof createdAt === "string" && !Number.isNaN(new Date(createdAt).getTime())) {
+    validCreatedAt = createdAt;
   }
 
   // 3. Validation et limitation du nom de l'auteur
@@ -147,6 +161,8 @@ export async function POST(request: Request) {
 
   try {
     const { stats, store } = await addReviewToStore(bookId, {
+      id: validReviewId,
+      createdAt: validCreatedAt,
       name: reviewerName,
       rating,
       comment: reviewComment,
