@@ -11,6 +11,7 @@ import {
 import type { BookReview, BookRatingStats, RatingsStore } from "@/lib/json-ratings-store";
 
 const RATINGS_STORAGE_KEY = "atelier:ratings:v1";
+const REVIEWS_STORE_STORAGE_KEY = "docs_show_custom_reviews_store_v1";
 
 type BookRatingSummary = {
   rating: string | null;
@@ -46,6 +47,61 @@ function isStoredRatings(value: unknown): value is Record<string, number> {
         rating <= 5,
     )
   );
+}
+
+/**
+ * Fusionne deux stores d'avis et notes sans doublons
+ */
+function mergeClientStores(base: RatingsStore, incoming: RatingsStore): RatingsStore {
+  const merged: RatingsStore = { ...base };
+
+  for (const [bookId, incomingStats] of Object.entries(incoming)) {
+    if (!incomingStats || typeof incomingStats !== "object") continue;
+
+    const baseStats = merged[bookId] ?? {
+      votesCount: 0,
+      starsTotal: 0,
+      reviews: [],
+    };
+
+    const seen = new Set<string>();
+    const combinedReviews: BookReview[] = [];
+
+    // Priorité aux avis récents (incoming puis base)
+    const allCandidateReviews = [
+      ...(incomingStats.reviews || []),
+      ...(baseStats.reviews || []),
+    ];
+
+    for (const rev of allCandidateReviews) {
+      if (!rev || typeof rev !== "object") continue;
+      const signature = rev.id || `${rev.name}_${rev.createdAt}_${rev.rating}`;
+      if (!seen.has(signature)) {
+        seen.add(signature);
+        combinedReviews.push(rev);
+      }
+    }
+
+    combinedReviews.sort((a, b) => {
+      const timeA = new Date(a.createdAt).getTime() || 0;
+      const timeB = new Date(b.createdAt).getTime() || 0;
+      return timeB - timeA;
+    });
+
+    const calculatedStars = combinedReviews.reduce(
+      (sum, r) => sum + (Number(r.rating) || 0),
+      0
+    );
+    const calculatedVotes = combinedReviews.length;
+
+    merged[bookId] = {
+      votesCount: Math.max(calculatedVotes, incomingStats.votesCount ?? 0, baseStats.votesCount ?? 0),
+      starsTotal: Math.max(calculatedStars, incomingStats.starsTotal ?? 0, baseStats.starsTotal ?? 0),
+      reviews: combinedReviews,
+    };
+  }
+
+  return merged;
 }
 
 function summarizeRating(
@@ -87,34 +143,48 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 1. Charger les votes locaux de la machine
+  // 1. Chargement immédiat du cache local (comme pour les livres !)
+  // Permet à l'utilisateur de retrouver immédiatement ses avis dès l'actualisation de la page
   useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      try {
-        const storedRatings = localStorage.getItem(RATINGS_STORAGE_KEY);
-        if (storedRatings !== null) {
-          const parsed: unknown = JSON.parse(storedRatings);
-          if (isStoredRatings(parsed)) {
-            setRatings(parsed);
-          }
+    let localStoreSnapshot: RatingsStore = {};
+
+    try {
+      // Notes personnelles de vote
+      const storedRatings = localStorage.getItem(RATINGS_STORAGE_KEY);
+      if (storedRatings !== null) {
+        const parsed: unknown = JSON.parse(storedRatings);
+        if (isStoredRatings(parsed)) {
+          setRatings(parsed);
         }
-      } catch (loadError) {
-        console.error("Impossible de charger les notes locales:", loadError);
-      } finally {
-        setReady(true);
       }
-    });
 
-    return () => window.cancelAnimationFrame(frameId);
-  }, []);
+      // Store complet des avis et commentaires
+      const storedReviewsStore = localStorage.getItem(REVIEWS_STORE_STORAGE_KEY);
+      if (storedReviewsStore !== null) {
+        const parsedStore: unknown = JSON.parse(storedReviewsStore);
+        if (parsedStore && typeof parsedStore === "object") {
+          localStoreSnapshot = parsedStore as RatingsStore;
+          setStore(localStoreSnapshot);
+        }
+      }
+    } catch (loadError) {
+      console.warn("Impossible de charger les avis locaux:", loadError);
+    } finally {
+      setReady(true);
+    }
 
-  // 2. Charger le store JSON global depuis l'API
-  useEffect(() => {
+    // 2. Synchronisation avec le store distant (/api/ratings)
     let isCancelled = false;
 
     async function fetchJsonStore() {
       try {
-        const response = await fetch("/api/ratings");
+        const response = await fetch("/api/ratings", {
+          cache: "no-store",
+          headers: {
+            Pragma: "no-cache",
+            "Cache-Control": "no-cache",
+          },
+        });
         if (!response.ok) return;
 
         const data: {
@@ -125,7 +195,15 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
         if (isCancelled) return;
 
         if (data.store && typeof data.store === "object") {
-          setStore(data.store);
+          setStore((prevStore) => {
+            const merged = mergeClientStores(prevStore, data.store || {});
+            try {
+              localStorage.setItem(REVIEWS_STORE_STORAGE_KEY, JSON.stringify(merged));
+            } catch (err) {
+              console.warn("Erreur sauvegarde reviews dans localStorage:", err);
+            }
+            return merged;
+          });
         }
       } catch (fetchErr) {
         console.info("Mode de secours local actif pour les avis.", fetchErr);
@@ -148,44 +226,54 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
 
       const trimmedName = name.trim() || "Lecteur";
 
-      // 1. Mise à jour optimiste du store local
+      // 1. Création de l'avis avec identifiant unique et horodatage ISO
       const optimisticReview: BookReview = {
-        id: `temp_${Date.now()}`,
+        id: `rev_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         name: trimmedName,
         rating,
         comment: comment?.trim() || undefined,
         createdAt: new Date().toISOString(),
       };
 
+      // 2. Mise à jour optimiste de l'état ET sauvegarde immédiate dans localStorage (Résilience absolue F5 / refresh)
+      let nextStore: RatingsStore = {};
       setStore((prev) => {
         const current = prev[bookId] ?? {
           votesCount: 0,
           starsTotal: 0,
           reviews: [],
         };
-        return {
-          ...prev,
-          [bookId]: {
-            votesCount: current.votesCount + 1,
-            starsTotal: current.starsTotal + rating,
-            reviews: [optimisticReview, ...(current.reviews || [])],
-          },
+        const updatedReviews = [optimisticReview, ...(current.reviews || [])];
+        const updatedStats: BookRatingStats = {
+          votesCount: (current.votesCount || 0) + 1,
+          starsTotal: (current.starsTotal || 0) + rating,
+          reviews: updatedReviews,
         };
+
+        nextStore = {
+          ...prev,
+          [bookId]: updatedStats,
+        };
+
+        try {
+          localStorage.setItem(REVIEWS_STORE_STORAGE_KEY, JSON.stringify(nextStore));
+        } catch (saveErr) {
+          console.warn("Erreur écriture reviews dans localStorage:", saveErr);
+        }
+
+        return nextStore;
       });
 
-      // 2. Enregistrement du vote local dans le navigateur
+      // 3. Enregistrement du vote personnel dans localStorage
       const updatedRatings = { ...ratings, [bookId]: rating };
       try {
-        localStorage.setItem(
-          RATINGS_STORAGE_KEY,
-          JSON.stringify(updatedRatings),
-        );
+        localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify(updatedRatings));
       } catch (saveError) {
-        console.warn("Erreur sauvegarde locale:", saveError);
+        console.warn("Erreur sauvegarde note perso locale:", saveError);
       }
       setRatings(updatedRatings);
 
-      // 3. Appel de l'API pour persister dans le fichier JSON
+      // 4. Appel réseau vers l'API serveur pour persistance Cloud / tmp / Gist
       try {
         const response = await fetch("/api/ratings", {
           method: "POST",
@@ -205,12 +293,17 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
           } = await response.json();
 
           if (result.store && typeof result.store === "object") {
-            setStore(result.store);
+            setStore((prev) => {
+              const merged = mergeClientStores(prev, result.store || {});
+              try {
+                localStorage.setItem(REVIEWS_STORE_STORAGE_KEY, JSON.stringify(merged));
+              } catch {}
+              return merged;
+            });
           }
         }
       } catch (apiError) {
-        console.error("Erreur de synchronisation avec le fichier JSON:", apiError);
-        setError("Votre avis a été enregistré localement.");
+        console.warn("Persistance serveur différée (avis conservé localement):", apiError);
       }
     },
     [ratings],

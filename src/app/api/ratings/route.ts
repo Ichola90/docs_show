@@ -15,10 +15,19 @@ function sanitizeText(input: string): string {
 export async function GET() {
   try {
     const store = await getRatingsStore();
-    return NextResponse.json({
-      success: true,
-      store,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        store,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (err) {
     console.error("Erreur lors de la lecture du fichier JSON:", err);
     return NextResponse.json(
@@ -27,15 +36,20 @@ export async function GET() {
         store: {},
         error: "Impossible de charger le fichier JSON des avis.",
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
     );
   }
 }
 
 export async function POST(request: Request) {
-  // 1. Rate limiting : max 12 avis par minute par IP
+  // 1. Rate limiting : max 30 avis par minute par IP
   const clientIp = getClientIp(request);
-  const rateLimit = checkRateLimit(`rating:${clientIp}`, 12, 60 * 1000);
+  const rateLimit = checkRateLimit(`rating:${clientIp}`, 30, 60 * 1000);
   if (!rateLimit.allowed) {
     return NextResponse.json(
       { error: `Trop de requêtes. Veuillez patienter ${rateLimit.retryAfterSeconds} secondes.` },
@@ -45,6 +59,7 @@ export async function POST(request: Request) {
       }
     );
   }
+
 
   let body: unknown;
   try {
@@ -137,17 +152,29 @@ export async function POST(request: Request) {
       comment: reviewComment,
     });
 
-    return NextResponse.json({
-      success: true,
-      bookId,
-      stats,
-      store,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        bookId,
+        stats,
+        store,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
   } catch (err) {
     console.error("Erreur d'enregistrement dans le JSON:", err);
     return NextResponse.json(
       { error: "Erreur lors de l'enregistrement de l'avis dans le fichier JSON." },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
     );
   }
 }
