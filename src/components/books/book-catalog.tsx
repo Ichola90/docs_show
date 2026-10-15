@@ -146,10 +146,13 @@ export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } 
 
   const ITEMS_PER_PAGE = 9;
   const [currentPage, setCurrentPage] = useState(1);
+  const [prevFilterKey, setPrevFilterKey] = useState("");
 
-  useEffect(() => {
+  const filterKey = `${searchQuery}::${selectedCategories.join(",")}::${selectedLevels.join(",")}`;
+  if (filterKey !== prevFilterKey) {
+    setPrevFilterKey(filterKey);
     setCurrentPage(1);
-  }, [searchQuery, selectedCategories, selectedLevels]);
+  }
 
   const totalPages = Math.max(1, Math.ceil(filteredBooks.length / ITEMS_PER_PAGE));
   const effectivePage = Math.min(currentPage, totalPages);

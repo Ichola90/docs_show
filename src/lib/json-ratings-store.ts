@@ -2,21 +2,15 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 
-export type BookReview = {
-  id: string;
-  name: string;
-  rating: number;
-  comment?: string;
-  createdAt: string;
-};
+import {
+  type BookReview,
+  type BookRatingStats,
+  type RatingsStore,
+  deduplicateReviews,
+  mergeRatingsStores,
+} from "./ratings-utils";
 
-export type BookRatingStats = {
-  votesCount: number;
-  starsTotal: number;
-  reviews: BookReview[];
-};
-
-export type RatingsStore = Record<string, BookRatingStats>;
+export * from "./ratings-utils";
 
 const LOCAL_STORE_FILE = path.join(
   process.cwd(),
@@ -32,80 +26,6 @@ const TMP_RATINGS_FILE = path.join(
 
 // Cache mémoire
 let memoryStore: RatingsStore = {};
-
-/**
- * Déduplique strictement une liste d'avis par ID canonique et par signature sémantique
- */
-export function deduplicateReviews(reviews: BookReview[]): BookReview[] {
-  const seenIds = new Set<string>();
-  const seenSignatures: { sig: string; time: number }[] = [];
-  const unique: BookReview[] = [];
-
-  for (const rev of reviews) {
-    if (!rev || typeof rev !== "object") continue;
-
-    // 1. Déduplication stricte par ID unique
-    if (rev.id && seenIds.has(rev.id)) continue;
-
-    // 2. Déduplication sémantique (même auteur, même note, même commentaire dans une fenêtre de 60s)
-    const normalizedName = (rev.name || "").trim().toLowerCase();
-    const normalizedComment = (rev.comment || "").trim().toLowerCase();
-    const sig = `${normalizedName}|${rev.rating}|${normalizedComment}`;
-    const time = new Date(rev.createdAt).getTime() || 0;
-
-    const isDuplicate = seenSignatures.some(
-      (s) => s.sig === sig && (Math.abs(s.time - time) < 60000 || time === 0 || s.time === 0)
-    );
-
-    if (isDuplicate) continue;
-
-    if (rev.id) seenIds.add(rev.id);
-    seenSignatures.push({ sig, time });
-    unique.push(rev);
-  }
-
-  // Trier par date décroissante (plus récent en tête)
-  unique.sort((a, b) => {
-    const timeA = new Date(a.createdAt).getTime() || 0;
-    const timeB = new Date(b.createdAt).getTime() || 0;
-    return timeB - timeA;
-  });
-
-  return unique;
-}
-
-/**
- * Fusionne intelligemment deux stores d'évaluation en dédupliquant les avis
- */
-export function mergeRatingsStores(base: RatingsStore, incoming: RatingsStore): RatingsStore {
-  const merged: RatingsStore = { ...base };
-
-  for (const [bookId, incomingStats] of Object.entries(incoming)) {
-    if (!incomingStats || typeof incomingStats !== "object") continue;
-
-    const baseStats = merged[bookId] ?? {
-      votesCount: 0,
-      starsTotal: 0,
-      reviews: [],
-    };
-
-    const combinedReviews = deduplicateReviews([
-      ...(incomingStats.reviews || []),
-      ...(baseStats.reviews || []),
-    ]);
-
-    const calculatedStars = combinedReviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
-    const calculatedVotes = combinedReviews.length;
-
-    merged[bookId] = {
-      votesCount: calculatedVotes,
-      starsTotal: calculatedStars,
-      reviews: combinedReviews,
-    };
-  }
-
-  return merged;
-}
 
 /**
  * Lit le fichier JSON des évaluations et avis.

@@ -24,33 +24,51 @@ export type UploadBookPayload = {
   coverAccent?: string;
 };
 
-function getCoverType(category: string): "code" | "system" | "architecture" | "data" {
+export function getCoverType(category: string): "code" | "system" | "architecture" | "data" {
   const c = category.toLowerCase();
-  if (c.includes("système") || c.includes("c") || c.includes("embarqué")) return "system";
-  if (c.includes("archi") || c.includes("cloud") || c.includes("devops")) return "architecture";
-  if (c.includes("data") || c.includes("ia") || c.includes("données")) return "data";
+
+  // 1. Architecture, Cloud & DevOps
+  if (
+    c.includes("archi") ||
+    c.includes("cloud") ||
+    c.includes("devops") ||
+    c.includes("infrastructure") ||
+    c.includes("docker") ||
+    c.includes("kubernetes")
+  ) {
+    return "architecture";
+  }
+
+  // 2. Data & IA
+  if (
+    c.includes("data") ||
+    c.includes("données") ||
+    c.includes("machine learning") ||
+    c.includes("deep learning") ||
+    /\b(ia|ai|llm|sql)\b/i.test(c)
+  ) {
+    return "data";
+  }
+
+  // 3. Systèmes, Bas niveau, Langage C & Embarqué
+  if (
+    c.includes("système") ||
+    c.includes("system") ||
+    c.includes("embarqué") ||
+    c.includes("kernel") ||
+    c.includes("noyau") ||
+    c.includes("bas niveau") ||
+    /\b(c|c\+\+|cpp|rust|asm|assembleur)\b/i.test(c)
+  ) {
+    return "system";
+  }
+
   return "code";
 }
 
-export async function parsePdfToBook(
-  pdfBuffer: Buffer,
-  meta: UploadBookPayload
-): Promise<Book> {
-  ensurePdfWorker();
-  const parser = new PDFParse({ data: pdfBuffer });
-  const textResult = await parser.getText();
-  await parser.destroy();
+export const BULLET_CHARS_CLASS = "[❖•●■◆◈➢✔✓►▸▹○▪▫★☆]";
 
-  const rawPages = textResult.pages || [];
-  const totalPagesCount = textResult.total || rawPages.length || 1;
-
-  if (totalPagesCount > 500) {
-    throw new Error("Le document PDF dépasse la limite de 500 pages autorisées.");
-  }
-
-const BULLET_CHARS_CLASS = "[❖•●■◆◈➢✔✓►▸▹○▪▫★☆]";
-
-function isBulletLine(str: string): boolean {
+export function isBulletLine(str: string): boolean {
   const trimmed = str.trim();
   return (
     new RegExp(`^${BULLET_CHARS_CLASS}`).test(trimmed) ||
@@ -59,7 +77,7 @@ function isBulletLine(str: string): boolean {
   );
 }
 
-function preprocessPdfText(text: string): string[] {
+export function preprocessPdfText(text: string): string[] {
   if (!text) return [];
 
   // RÈGLE ABSOLUE : Dans tous les cas, ❖ indique une nouvelle ligne.
@@ -89,6 +107,22 @@ function preprocessPdfText(text: string): string[] {
     .map((l) => l.trim())
     .filter((l) => l.length > 0);
 }
+
+export async function parsePdfToBook(
+  pdfBuffer: Buffer,
+  meta: UploadBookPayload
+): Promise<Book> {
+  ensurePdfWorker();
+  const parser = new PDFParse({ data: pdfBuffer });
+  const textResult = await parser.getText();
+  await parser.destroy();
+
+  const rawPages = textResult.pages || [];
+  const totalPagesCount = textResult.total || rawPages.length || 1;
+
+  if (totalPagesCount > 500) {
+    throw new Error("Le document PDF dépasse la limite de 500 pages autorisées.");
+  }
 
   // 1. Découpage et structuration page par page
   const structuredPages: BookPage[] = rawPages.map((p) => {

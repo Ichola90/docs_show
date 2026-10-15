@@ -39,18 +39,18 @@ export async function generateMetadata({ params }: BookTestPageProps): Promise<M
 
 async function BookTestPageContent({ params }: BookTestPageProps) {
   const { id } = await params;
+  let book = null;
   try {
-    const book = await getBookById(id);
-
-    if (!book) {
-      return <ClientBookTestFallback bookId={id} />;
-    }
-
-    return <BookTestExperience book={book} />;
+    book = await getBookById(id);
   } catch (error) {
     console.error(`Erreur chargement test livre serveur ${id}:`, error);
+  }
+
+  if (!book) {
     return <ClientBookTestFallback bookId={id} />;
   }
+
+  return <BookTestExperience book={book} />;
 }
 
 export default function BookTestPage({ params }: BookTestPageProps) {

@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint, Tests & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Installation des dépendances
+        run: npm ci --legacy-peer-deps
+
+      - name: Vérification du linting (ESLint)
+        run: npm run lint
+
+      - name: Exécution des tests unitaires (Vitest)
+        run: npm test
+
+      - name: Vérification du build de production Next.js
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: "https://docsshow.vercel.app"
+

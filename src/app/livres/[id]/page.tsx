@@ -48,18 +48,18 @@ export async function generateMetadata({ params }: BookPageProps): Promise<Metad
 
 async function BookPageContent({ params }: BookPageProps) {
   const { id } = await params;
+  let book = null;
   try {
-    const book = await getBookById(id);
-
-    if (!book) {
-      return <ClientBookReaderFallback bookId={id} />;
-    }
-
-    return <BookReader book={book} />;
+    book = await getBookById(id);
   } catch (error) {
     console.error(`Erreur chargement livre serveur ${id}:`, error);
+  }
+
+  if (!book) {
     return <ClientBookReaderFallback bookId={id} />;
   }
+
+  return <BookReader book={book} />;
 }
 
 export default function BookPage({ params }: BookPageProps) {

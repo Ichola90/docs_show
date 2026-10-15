@@ -8,15 +8,18 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { BookReview, BookRatingStats, RatingsStore } from "@/lib/json-ratings-store";
+import {
+  type BookReview,
+  type BookRatingStats,
+  type RatingsStore,
+  calculateRatingSummary,
+  deduplicateReviews,
+  mergeRatingsStores,
+  cleanAndSanitizeStore,
+} from "@/lib/ratings-utils";
 
 const RATINGS_STORAGE_KEY = "atelier:ratings:v1";
 const REVIEWS_STORE_STORAGE_KEY = "docs_show_custom_reviews_store_v1";
-
-type BookRatingSummary = {
-  rating: string | null;
-  count: number;
-};
 
 type SubmitReviewPayload = {
   name: string;
@@ -49,130 +52,7 @@ function isStoredRatings(value: unknown): value is Record<string, number> {
   );
 }
 
-/**
- * Déduplique strictement une liste d'avis par ID canonique et par signature sémantique
- * (évite les doublons en cas de synchronisation optimiste ou de double clic)
- */
-function deduplicateClientReviews(reviews: BookReview[]): BookReview[] {
-  const seenIds = new Set<string>();
-  const seenSignatures: { sig: string; time: number }[] = [];
-  const unique: BookReview[] = [];
 
-  for (const rev of reviews) {
-    if (!rev || typeof rev !== "object") continue;
-
-    // 1. Déduplication par ID unique
-    if (rev.id && seenIds.has(rev.id)) continue;
-
-    // 2. Déduplication sémantique (même auteur, même note, même commentaire dans une fenêtre de 60s)
-    const normalizedName = (rev.name || "").trim().toLowerCase();
-    const normalizedComment = (rev.comment || "").trim().toLowerCase();
-    const sig = `${normalizedName}|${rev.rating}|${normalizedComment}`;
-    const time = new Date(rev.createdAt).getTime() || 0;
-
-    const isDuplicate = seenSignatures.some(
-      (s) => s.sig === sig && (Math.abs(s.time - time) < 60000 || time === 0 || s.time === 0)
-    );
-
-    if (isDuplicate) continue;
-
-    if (rev.id) seenIds.add(rev.id);
-    seenSignatures.push({ sig, time });
-    unique.push(rev);
-  }
-
-  // Trier par date décroissante
-  unique.sort((a, b) => {
-    const timeA = new Date(a.createdAt).getTime() || 0;
-    const timeB = new Date(b.createdAt).getTime() || 0;
-    return timeB - timeA;
-  });
-
-  return unique;
-}
-
-/**
- * Fusionne deux stores d'avis et nettoie les doublons
- */
-function mergeClientStores(base: RatingsStore, incoming: RatingsStore): RatingsStore {
-  const merged: RatingsStore = { ...base };
-
-  for (const [bookId, incomingStats] of Object.entries(incoming)) {
-    if (!incomingStats || typeof incomingStats !== "object") continue;
-
-    const baseStats = merged[bookId] ?? {
-      votesCount: 0,
-      starsTotal: 0,
-      reviews: [],
-    };
-
-    const combinedReviews = deduplicateClientReviews([
-      ...(incomingStats.reviews || []),
-      ...(baseStats.reviews || []),
-    ]);
-
-    const calculatedStars = combinedReviews.reduce(
-      (sum, r) => sum + (Number(r.rating) || 0),
-      0
-    );
-    const calculatedVotes = combinedReviews.length;
-
-    merged[bookId] = {
-      votesCount: calculatedVotes,
-      starsTotal: calculatedStars,
-      reviews: combinedReviews,
-    };
-  }
-
-  return merged;
-}
-
-function cleanAndSanitizeStore(store: RatingsStore): RatingsStore {
-  const sanitized: RatingsStore = {};
-  for (const [bookId, stats] of Object.entries(store)) {
-    if (!stats || typeof stats !== "object") continue;
-    const cleanReviews = deduplicateClientReviews(stats.reviews || []);
-    sanitized[bookId] = {
-      votesCount: cleanReviews.length,
-      starsTotal: cleanReviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0),
-      reviews: cleanReviews,
-    };
-  }
-  return sanitized;
-}
-
-function summarizeRating(
-  initialRating: string,
-  initialCount: number,
-  stats?: BookRatingStats,
-): BookRatingSummary {
-  const parsedInitialRating = Number.parseFloat(
-    initialRating.replace(",", "."),
-  );
-  const validInitialRating =
-    initialCount > 0 && Number.isFinite(parsedInitialRating)
-      ? parsedInitialRating
-      : 0;
-
-  const addedVotes = stats?.votesCount ?? 0;
-  const addedStars = stats?.starsTotal ?? 0;
-
-  const totalVotes = initialCount + addedVotes;
-  const totalStars = validInitialRating * initialCount + addedStars;
-
-  if (totalVotes === 0) {
-    return {
-      rating: null,
-      count: 0,
-    };
-  }
-
-  const average = totalStars / totalVotes;
-  return {
-    rating: average.toFixed(1).replace(".", ","),
-    count: totalVotes,
-  };
-}
 
 export function BookRatingsProvider({ children }: { children: ReactNode }) {
   const [ratings, setRatings] = useState<Record<string, number>>({});
@@ -180,36 +60,39 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 1. Chargement immédiat du cache local avec déduplication instantanée
+  // 1. Chargement asynchrone du cache local avec déduplication instantanée
   useEffect(() => {
-    try {
-      // Notes personnelles de vote
-      const storedRatings = localStorage.getItem(RATINGS_STORAGE_KEY);
-      if (storedRatings !== null) {
-        const parsed: unknown = JSON.parse(storedRatings);
-        if (isStoredRatings(parsed)) {
-          setRatings(parsed);
+    const timer = setTimeout(() => {
+      try {
+        // Notes personnelles de vote
+        const storedRatings = localStorage.getItem(RATINGS_STORAGE_KEY);
+        if (storedRatings !== null) {
+          const parsed: unknown = JSON.parse(storedRatings);
+          if (isStoredRatings(parsed)) {
+            setRatings(parsed);
+          }
         }
-      }
 
-      // Store complet des avis et commentaires
-      const storedReviewsStore = localStorage.getItem(REVIEWS_STORE_STORAGE_KEY);
-      if (storedReviewsStore !== null) {
-        const parsedStore: unknown = JSON.parse(storedReviewsStore);
-        if (parsedStore && typeof parsedStore === "object") {
-          const cleanLocalStore = cleanAndSanitizeStore(parsedStore as RatingsStore);
-          setStore(cleanLocalStore);
-          // Réécrire la version propre et dédupliquée dans le cache
-          try {
-            localStorage.setItem(REVIEWS_STORE_STORAGE_KEY, JSON.stringify(cleanLocalStore));
-          } catch {}
+        // Store complet des avis et commentaires
+        const storedReviewsStore = localStorage.getItem(REVIEWS_STORE_STORAGE_KEY);
+        if (storedReviewsStore !== null) {
+          const parsedStore: unknown = JSON.parse(storedReviewsStore);
+          if (parsedStore && typeof parsedStore === "object") {
+            const cleanLocalStore = cleanAndSanitizeStore(parsedStore as RatingsStore);
+            setStore(cleanLocalStore);
+            // Réécrire la version propre et dédupliquée dans le cache
+            try {
+              localStorage.setItem(REVIEWS_STORE_STORAGE_KEY, JSON.stringify(cleanLocalStore));
+            } catch {}
+          }
         }
+      } catch (loadError) {
+        console.warn("Impossible de charger les avis locaux:", loadError);
+        setError("Impossible de charger les avis locaux.");
+      } finally {
+        setReady(true);
       }
-    } catch (loadError) {
-      console.warn("Impossible de charger les avis locaux:", loadError);
-    } finally {
-      setReady(true);
-    }
+    }, 0);
 
     // 2. Synchronisation avec le store distant (/api/ratings)
     let isCancelled = false;
@@ -234,7 +117,7 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
 
         if (data.store && typeof data.store === "object") {
           setStore((prevStore) => {
-            const merged = mergeClientStores(prevStore, data.store || {});
+            const merged = mergeRatingsStores(prevStore, data.store || {});
             try {
               localStorage.setItem(REVIEWS_STORE_STORAGE_KEY, JSON.stringify(merged));
             } catch (err) {
@@ -251,6 +134,7 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
     void fetchJsonStore();
 
     return () => {
+      clearTimeout(timer);
       isCancelled = true;
     };
   }, []);
@@ -285,7 +169,7 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
           reviews: [],
         };
 
-        const updatedReviews = deduplicateClientReviews([optimisticReview, ...(current.reviews || [])]);
+        const updatedReviews = deduplicateReviews([optimisticReview, ...(current.reviews || [])]);
         const updatedStats: BookRatingStats = {
           votesCount: updatedReviews.length,
           starsTotal: updatedReviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0),
@@ -339,7 +223,7 @@ export function BookRatingsProvider({ children }: { children: ReactNode }) {
           if (result.store && typeof result.store === "object") {
             setStore((prev) => {
               // La fusion déduplique automatiquement l'avis optimiste avec l'avis retourné par le serveur
-              const merged = mergeClientStores(prev, result.store || {});
+              const merged = mergeRatingsStores(prev, result.store || {});
               try {
                 localStorage.setItem(REVIEWS_STORE_STORAGE_KEY, JSON.stringify(merged));
               } catch {}
@@ -393,7 +277,7 @@ export function useBookRating(
   const context = useContext(BookRatingsContext);
   const userRating = context?.ratings[bookId];
   const bookStats = context?.store[bookId];
-  const summary = summarizeRating(
+  const summary = calculateRatingSummary(
     initialRating,
     initialCount,
     bookStats,
