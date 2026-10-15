@@ -111,8 +111,13 @@ export function PublishBookForm() {
       setErrors((prev) => ({ ...prev, file: "Le fichier doit être au format PDF (.pdf)." }));
       return;
     }
-    if (selectedFile.size > 20 * 1024 * 1024) {
-      setErrors((prev) => ({ ...prev, file: "Le fichier PDF dépasse la taille maximale autorisée (20 Mo)." }));
+    const MAX_ALLOWED_BYTES = 4.5 * 1024 * 1024;
+    if (selectedFile.size > MAX_ALLOWED_BYTES) {
+      const fileSizeMb = (selectedFile.size / (1024 * 1024)).toFixed(1);
+      setErrors((prev) => ({
+        ...prev,
+        file: `Le fichier sélectionné fait ${fileSizeMb} Mo. La taille maximale autorisée sur le serveur est de 4.5 Mo (vous pouvez compresser votre PDF en quelques secondes via un outil gratuit comme iLovePDF ou Smallpdf).`,
+      }));
       return;
     }
 
@@ -203,7 +208,7 @@ export function PublishBookForm() {
       } catch {
         throw new Error(
           response.status === 413
-            ? "Le fichier est trop volumineux pour le serveur."
+            ? "Le fichier est trop volumineux pour le serveur (limite de 4.5 Mo sur Vercel). Veuillez compresser votre PDF (ex: via iLovePDF ou Smallpdf) pour qu'il pèse moins de 4.5 Mo avant de l'importer."
             : `Erreur inattendue du serveur (${response.status}).`
         );
       }
@@ -447,7 +452,7 @@ export function PublishBookForm() {
                     <p className="publish-dropzone-main">
                       <strong>Glissez-déposez votre fichier PDF</strong> ou <span className="publish-browse-link">parcourez vos fichiers</span>
                     </p>
-                    <span className="publish-dropzone-hint">Document PDF technique (taille maximale : 20 Mo)</span>
+                    <span className="publish-dropzone-hint">Document PDF technique (taille maximale : 4.5 Mo)</span>
                   </div>
                 )}
               </div>

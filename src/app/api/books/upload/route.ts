@@ -62,15 +62,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3. Limite de taille (20 Mo max)
-    const MAX_FILE_SIZE = 20 * 1024 * 1024;
+    // 3. Limite de taille (4.5 Mo max imposée par Vercel Serverless Functions)
+    const MAX_FILE_SIZE = 4.5 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         {
           success: false,
-          error: "Le fichier PDF dépasse la taille maximale autorisée (20 Mo).",
+          error: "Le fichier PDF dépasse la taille maximale autorisée (4.5 Mo). Veuillez compresser votre PDF avant de l'importer.",
         },
-        { status: 400 }
+        { status: 413 }
       );
     }
 
