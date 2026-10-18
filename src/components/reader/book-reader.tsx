@@ -13,6 +13,7 @@ import { BrandMark } from "@/components/ui/brand-mark";
 import { ChapterContent } from "@/components/reader/chapter-content";
 import { ReaderSidebar } from "@/components/reader/reader-sidebar";
 import { BookReviewsSection } from "@/components/books/book-reviews-section";
+import { ThemeToggleButton } from "@/components/theme/theme-toggle-button";
 import { useEffect } from "react";
 
 type BookReaderProps = {
@@ -82,12 +83,16 @@ export function BookReader({ book }: BookReaderProps) {
           <BrandMark />
           <span className="brand-text-3d">DOCS SHOW</span>
         </Link>
-        {isReadingComplete && (
-          <Link className="reader-topbar-end" href={`/livres/${book.id}/test`}>
-            PASSER LE TEST
-          </Link>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <ThemeToggleButton />
+          {isReadingComplete && (
+            <Link className="reader-topbar-end" href={`/livres/${book.id}/test`}>
+              PASSER LE TEST
+            </Link>
+          )}
+        </div>
       </div>
+
       {progressError && (
         <p className="reader-progress-error" role="alert">
           {progressError}

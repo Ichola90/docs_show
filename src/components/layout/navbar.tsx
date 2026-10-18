@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { ArrowIcon } from "@/components/ui/arrow-icon";
 import { ActionButton } from "@/components/ui/action-button";
 import { BrandMark } from "@/components/ui/brand-mark";
+import { ThemeToggleButton } from "@/components/theme/theme-toggle-button";
 
 const NAV_LINKS = [
   { href: "/", label: "Accueil" },
@@ -106,9 +107,12 @@ export function Navbar() {
           </nav>
         </div>
 
-        <ActionButton href="/bibliotheque" size="small" className="header-cta">
-          Explorer les livres
-        </ActionButton>
+        <div className="navbar-end-actions" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <ThemeToggleButton />
+          <ActionButton href="/bibliotheque" size="small" className="header-cta">
+            Explorer les livres
+          </ActionButton>
+        </div>
 
         <button
           ref={menuButtonRef}
@@ -149,16 +153,19 @@ export function Navbar() {
             <BrandMark />
             <span className="brand-text-3d">DOCS SHOW</span>
           </Link>
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className="mobile-menu-close"
-            onClick={closeMobileMenu}
-            aria-label="Fermer le menu"
-          >
-            <span />
-            <span />
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <ThemeToggleButton />
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="mobile-menu-close"
+              onClick={closeMobileMenu}
+              aria-label="Fermer le menu"
+            >
+              <span />
+              <span />
+            </button>
+          </div>
         </div>
         <p className="mobile-panel-kicker">VOTRE ESPACE DE LECTURE</p>
         <nav className="mobile-nav-links" aria-label="Navigation mobile">

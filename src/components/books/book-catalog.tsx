@@ -310,11 +310,11 @@ export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } 
                           disabled={effectivePage <= 1}
                           onClick={() => handlePageChange(effectivePage - 1)}
                           aria-label="Page précédente"
+                          title="Page précédente"
                         >
                           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="15 18 9 12 15 6" />
                           </svg>
-                          <span>Précédent</span>
                         </button>
 
                         <div className="pagination-pages">
@@ -344,8 +344,8 @@ export function BookCatalog({ initialBooks }: { initialBooks?: (typeof books) } 
                           disabled={effectivePage >= totalPages}
                           onClick={() => handlePageChange(effectivePage + 1)}
                           aria-label="Page suivante"
+                          title="Page suivante"
                         >
-                          <span>Suivant</span>
                           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="9 18 15 12 9 6" />
                           </svg>

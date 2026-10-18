@@ -22,6 +22,9 @@ export function FloatingChatbotButton() {
           <span className="docs-chat-fab-status" aria-hidden="true" />
         </span>
       </Link>
+      <div className="docs-chat-fab-tooltip" role="tooltip">
+        Assistant IA DOCS SHOW
+      </div>
     </div>
   );
 }

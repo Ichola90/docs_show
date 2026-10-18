@@ -6,7 +6,8 @@ import { DocsChatRail } from "./docs-chat-rail";
 import { DocsChatDrawer } from "./docs-chat-drawer";
 import { DocsChatInput } from "./docs-chat-input";
 import { DocsChatMessage } from "./docs-chat-message";
-import { DocsShowLogo, IconSearch, IconTheme } from "./docs-chat-icons";
+import { DocsShowLogo, IconTheme, IconMenu, IconSidebar } from "./docs-chat-icons";
+import { DocsChatMenuOverlay } from "./docs-chat-menu-overlay";
 import { getBotById } from "./docs-chat-bots";
 import type { BotId, ChatSession, ChatMessage, ChatAttachment } from "./docs-chat-types";
 import {
@@ -15,6 +16,7 @@ import {
   DEBATE_TOPICS,
 } from "@/lib/assistant-knowledge";
 import { DocsChatModal, type ModalActionItem } from "./docs-chat-modal";
+import { useTheme } from "@/components/theme/theme-provider";
 import "./docs-chat.css";
 
 const STORAGE_KEY = "docsshow_chat_sessions_v3";
@@ -52,6 +54,7 @@ export function DocsChatWorkspace() {
   const [isBooksModalOpen, setIsBooksModalOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isAtModalOpen, setIsAtModalOpen] = useState(false);
+  const [isMenuOverlayOpen, setIsMenuOverlayOpen] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
   const [bookSearchFilter, setBookSearchFilter] = useState("");
   const [debateSearchFilter, setDebateSearchFilter] = useState("");
@@ -59,7 +62,7 @@ export function DocsChatWorkspace() {
   const [atSearchFilter, setAtSearchFilter] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { theme, toggleTheme: handleToggleTheme } = useTheme();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -173,10 +176,6 @@ export function DocsChatWorkspace() {
     },
     [activeSessionId, saveSessions, sessions]
   );
-
-  const handleToggleTheme = useCallback(() => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  }, []);
 
   const handleResetAllSessions = useCallback(() => {
     if (confirm("Voulez-vous vraiment effacer toutes les discussions locales ?")) {
@@ -569,14 +568,14 @@ export function DocsChatWorkspace() {
         },
       },
       {
-        id: "github-link",
-        icon: "🐙",
-        title: "GitHub DOCS SHOW",
-        description: "Connectez vos dépôts pour inspecter du code et des pull requests",
-        actionLabel: "Connecter",
+        id: "creator-info",
+        icon: "👨‍💻",
+        title: "Concepteur : Ingénieur ICHOLA AKIOSSI",
+        description: "Coordonnées directes (+229 01 48 45 45 05) et portfolio officiel",
+        actionLabel: "Consulter",
         onClick: () => {
           setIsExploreOpen(false);
-          setInputPrompt("Inspecte cette pull request ou ce dépôt GitHub pour identifier les failles :");
+          handleSubmitMessage("Qui est le créateur de la plateforme DOCS SHOW et comment le contacter ?");
         },
       },
       {
@@ -599,7 +598,7 @@ export function DocsChatWorkspace() {
         item.title.toLowerCase().includes(q) ||
         item.description.toLowerCase().includes(q)
     );
-  }, [searchFilter, handleSelectBot]);
+  }, [searchFilter, handleSelectBot, handleSubmitMessage]);
 
   // 2. Éléments du modal Bibliothèque de Livres (Design exact screenshot)
   const bookActionItems: ModalActionItem[] = useMemo(() => {
@@ -865,19 +864,40 @@ export function DocsChatWorkspace() {
         onDeleteSession={handleDeleteSession}
       />
 
+      {/* Backdrop du tiroir d'historique sur mobile */}
+      {isDrawerOpen && (
+        <div
+          className="docs-chat-drawer-backdrop"
+          onClick={() => setIsDrawerOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* 3. Scène principale */}
       <main className="docs-chat-main">
-        {/* Bouton d'action supérieur (Thème clair/sombre) */}
-        <div className="docs-chat-top-actions">
-          <button
-            type="button"
-            className="docs-chat-top-btn"
-            onClick={handleToggleTheme}
-            aria-label="Changer de thème"
-          >
-            <IconTheme />
-          </button>
-        </div>
+        {/* Boutons d'action supérieurs en accueil (Thème clair/sombre + Toggle Menu Mobile) */}
+        {!hasMessages && (
+          <div className="docs-chat-top-actions">
+            <button
+              type="button"
+              className="docs-chat-top-btn"
+              onClick={handleToggleTheme}
+              aria-label="Changer de thème"
+              title={`Passer en mode ${theme === "dark" ? "Clair" : "Sombre"}`}
+            >
+              <IconTheme />
+            </button>
+            <button
+              type="button"
+              className="docs-chat-top-btn docs-chat-top-menu-btn"
+              onClick={() => setIsMenuOverlayOpen(true)}
+              aria-label="Ouvrir le menu du chatbot"
+              title="Menu du Chatbot"
+            >
+              <IconMenu />
+            </button>
+          </div>
+        )}
 
         {/* ÉTAT 1 : ACCUEIL HERO DOCS SHOW */}
         {!hasMessages ? (
@@ -938,15 +958,6 @@ export function DocsChatWorkspace() {
                 <span className="docs-chat-pill-icon">📚</span>
                 <span>Parcourir les Livres</span>
               </button>
-
-              <button
-                type="button"
-                className="docs-chat-pill-search"
-                onClick={() => setIsExploreOpen(true)}
-                aria-label="Recherche de cours et tuteurs"
-              >
-                <IconSearch />
-              </button>
             </div>
 
             {/* Carte d'entrée flottante centrée */}
@@ -966,12 +977,23 @@ export function DocsChatWorkspace() {
           <div className="docs-chat-container">
             <header className="docs-chat-header">
               <div className="docs-chat-header-info">
+                {/* Bouton toggle de l'historique */}
+                <button
+                  type="button"
+                  className="docs-chat-header-drawer-btn"
+                  onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+                  aria-label="Afficher ou masquer l'historique"
+                  title="Historique des discussions"
+                >
+                  <IconSidebar />
+                </button>
+
                 <Link
                   href="/"
                   className="docs-chat-header-brand"
                   title="Retourner à l'accueil DOCS SHOW"
                 >
-                  <DocsShowLogo size={28} />
+                  <DocsShowLogo size={26} />
                   <span className="brand-text-3d docs-chat-header-brand-text">DOCS SHOW</span>
                 </Link>
                 <span className="docs-chat-header-divider">/</span>
@@ -980,7 +1002,7 @@ export function DocsChatWorkspace() {
                   style={{ background: activeBot.accentGradient }}
                 >
                   {activeBot.iconType === "docs-show" ? (
-                    <DocsShowLogo size={20} />
+                    <DocsShowLogo size={18} />
                   ) : activeBot.iconType === "cpu" ? (
                     "⚙️"
                   ) : activeBot.iconType === "cloud" ? (
@@ -991,7 +1013,7 @@ export function DocsChatWorkspace() {
                     "📚"
                   )}
                 </div>
-                <div>
+                <div className="docs-chat-header-titles">
                   <div className="docs-chat-header-name">
                     <span>{activeBot.name}</span>
                     <span className="docs-chat-header-model">{activeBot.modelBadge}</span>
@@ -999,14 +1021,36 @@ export function DocsChatWorkspace() {
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: "8px" }}>
+              {/* Actions de l'entête : Nouveau chat + Thème + Toggle Menu Overlay */}
+              <div className="docs-chat-header-actions">
                 <button
                   type="button"
-                  className="docs-chat-bot-pill"
-                  style={{ padding: "4px 10px", fontSize: "12px" }}
+                  className="docs-chat-bot-pill docs-chat-header-new-btn"
                   onClick={handleNewChat}
+                  title="Démarrer un nouveau chat"
                 >
                   <span>+ Nouveau chat</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="docs-chat-header-icon-btn"
+                  onClick={handleToggleTheme}
+                  aria-label="Changer de thème"
+                  title={`Passer en mode ${theme === "dark" ? "Clair" : "Sombre"}`}
+                >
+                  <IconTheme />
+                </button>
+
+                {/* BOUTON TOGGLE MENU OVERLAY CHATBOT */}
+                <button
+                  type="button"
+                  className="docs-chat-menu-toggle-btn"
+                  onClick={() => setIsMenuOverlayOpen(true)}
+                  aria-label="Ouvrir le menu complet du chatbot"
+                  title="Menu du Chatbot"
+                >
+                  <IconMenu />
                 </button>
               </div>
             </header>
@@ -1124,6 +1168,23 @@ export function DocsChatWorkspace() {
         searchValue={atSearchFilter}
         onSearchChange={setAtSearchFilter}
         items={atActionItems}
+      />
+
+      {/* MENU OVERLAY ADAPTÉ AU CHATBOT DOCS SHOW */}
+      <DocsChatMenuOverlay
+        isOpen={isMenuOverlayOpen}
+        onClose={() => setIsMenuOverlayOpen(false)}
+        activeBotId={activeBotId}
+        onSelectBot={handleSelectBot}
+        onNewChat={handleNewChat}
+        onOpenDrawer={() => setIsDrawerOpen(true)}
+        onOpenSearch={() => setIsExploreOpen(true)}
+        onOpenDebates={() => setIsDebatesModalOpen(true)}
+        onOpenBooks={() => setIsBooksModalOpen(true)}
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        onExportChat={handleExportChat}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
     </div>
   );

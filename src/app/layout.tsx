@@ -1,16 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { BookRatingsProvider } from "@/components/books/book-ratings-provider";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { SITE_URL, SOCIAL_IMAGE_URL, LOGO_URL } from "@/lib/seo";
 import "./globals.css";
 import "./library.css";
 
 export const viewport: Viewport = {
   themeColor: "#2563eb",
-  colorScheme: "light",
+  colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
 };
+
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -146,17 +148,25 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr" className="h-full antialiased">
+    <html lang="fr" className="h-full antialiased" suppressHydrationWarning>
       <head>
         <link rel="image_src" href={SOCIAL_IMAGE_URL} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("docsshow_theme");if(!t){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <BookRatingsProvider>{children}</BookRatingsProvider>
+        <ThemeProvider>
+          <BookRatingsProvider>{children}</BookRatingsProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+
