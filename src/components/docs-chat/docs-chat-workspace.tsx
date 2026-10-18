@@ -42,6 +42,8 @@ export function DocsChatWorkspace() {
   const [activeBotId, setActiveBotId] = useState<BotId>("assistant");
   const [inputPrompt, setInputPrompt] = useState("");
   const [selectedBookContext, setSelectedBookContext] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string>("openrouter/auto");
+  const [selectedTemperature, setSelectedTemperature] = useState<number>(0.7);
 
   // Tiroirs et Modals
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -257,7 +259,116 @@ export function DocsChatWorkspace() {
       );
       saveSessions(updatedSessionsAfterUser);
 
-      // Mode Débat Multi-Chatbots
+      // Appel de l'API /api/chat connectée à Groq (avec fallback local résilient)
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt,
+            botId: activeBotId,
+            bookContextId: selectedBookContext,
+            model: selectedModel,
+            temperature: selectedTemperature,
+            history: sessionWithUser.messages.map((m) => ({
+              sender: m.sender,
+              content: m.content,
+            })),
+          }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+
+          // 1. Débat Multi-Chatbots généré par Groq
+          if (data.isDebate && Array.isArray(data.debateTurns) && data.debateTurns.length > 0) {
+            let currentList = [...sessionWithUser.messages];
+            for (let i = 0; i < data.debateTurns.length; i++) {
+              if (i > 0) {
+                await new Promise((r) => setTimeout(r, 650));
+              }
+              const turn = data.debateTurns[i];
+              const isCore = turn.role === "bot_core";
+              const isModern = turn.role === "bot_modern";
+              const agentId: BotId = isCore ? "docs-core" : isModern ? "docs-modern" : "assistant";
+
+              const badge =
+                turn.badge ||
+                (data.source === "openrouter"
+                  ? `OpenRouter • ${data.model}`
+                  : isCore
+                  ? "Core-Engine (Systèmes)"
+                  : isModern
+                  ? "Cloud-Astra (Web)"
+                  : "Synthèse Consensus");
+
+              const botMsg: ChatMessage = {
+                id: `bot_debate_${Date.now()}_${i}`,
+                sender: "bot",
+                botId: agentId,
+                botName: turn.agentName,
+                modelBadge: badge,
+                roleStance: turn.stance,
+                content: turn.content,
+                timestamp: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+              };
+              currentList = [...currentList, botMsg];
+
+              const intermediateSession = {
+                ...currentSession,
+                updatedAt: Date.now(),
+                messages: currentList,
+              };
+              saveSessions(
+                sessions.map((s) => (s.id === currentSession.id ? intermediateSession : s))
+              );
+            }
+            setIsLoading(false);
+            return;
+          }
+
+          // 2. Mode Tuteur / Assistant Standard généré par OpenRouter
+          if (data.reply) {
+            let finalContent = data.reply;
+            if (currentAttachments.length > 0) {
+              const names = currentAttachments.map((a) => `\`${a.name}\``).join(", ");
+              finalContent = `> 📎 **Analyse du document / photo reçu** (${names}) :\n\n` + finalContent;
+            }
+
+            const modelBadge =
+              data.source === "openrouter"
+                ? `OpenRouter • ${data.model || "Auto"}`
+                : activeBot.modelBadge;
+
+            const botResponseMsg: ChatMessage = {
+              id: `bot_resp_${Date.now()}`,
+              sender: "bot",
+              botId: activeBotId,
+              botName: activeBot.name,
+              modelBadge,
+              content: finalContent,
+              timestamp: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+              bookContextId: selectedBookContext || undefined,
+            };
+
+            const finalSession = {
+              ...currentSession,
+              updatedAt: Date.now(),
+              messages: [...sessionWithUser.messages, botResponseMsg],
+            };
+
+            saveSessions(
+              sessions.map((s) => (s.id === currentSession.id ? finalSession : s))
+            );
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch (apiErr) {
+        console.warn("Erreur réseau /api/chat, utilisation du repli local:", apiErr);
+      }
+
+      // Repli local en cas d'absence de réseau ou d'erreur
       const isDebateMode =
         activeBotId === "debate" ||
         prompt.toLowerCase().includes("débat") ||
@@ -351,6 +462,8 @@ export function DocsChatWorkspace() {
       activeBotId,
       activeBot.name,
       activeBot.modelBadge,
+      selectedModel,
+      selectedTemperature,
     ]
   );
 
@@ -539,12 +652,57 @@ export function DocsChatWorkspace() {
   const settingsActionItems: ModalActionItem[] = useMemo(() => {
     const items: ModalActionItem[] = [
       {
+        id: "model-openrouter-auto",
+        icon: "✨",
+        title: "OpenRouter : Auto Router (Recommandé)",
+        description: "Sélectionne automatiquement le modèle le plus intelligent et disponible sur OpenRouter",
+        actionLabel: selectedModel === "openrouter/auto" ? "✓ Actif" : "Choisir",
+        onClick: () => {
+          setSelectedModel("openrouter/auto");
+          setIsSettingsModalOpen(false);
+        },
+      },
+      {
+        id: "model-llama-70b",
+        icon: "⚡",
+        title: "OpenRouter : Meta Llama 3.3 70B Instruct",
+        description: "Raisonnement technique approfondi, architecture logicielle et code C/Web",
+        actionLabel: selectedModel === "meta-llama/llama-3.3-70b-instruct" ? "✓ Actif" : "Choisir",
+        onClick: () => {
+          setSelectedModel("meta-llama/llama-3.3-70b-instruct");
+          setIsSettingsModalOpen(false);
+        },
+      },
+      {
+        id: "model-deepseek-r1",
+        icon: "🧠",
+        title: "OpenRouter : DeepSeek R1 (Raisonnement)",
+        description: "Modèle de raisonnement logique de pointe pour problèmes complexes et algorithmes",
+        actionLabel: selectedModel === "deepseek/deepseek-r1" ? "✓ Actif" : "Choisir",
+        onClick: () => {
+          setSelectedModel("deepseek/deepseek-r1");
+          setIsSettingsModalOpen(false);
+        },
+      },
+      {
+        id: "model-free-gemma",
+        icon: "🚀",
+        title: "OpenRouter : Gemma 26B (Free Tier)",
+        description: "Modèle Google rapide disponible sans consommation de crédits payants",
+        actionLabel: selectedModel === "google/gemma-4-26b-a4b-it:free" ? "✓ Actif" : "Choisir",
+        onClick: () => {
+          setSelectedModel("google/gemma-4-26b-a4b-it:free");
+          setIsSettingsModalOpen(false);
+        },
+      },
+      {
         id: "setting-precise",
         icon: "🎯",
         title: "Mode Haute Précision (Température 0.2)",
         description: "Optimisé pour la syntaxe C, pointeurs, malloc et algorithmique formelle",
-        actionLabel: "Activer",
+        actionLabel: selectedTemperature === 0.2 ? "✓ Actif" : "Activer",
         onClick: () => {
+          setSelectedTemperature(0.2);
           setIsSettingsModalOpen(false);
         },
       },
@@ -553,8 +711,9 @@ export function DocsChatWorkspace() {
         icon: "⚖️",
         title: "Mode Équilibré (Température 0.7)",
         description: "Recommandé pour l'apprentissage général et les explications pédagogiques",
-        actionLabel: "Actif",
+        actionLabel: selectedTemperature === 0.7 ? "✓ Actif" : "Activer",
         onClick: () => {
+          setSelectedTemperature(0.7);
           setIsSettingsModalOpen(false);
         },
       },
@@ -563,8 +722,9 @@ export function DocsChatWorkspace() {
         icon: "💡",
         title: "Mode Créatif & Architecture (Température 0.9)",
         description: "Pour la conception de systèmes, scénarios et idées de projets",
-        actionLabel: "Activer",
+        actionLabel: selectedTemperature === 0.9 ? "✓ Actif" : "Activer",
         onClick: () => {
+          setSelectedTemperature(0.9);
           setIsSettingsModalOpen(false);
         },
       },
@@ -593,7 +753,14 @@ export function DocsChatWorkspace() {
         item.title.toLowerCase().includes(q) ||
         item.description.toLowerCase().includes(q)
     );
-  }, [settingsSearchFilter, theme, handleToggleTheme, handleResetAllSessions]);
+  }, [
+    settingsSearchFilter,
+    theme,
+    selectedModel,
+    selectedTemperature,
+    handleToggleTheme,
+    handleResetAllSessions,
+  ]);
 
   // 5. Éléments du modal Mentionner un Chatbot ou un Cours (@)
   const atActionItems: ModalActionItem[] = useMemo(() => {
