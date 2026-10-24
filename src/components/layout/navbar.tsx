@@ -11,6 +11,7 @@ import { ThemeToggleButton } from "@/components/theme/theme-toggle-button";
 const NAV_LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/bibliotheque", label: "Bibliothèque" },
+  { href: "/assistant", label: "Assistant IA" },
   { href: "/publier", label: "Publier un livre" },
   { href: "/#methode", label: "Notre approche" },
   { href: "/#pour-qui", label: "Pour qui ?" },
@@ -76,6 +77,7 @@ export function Navbar() {
   const isLinkActive = (href: string) => {
     if (href === "/") return pathname === "/";
     if (href === "/bibliotheque") return pathname.startsWith("/bibliotheque");
+    if (href === "/assistant") return pathname.startsWith("/assistant");
     if (href === "/publier") return pathname.startsWith("/publier");
     return false;
   };
@@ -107,7 +109,7 @@ export function Navbar() {
           </nav>
         </div>
 
-        <div className="navbar-end-actions" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div className="navbar-end-actions">
           <ThemeToggleButton />
           <ActionButton href="/bibliotheque" size="small" className="header-cta">
             Explorer les livres
@@ -188,15 +190,9 @@ export function Navbar() {
             );
           })}
         </nav>
-        <ActionButton
-          className="mobile-panel-cta"
-          href="/bibliotheque"
-          size="small"
-          onClick={closeMobileMenu}
-        >
-          Trouver mon prochain livre
-        </ActionButton>
-        <p className="mobile-panel-note">Le savoir, page après page.</p>
+        <div className="mobile-panel-footer">
+          <p className="mobile-panel-note">DOCS SHOW • Le savoir, page après page.</p>
+        </div>
       </aside>
     </header>
   );

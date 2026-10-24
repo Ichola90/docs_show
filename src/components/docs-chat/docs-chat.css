@@ -420,6 +420,8 @@
   margin: 0 auto;
   text-align: center;
   overflow-y: auto;
+  position: relative;
+  z-index: 2;
 }
 
 .docs-chat-brand-row {
@@ -844,6 +846,7 @@
   height: 100%;
   overflow: hidden;
   position: relative;
+  z-index: 2;
 }
 
 .docs-chat-header {
@@ -1101,6 +1104,93 @@
   font-size: 13px;
   line-height: 1.55;
   word-break: break-word;
+}
+
+/* ==========================================================================
+   REVEAL LIGNE PAR LIGNE EN FADE + SLIDE IN PENDANT LA RÉPONSE DE L'IA
+   ========================================================================== */
+.docs-chat-line-reveal,
+.docs-chat-3d-reveal-line {
+  position: relative;
+  will-change: transform, opacity;
+  animation: docsChatLineFadeSlide 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes docsChatLineFadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Balayage lumineux élégant sur les titres et sous-sections */
+.docs-chat-line-reveal.is-highlight,
+.docs-chat-3d-reveal-line.is-highlight {
+  overflow: hidden;
+}
+
+.docs-chat-line-reveal.is-highlight::after,
+.docs-chat-3d-reveal-line.is-highlight::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 130px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(37, 99, 235, 0.16) 50%,
+    transparent 100%
+  );
+  transform: translateX(-130px) skewX(-15deg);
+  pointer-events: none;
+  animation: docsChatHoloSweep 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.08s;
+}
+
+[data-theme="dark"] .docs-chat-line-reveal.is-highlight::after,
+[data-theme="dark"] .docs-chat-3d-reveal-line.is-highlight::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(96, 165, 250, 0.22) 50%,
+    transparent 100%
+  );
+}
+
+@keyframes docsChatHoloSweep {
+  0% {
+    transform: translateX(-130px) skewX(-15deg);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(650px) skewX(-15deg);
+    opacity: 0;
+  }
+}
+
+/* Accessibilité : désactivation propre des animations si l'utilisateur préfère réduire le mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .docs-chat-line-reveal,
+  .docs-chat-3d-reveal-line {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+    will-change: auto !important;
+  }
+  .docs-chat-line-reveal.is-highlight::after,
+  .docs-chat-3d-reveal-line.is-highlight::after {
+    display: none !important;
+  }
 }
 
 .docs-chat-bot-bubble p {

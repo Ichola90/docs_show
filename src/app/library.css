@@ -39,6 +39,7 @@ html[data-theme="dark"] {
 }
 .site-header.is-scrolled { background: rgb(255 255 255 / 98%); box-shadow: var(--shadow-md); }
 .navbar-inner { width: min(1428px, 100%); min-height: 76px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.navbar-end-actions { display: flex; align-items: center; gap: 12px; }
 .navbar-start { min-width: 0; display: flex; align-items: center; gap: clamp(28px, 4vw, 58px); }
 
 .brand {
@@ -2480,7 +2481,7 @@ html[data-theme="dark"] {
 @media (max-width: 883px) {
   .site-header { min-height: 68px; padding: 0 20px; }
   .navbar-inner { min-height: 68px; }
-  .main-nav, .navbar-inner > .header-cta { display: none; }
+  .main-nav, .navbar-end-actions, .navbar-inner > .header-cta, .header-cta { display: none !important; }
   .mobile-menu-toggle {
     width: 42px;
     height: 42px;

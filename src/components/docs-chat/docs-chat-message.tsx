@@ -95,11 +95,18 @@ export function DocsChatMessage({ message }: DocsChatMessageProps) {
       segments.push(content.substring(lastIndex));
     }
 
+    let lineCounter = 0;
+
     return segments.map((seg, idx) => {
       if (typeof seg !== "string") {
         const isCopied = copiedCodeId === `${message.id}_${idx}`;
+        const currentCounter = lineCounter++;
         return (
-          <div key={`code_${idx}`} className="docs-chat-code-block">
+          <div
+            key={`code_${idx}`}
+            className="docs-chat-code-block docs-chat-line-reveal"
+            style={{ "--reveal-index": currentCounter } as React.CSSProperties}
+          >
             <div className="docs-chat-code-header">
               <span>{seg.language}</span>
               <button
@@ -124,24 +131,63 @@ export function DocsChatMessage({ message }: DocsChatMessageProps) {
             const trimmed = line.trim();
             if (!trimmed) return <div key={lIdx} style={{ height: "0.5rem" }} />;
 
+            const currentCounter = lineCounter++;
+            const revealStyle = { "--reveal-index": currentCounter } as React.CSSProperties;
+
             if (trimmed.startsWith("### ")) {
-              return <h3 key={lIdx}>{trimmed.replace("### ", "")}</h3>;
+              return (
+                <h3
+                  key={lIdx}
+                  className="docs-chat-line-reveal is-highlight"
+                  style={revealStyle}
+                >
+                  {trimmed.replace("### ", "")}
+                </h3>
+              );
             }
             if (trimmed.startsWith("#### ")) {
-              return <h4 key={lIdx}>{trimmed.replace("#### ", "")}</h4>;
+              return (
+                <h4
+                  key={lIdx}
+                  className="docs-chat-line-reveal is-highlight"
+                  style={revealStyle}
+                >
+                  {trimmed.replace("#### ", "")}
+                </h4>
+              );
             }
             if (trimmed.startsWith("> ")) {
-              return <blockquote key={lIdx}>{trimmed.replace("> ", "")}</blockquote>;
+              return (
+                <blockquote
+                  key={lIdx}
+                  className="docs-chat-line-reveal"
+                  style={revealStyle}
+                >
+                  {trimmed.replace("> ", "")}
+                </blockquote>
+              );
             }
             if (trimmed.startsWith("* ") || trimmed.startsWith("- ")) {
               return (
-                <ul key={lIdx}>
+                <ul
+                  key={lIdx}
+                  className="docs-chat-line-reveal"
+                  style={revealStyle}
+                >
                   <li>{renderInlineStyles(trimmed.substring(2))}</li>
                 </ul>
               );
             }
 
-            return <p key={lIdx}>{renderInlineStyles(line)}</p>;
+            return (
+              <p
+                key={lIdx}
+                className="docs-chat-line-reveal"
+                style={revealStyle}
+              >
+                {renderInlineStyles(line)}
+              </p>
+            );
           })}
         </div>
       );

@@ -258,6 +258,67 @@ export function DocsChatWorkspace() {
       );
       saveSessions(updatedSessionsAfterUser);
 
+      // Fonction d'affichage progressif ligne par ligne (fade + slide in en temps réel)
+      const streamRevealBotMessage = async (
+        baseSession: ChatSession,
+        botMsgTemplate: Omit<ChatMessage, "content">,
+        fullContent: string
+      ) => {
+        setIsLoading(false);
+        const lines = fullContent.split("\n");
+
+        if (lines.length <= 1) {
+          const finalMsg: ChatMessage = { ...botMsgTemplate, content: fullContent };
+          const updated: ChatSession = {
+            ...baseSession,
+            updatedAt: Date.now(),
+            messages: [...baseSession.messages, finalMsg],
+          };
+          setSessions((prev) =>
+            prev.map((s) => (s.id === baseSession.id ? updated : s))
+          );
+          saveSessions(
+            sessions.map((s) => (s.id === baseSession.id ? updated : s))
+          );
+          return;
+        }
+
+        // Révélation cadencée ligne par ligne
+        const stepDelay = Math.max(28, Math.min(60, Math.floor(1000 / lines.length)));
+
+        for (let count = 1; count <= lines.length; count++) {
+          const partialContent = lines.slice(0, count).join("\n");
+          const stepMsg: ChatMessage = {
+            ...botMsgTemplate,
+            content: partialContent,
+          };
+          const stepSession: ChatSession = {
+            ...baseSession,
+            updatedAt: Date.now(),
+            messages: [...baseSession.messages, stepMsg],
+          };
+
+          setSessions((prev) =>
+            prev.map((s) => (s.id === baseSession.id ? stepSession : s))
+          );
+
+          if (count < lines.length) {
+            await new Promise((resolve) => setTimeout(resolve, stepDelay));
+          }
+        }
+
+        // Sauvegarde consolidée après révélation complète
+        const finalMsg: ChatMessage = { ...botMsgTemplate, content: fullContent };
+        const finalSession: ChatSession = {
+          ...baseSession,
+          updatedAt: Date.now(),
+          messages: [...baseSession.messages, finalMsg],
+        };
+        saveSessions(
+          sessions.map((s) => (s.id === baseSession.id ? finalSession : s))
+        );
+      };
+
       // Appel de l'API /api/chat connectée à Groq (avec fallback local résilient)
       try {
         const res = await fetch("/api/chat", {
@@ -339,27 +400,19 @@ export function DocsChatWorkspace() {
                 ? `OpenRouter • ${data.model || "Auto"}`
                 : activeBot.modelBadge;
 
-            const botResponseMsg: ChatMessage = {
-              id: `bot_resp_${Date.now()}`,
-              sender: "bot",
-              botId: activeBotId,
-              botName: activeBot.name,
-              modelBadge,
-              content: finalContent,
-              timestamp: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-              bookContextId: selectedBookContext || undefined,
-            };
-
-            const finalSession = {
-              ...currentSession,
-              updatedAt: Date.now(),
-              messages: [...sessionWithUser.messages, botResponseMsg],
-            };
-
-            saveSessions(
-              sessions.map((s) => (s.id === currentSession.id ? finalSession : s))
+            await streamRevealBotMessage(
+              sessionWithUser,
+              {
+                id: `bot_resp_${Date.now()}`,
+                sender: "bot",
+                botId: activeBotId,
+                botName: activeBot.name,
+                modelBadge,
+                timestamp: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+                bookContextId: selectedBookContext || undefined,
+              },
+              finalContent
             );
-            setIsLoading(false);
             return;
           }
         }
@@ -429,27 +482,19 @@ export function DocsChatWorkspace() {
         finalContent = `> 📎 **Analyse du document / photo reçu** (${names}) :\n\n` + finalContent;
       }
 
-      const botResponseMsg: ChatMessage = {
-        id: `bot_resp_${Date.now()}`,
-        sender: "bot",
-        botId: activeBotId,
-        botName: activeBot.name,
-        modelBadge: activeBot.modelBadge,
-        content: finalContent,
-        timestamp: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-        bookContextId: selectedBookContext || undefined,
-      };
-
-      const finalSession = {
-        ...currentSession,
-        updatedAt: Date.now(),
-        messages: [...sessionWithUser.messages, botResponseMsg],
-      };
-
-      saveSessions(
-        sessions.map((s) => (s.id === currentSession.id ? finalSession : s))
+      await streamRevealBotMessage(
+        sessionWithUser,
+        {
+          id: `bot_resp_${Date.now()}`,
+          sender: "bot",
+          botId: activeBotId,
+          botName: activeBot.name,
+          modelBadge: activeBot.modelBadge,
+          timestamp: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
+          bookContextId: selectedBookContext || undefined,
+        },
+        finalContent
       );
-      setIsLoading(false);
     },
     [
       inputPrompt,
@@ -873,8 +918,9 @@ export function DocsChatWorkspace() {
         />
       )}
 
-      {/* 3. Scène principale */}
+      {/* 3. Scène principale épurée et haute lisibilité */}
       <main className="docs-chat-main">
+
         {/* Boutons d'action supérieurs en accueil (Thème clair/sombre + Toggle Menu Mobile) */}
         {!hasMessages && (
           <div className="docs-chat-top-actions">
